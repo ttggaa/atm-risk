@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.risk.controller.service.dao.WanshuReqLogDao">
+    <resultMap id="getMap" type="com.risk.controller.service.entity.WanshuReqLog">
+    </resultMap>
+
+    <select id="getLogByPhone" parameterType="com.risk.controller.service.entity.WanshuReqLog" resultMap="getMap">
+        select * from risk_wanshu_req_log
+        <where>
+            <if test="null!=type and 0!=type">
+                and type = #{type}
+            </if>
+            <if test="null!=phone and ''!=phone">
+                and phone = #{phone}
+            </if>
+            and status != ''
+        </where>
+        order by id desc limit 1
+    </select>
+    <insert id="insert" parameterType="com.risk.controller.service.entity.WanshuReqLog">
+        INSERT INTO `risk_wanshu_req_log` (`type`, `charges_status`, `nid`, `phone`, `code`, `status`, `req_cnt`, `tradeNo`, `tag`, `add_time`, `update_time`)
+        VALUES ( #{type},#{chargesStatus}, #{nid}, #{phone}, #{code}, #{status}, #{reqCnt}, #{tradeNo}, #{tag}, #{addTime}, '0');
+    </insert>
+</mapper>

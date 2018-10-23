@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.risk.controller.service.dao.RiskAreaDao">
+    <resultMap id="getMap" type="com.risk.controller.service.entity.RiskArea">
+    </resultMap>
+
+	<select id="getByCodes" parameterType="com.risk.controller.service.entity.RiskArea" resultType="com.risk.controller.service.entity.RiskArea">
+		SELECT NAME,LEVEL FROM risk_area
+		where code = #{provinceCode} or code = #{cityCode} or code = #{distinctCode}
+	</select>
+  
+ 
+</mapper>

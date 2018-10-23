@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.risk.controller.service.dao.AdmissionResultDetailDao" >
+  <resultMap id="BaseResultMap" type="com.risk.controller.service.entity.AdmissionResultDetail" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="result_id" property="resultId" jdbcType="BIGINT" />
+    <result column="rule_id" property="ruleId" jdbcType="BIGINT" />
+    <result column="data" property="data" jdbcType="VARCHAR" />
+    <result column="data_type" property="dataType" jdbcType="VARCHAR" />
+    <result column="result" property="result" jdbcType="TINYINT" />
+    <result column="add_time" property="addTime" jdbcType="BIGINT" />
+    <result column="add_user" property="addUser" jdbcType="BIGINT" />
+    <result column="update_time" property="updateTime" jdbcType="BIGINT" />
+    <result column="update_user" property="updateUser" jdbcType="BIGINT" />
+    <result column="time_cost" property="timeCost" jdbcType="BIGINT" />
+    <result column="stage" property="stage" jdbcType="INTEGER" />
+    <result column="reject_reason_code" property="rejectReasonCode" jdbcType="VARCHAR" />
+    <result column="suspend_time" property="suspendTime" jdbcType="BIGINT" />
+    <result column="suspend_cnt" property="suspendCnt" jdbcType="INTEGER" />
+    <result column="suspend_stage" property="suspendStage" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, result_id, rule_id, data, data_type, result, add_time, add_user, update_time, 
+    update_user, time_cost, stage, reject_reason_code, suspend_time, suspend_cnt, suspend_stage
+  </sql>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from risk_decision_result_detail
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+
+  <select id="getByResultId" resultMap="BaseResultMap" parameterType="com.risk.controller.service.entity.AdmissionResultDetail" >
+    select
+    <include refid="Base_Column_List" />
+    from risk_decision_result_detail
+    where result_id = #{resultId}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from risk_decision_result_detail
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.risk.controller.service.entity.AdmissionResultDetail" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into risk_decision_result_detail (result_id, rule_id, data, 
+      data_type, result, add_time, 
+      add_user, update_time, update_user, 
+      time_cost, stage, reject_reason_code, 
+      suspend_time, suspend_cnt, suspend_stage
+      )
+    values (#{resultId,jdbcType=BIGINT}, #{ruleId,jdbcType=BIGINT}, #{data,jdbcType=VARCHAR}, 
+      #{dataType,jdbcType=VARCHAR}, #{result,jdbcType=TINYINT}, #{addTime,jdbcType=BIGINT}, 
+      #{addUser,jdbcType=BIGINT}, #{updateTime,jdbcType=BIGINT}, #{updateUser,jdbcType=BIGINT}, 
+      #{timeCost,jdbcType=BIGINT}, #{stage,jdbcType=INTEGER}, #{rejectReasonCode,jdbcType=VARCHAR}, 
+      #{suspendTime,jdbcType=BIGINT}, #{suspendCnt,jdbcType=INTEGER}, #{suspendStage,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.risk.controller.service.entity.AdmissionResultDetail" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into risk_decision_result_detail
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="resultId != null" >
+        result_id,
+      </if>
+      <if test="ruleId != null" >
+        rule_id,
+      </if>
+      <if test="data != null" >
+        data,
+      </if>
+      <if test="dataType != null" >
+        data_type,
+      </if>
+      <if test="result != null" >
+        result,
+      </if>
+      <if test="addTime != null" >
+        add_time,
+      </if>
+      <if test="addUser != null" >
+        add_user,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="updateUser != null" >
+        update_user,
+      </if>
+      <if test="timeCost != null" >
+        time_cost,
+      </if>
+      <if test="stage != null" >
+        stage,
+      </if>
+      <if test="rejectReasonCode != null" >
+        reject_reason_code,
+      </if>
+      <if test="suspendTime != null" >
+        suspend_time,
+      </if>
+      <if test="suspendCnt != null" >
+        suspend_cnt,
+      </if>
+      <if test="suspendStage != null" >
+        suspend_stage,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="resultId != null" >
+        #{resultId,jdbcType=BIGINT},
+      </if>
+      <if test="ruleId != null" >
+        #{ruleId,jdbcType=BIGINT},
+      </if>
+      <if test="data != null" >
+        #{data,jdbcType=VARCHAR},
+      </if>
+      <if test="dataType != null" >
+        #{dataType,jdbcType=VARCHAR},
+      </if>
+      <if test="result != null" >
+        #{result,jdbcType=TINYINT},
+      </if>
+      <if test="addTime != null" >
+        #{addTime,jdbcType=BIGINT},
+      </if>
+      <if test="addUser != null" >
+        #{addUser,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=BIGINT},
+      </if>
+      <if test="updateUser != null" >
+        #{updateUser,jdbcType=BIGINT},
+      </if>
+      <if test="timeCost != null" >
+        #{timeCost,jdbcType=BIGINT},
+      </if>
+      <if test="stage != null" >
+        #{stage,jdbcType=INTEGER},
+      </if>
+      <if test="rejectReasonCode != null" >
+        #{rejectReasonCode,jdbcType=VARCHAR},
+      </if>
+      <if test="suspendTime != null" >
+        #{suspendTime,jdbcType=BIGINT},
+      </if>
+      <if test="suspendCnt != null" >
+        #{suspendCnt,jdbcType=INTEGER},
+      </if>
+      <if test="suspendStage != null" >
+        #{suspendStage,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.risk.controller.service.entity.AdmissionResultDetail" >
+    update risk_decision_result_detail
+    <set >
+      <if test="resultId != null" >
+        result_id = #{resultId,jdbcType=BIGINT},
+      </if>
+      <if test="ruleId != null" >
+        rule_id = #{ruleId,jdbcType=BIGINT},
+      </if>
+      <if test="data != null" >
+        data = #{data,jdbcType=VARCHAR},
+      </if>
+      <if test="dataType != null" >
+        data_type = #{dataType,jdbcType=VARCHAR},
+      </if>
+      <if test="result != null" >
+        result = #{result,jdbcType=TINYINT},
+      </if>
+      <if test="addTime != null" >
+        add_time = #{addTime,jdbcType=BIGINT},
+      </if>
+      <if test="addUser != null" >
+        add_user = #{addUser,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=BIGINT},
+      </if>
+      <if test="updateUser != null" >
+        update_user = #{updateUser,jdbcType=BIGINT},
+      </if>
+      <if test="timeCost != null" >
+        time_cost = #{timeCost,jdbcType=BIGINT},
+      </if>
+      <if test="stage != null" >
+        stage = #{stage,jdbcType=INTEGER},
+      </if>
+      <if test="rejectReasonCode != null" >
+        reject_reason_code = #{rejectReasonCode,jdbcType=VARCHAR},
+      </if>
+      <if test="suspendTime != null" >
+        suspend_time = #{suspendTime,jdbcType=BIGINT},
+      </if>
+      <if test="suspendCnt != null" >
+        suspend_cnt = #{suspendCnt,jdbcType=INTEGER},
+      </if>
+      <if test="suspendStage != null" >
+        suspend_stage = #{suspendStage,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.risk.controller.service.entity.AdmissionResultDetail" >
+    update risk_decision_result_detail
+    set result_id = #{resultId,jdbcType=BIGINT},
+      rule_id = #{ruleId,jdbcType=BIGINT},
+      data = #{data,jdbcType=VARCHAR},
+      data_type = #{dataType,jdbcType=VARCHAR},
+      result = #{result,jdbcType=TINYINT},
+      add_time = #{addTime,jdbcType=BIGINT},
+      add_user = #{addUser,jdbcType=BIGINT},
+      update_time = #{updateTime,jdbcType=BIGINT},
+      update_user = #{updateUser,jdbcType=BIGINT},
+      time_cost = #{timeCost,jdbcType=BIGINT},
+      stage = #{stage,jdbcType=INTEGER},
+      reject_reason_code = #{rejectReasonCode,jdbcType=VARCHAR},
+      suspend_time = #{suspendTime,jdbcType=BIGINT},
+      suspend_cnt = #{suspendCnt,jdbcType=INTEGER},
+      suspend_stage = #{suspendStage,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <select id="getLastDetailByResultId" resultType="com.risk.controller.service.entity.AdmissionResultDetail">
+    SELECT b.*
+    from risk_decision_result a,
+         risk_decision_result_detail b
+    WHERE a.id = b.result_id
+      AND a.nid = #{0}
+    order by b.id DESC limit 1
+  </select>
+
+  <select id="getDecisionDetail" resultType="map">
+    SELECT
+      a.`name`,b.`data`,b.result,FROM_UNIXTIME(b.add_time/1000,'%Y-%m-%d %H:%i:%S') addTime
+    FROM
+      risk_decision_rule a,
+      risk_decision_result_detail b
+    WHERE
+      a.id = b.rule_id
+      AND b.result_id = ( SELECT max(id) FROM risk_decision_result WHERE nid = #{0})
+      ORDER BY b.id
+  </select>
+</mapper>

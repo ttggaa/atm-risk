@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.risk.controller.service.dao.DecisionRobotScoreResultDao" >
+  <resultMap id="BaseResultMap" type="com.risk.controller.service.entity.DecisionRobotScoreResult" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="nid" property="nid" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="TINYINT" />
+    <result column="prob_of1" property="probOf1" jdbcType="DECIMAL" />
+    <result column="prob_of0" property="probOf0" jdbcType="DECIMAL" />
+    <result column="error_msg" property="errorMsg" jdbcType="VARCHAR" />
+    <result column="start_time" property="startTime" jdbcType="BIGINT" />
+    <result column="end_time" property="endTime" jdbcType="BIGINT" />
+    <result column="add_time" property="addTime" jdbcType="BIGINT" />
+    <result column="add_user" property="addUser" jdbcType="BIGINT" />
+    <result column="update_time" property="updateTime" jdbcType="BIGINT" />
+    <result column="update_user" property="updateUser" jdbcType="BIGINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, nid, status, prob_of1, prob_of0, error_msg, start_time, end_time, add_time, add_user, 
+    update_time, update_user
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from rcs_decision_robot_score_result
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from rcs_decision_robot_score_result
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.risk.controller.service.entity.DecisionRobotScoreResult" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into rcs_decision_robot_score_result (nid, status, prob_of1, 
+      prob_of0, error_msg, start_time, 
+      end_time, add_time, add_user, 
+      update_time, update_user)
+    values (#{nid,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, #{probOf1,jdbcType=DECIMAL}, 
+      #{probOf0,jdbcType=DECIMAL}, #{errorMsg,jdbcType=VARCHAR}, #{startTime,jdbcType=BIGINT}, 
+      #{endTime,jdbcType=BIGINT}, #{addTime,jdbcType=BIGINT}, #{addUser,jdbcType=BIGINT}, 
+      #{updateTime,jdbcType=BIGINT}, #{updateUser,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.risk.controller.service.entity.DecisionRobotScoreResult" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into rcs_decision_robot_score_result
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="nid != null" >
+        nid,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="probOf1 != null" >
+        prob_of1,
+      </if>
+      <if test="probOf0 != null" >
+        prob_of0,
+      </if>
+      <if test="errorMsg != null" >
+        error_msg,
+      </if>
+      <if test="startTime != null" >
+        start_time,
+      </if>
+      <if test="endTime != null" >
+        end_time,
+      </if>
+      <if test="addTime != null" >
+        add_time,
+      </if>
+      <if test="addUser != null" >
+        add_user,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="updateUser != null" >
+        update_user,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="nid != null" >
+        #{nid,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="probOf1 != null" >
+        #{probOf1,jdbcType=DECIMAL},
+      </if>
+      <if test="probOf0 != null" >
+        #{probOf0,jdbcType=DECIMAL},
+      </if>
+      <if test="errorMsg != null" >
+        #{errorMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="startTime != null" >
+        #{startTime,jdbcType=BIGINT},
+      </if>
+      <if test="endTime != null" >
+        #{endTime,jdbcType=BIGINT},
+      </if>
+      <if test="addTime != null" >
+        #{addTime,jdbcType=BIGINT},
+      </if>
+      <if test="addUser != null" >
+        #{addUser,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=BIGINT},
+      </if>
+      <if test="updateUser != null" >
+        #{updateUser,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.risk.controller.service.entity.DecisionRobotScoreResult" >
+    update rcs_decision_robot_score_result
+    <set >
+      <if test="nid != null" >
+        nid = #{nid,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="probOf1 != null" >
+        prob_of1 = #{probOf1,jdbcType=DECIMAL},
+      </if>
+      <if test="probOf0 != null" >
+        prob_of0 = #{probOf0,jdbcType=DECIMAL},
+      </if>
+      <if test="errorMsg != null" >
+        error_msg = #{errorMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="startTime != null" >
+        start_time = #{startTime,jdbcType=BIGINT},
+      </if>
+      <if test="endTime != null" >
+        end_time = #{endTime,jdbcType=BIGINT},
+      </if>
+      <if test="addTime != null" >
+        add_time = #{addTime,jdbcType=BIGINT},
+      </if>
+      <if test="addUser != null" >
+        add_user = #{addUser,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=BIGINT},
+      </if>
+      <if test="updateUser != null" >
+        update_user = #{updateUser,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.risk.controller.service.entity.DecisionRobotScoreResult" >
+    update rcs_decision_robot_score_result
+    set nid = #{nid,jdbcType=VARCHAR},
+      status = #{status,jdbcType=TINYINT},
+      prob_of1 = #{probOf1,jdbcType=DECIMAL},
+      prob_of0 = #{probOf0,jdbcType=DECIMAL},
+      error_msg = #{errorMsg,jdbcType=VARCHAR},
+      start_time = #{startTime,jdbcType=BIGINT},
+      end_time = #{endTime,jdbcType=BIGINT},
+      add_time = #{addTime,jdbcType=BIGINT},
+      add_user = #{addUser,jdbcType=BIGINT},
+      update_time = #{updateTime,jdbcType=BIGINT},
+      update_user = #{updateUser,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

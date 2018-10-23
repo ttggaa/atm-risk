@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.risk.controller.service.dao.DataOrderMappingDao">
+    <resultMap id="getMap" type="com.risk.controller.service.entity.DataOrderMapping">
+    </resultMap>
+    <select id="queryLastOne" parameterType="com.risk.controller.service.entity.DataOrderMapping" resultMap="getMap">
+        select * from data_order_mapping where user_id= #{userId} and nid=#{nid} order by id desc limit 1
+    </select>
+    
+    <select id="queryLastOneByNid" parameterType="com.risk.controller.service.entity.DataOrderMapping" resultMap="getMap">
+        select * from data_order_mapping where  nid=#{nid} order by id desc limit 1
+    </select>
+
+    <select id="getAllByNid" parameterType="string" resultType="map">
+        select nid,operator_num operatorNum,client_num clientNum from data_order_mapping
+        where operator_num != ''and client_num !=''
+        <choose>
+            <when test="null!=nid and ''!=nid">
+                and nid=#{nid}
+            </when>
+            <otherwise>
+                AND nid NOT in (SELECT nid from client_contact GROUP BY nid) limit 50
+            </otherwise>
+        </choose>
+    </select>
+</mapper>

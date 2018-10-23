@@ -1,0 +1,22 @@
+
+package com.risk.controller.service.utils.paixu;
+
+/**
+ * 解析时帮助
+ *
+ * @author xuzhen.qxz
+ */
+public abstract class LocalResponseHandler {
+
+    protected String uriId;
+
+    protected long startTime = System.currentTimeMillis();
+
+    public String getUriId() {
+        return uriId;
+    }
+
+    public void setUriId(String uriId) {
+        this.uriId = uriId;
+    }
+}

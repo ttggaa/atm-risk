@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.risk.controller.service.dao.DecisionReqLogDao" >
+  <resultMap id="BaseResultMap" type="com.risk.controller.service.entity.DecisionReqLog" >
+  </resultMap>
+
+  <insert id="saveOrUpdate" parameterType="com.risk.controller.service.entity.DecisionReqLog">
+    insert into risk_decision_req_log (nid,req_data,add_time,update_time)
+    values (#{nid} ,#{reqData},#{addTime},0  )
+    on duplicate key update
+    req_data = VALUES(req_data), update_time = #{updateTime}
+  </insert>
+
+  <select id="getbyNid" resultMap="BaseResultMap" parameterType="string">
+    select * from risk_decision_req_log where nid = #{nid}
+  </select>
+</mapper>

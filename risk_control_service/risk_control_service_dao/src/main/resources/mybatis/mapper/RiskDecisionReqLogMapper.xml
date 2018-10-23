@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.risk.controller.service.dao.RiskDecisionReqLogDao">
+    <resultMap id="getMap" type="com.risk.controller.service.entity.RiskDecisionReqLog">
+    </resultMap>
+
+    <select id="getLastBynid" resultMap="getMap">
+        select * from risk_decision_req_log WHERE nid = #{nid} ORDER BY id DESC limit 1;
+    </select>
+ 
+</mapper>

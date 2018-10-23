@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.risk.controller.service.dao.BlacklistAreaIdcardDao">
+    <resultMap id="getMap" type="com.risk.controller.service.entity.BlacklistAreaIdcard">
+    </resultMap>
+
+    <select id="getIdcardHitCount" parameterType="String" resultType="_int">
+        select count(1) cnt
+        from risk_blacklist_area_idcard a
+        where a.enabled = 1
+        and (a.code = substr(#{value}, 1, 2) or a.code = substr(#{value}, 1, 3) or a.code = substr(#{value}, 1, 4) or a.code = substr(#{value}, 1, 6))
+    </select>
+
+    <select id="getIdcardHit" parameterType="String" resultMap="getMap">
+        select a.*
+        from risk_blacklist_area_idcard a
+        where a.enabled = 1
+        and (a.code = substr(#{value}, 1, 2) or a.code = substr(#{value}, 1, 3) or a.code = substr(#{value}, 1, 4) or a.code = substr(#{value}, 1, 6))
+        order by a.code desc
+        limit 1
+    </select>
+</mapper>

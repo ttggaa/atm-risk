@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.risk.controller.service.dao.ThirdServiceCfgDao">
+    <resultMap id="getMap" type="com.risk.controller.service.entity.ThirdServiceCfg">
+    </resultMap>
+
+    <select id="getAll" resultMap="getMap">
+        select `name`,`value` from risk_control_service_system_config
+    </select>
+
+    <select id="getOne" resultMap="getMap">
+        select `name`,`value` from risk_control_service_system_config where `name` = #{name}
+    </select>
+</mapper>

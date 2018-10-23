@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.risk.controller.service.dao.DecisionRobotNoticeDao" >
+  <resultMap id="BaseResultMap" type="com.risk.controller.service.entity.DecisionRobotNotice" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="nid" property="nid" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="notice_num" property="noticeNum" jdbcType="INTEGER" />
+    <result column="expt_status" property="exptStatus" jdbcType="INTEGER" />
+    <result column="add_user" property="addUser" jdbcType="VARCHAR" />
+    <result column="add_time" property="addTime" jdbcType="BIGINT" />
+    <result column="update_time" property="updateTime" jdbcType="BIGINT" />
+    <result column="update_user" property="updateUser" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, nid, status, notice_num, expt_status, add_user, add_time, update_time, update_user
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from rcs_decision_robot_notice
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+
+  <select id="getByNid" resultMap="BaseResultMap" parameterType="com.risk.controller.service.entity.DecisionRobotNotice" >
+    select
+    <include refid="Base_Column_List" />
+    from rcs_decision_robot_notice
+    where nid = #{nid} limit 1
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from rcs_decision_robot_notice
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.risk.controller.service.entity.DecisionRobotNotice" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into rcs_decision_robot_notice (nid, status, notice_num, 
+      expt_status, add_user, add_time, 
+      update_time, update_user)
+    values (#{nid,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{noticeNum,jdbcType=INTEGER}, 
+      #{exptStatus,jdbcType=INTEGER}, #{addUser,jdbcType=VARCHAR}, #{addTime,jdbcType=BIGINT}, 
+      #{updateTime,jdbcType=BIGINT}, #{updateUser,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.risk.controller.service.entity.DecisionRobotNotice" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into rcs_decision_robot_notice
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="nid != null" >
+        nid,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="noticeNum != null" >
+        notice_num,
+      </if>
+      <if test="exptStatus != null" >
+        expt_status,
+      </if>
+      <if test="addUser != null" >
+        add_user,
+      </if>
+      <if test="addTime != null" >
+        add_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="updateUser != null" >
+        update_user,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="nid != null" >
+        #{nid,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="noticeNum != null" >
+        #{noticeNum,jdbcType=INTEGER},
+      </if>
+      <if test="exptStatus != null" >
+        #{exptStatus,jdbcType=INTEGER},
+      </if>
+      <if test="addUser != null" >
+        #{addUser,jdbcType=VARCHAR},
+      </if>
+      <if test="addTime != null" >
+        #{addTime,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=BIGINT},
+      </if>
+      <if test="updateUser != null" >
+        #{updateUser,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.risk.controller.service.entity.DecisionRobotNotice" >
+    update rcs_decision_robot_notice
+    <set >
+      <if test="nid != null" >
+        nid = #{nid,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="noticeNum != null" >
+        notice_num = #{noticeNum,jdbcType=INTEGER},
+      </if>
+      <if test="exptStatus != null" >
+        expt_status = #{exptStatus,jdbcType=INTEGER},
+      </if>
+      <if test="addUser != null" >
+        add_user = #{addUser,jdbcType=VARCHAR},
+      </if>
+      <if test="addTime != null" >
+        add_time = #{addTime,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=BIGINT},
+      </if>
+      <if test="updateUser != null" >
+        update_user = #{updateUser,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.risk.controller.service.entity.DecisionRobotNotice" >
+    update rcs_decision_robot_notice
+    set nid = #{nid,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      notice_num = #{noticeNum,jdbcType=INTEGER},
+      expt_status = #{exptStatus,jdbcType=INTEGER},
+      add_user = #{addUser,jdbcType=VARCHAR},
+      add_time = #{addTime,jdbcType=BIGINT},
+      update_time = #{updateTime,jdbcType=BIGINT},
+      update_user = #{updateUser,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.risk.controller.service.dao.ClientContactDao">
+    <resultMap id="getMap" type="com.risk.controller.service.entity.ClientContact">
+    </resultMap>
+
+    <insert id="saveBatch" parameterType="list">
+        INSERT INTO `zx_risk`.`client_contact` ( `user_id`, `nid`, `phone`, `name`, `contacts_phone`)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.userId},#{item.nid},#{item.phone},#{item.name},#{item.contactsPhone}
+            )
+        </foreach>
+        on duplicate key update
+        name = VALUES(name)
+    </insert>
+
+    <select id="getCallNumByDay" resultType="map" parameterType="map">
+        SELECT
+            COUNT(1) callNum,
+            SUM(duration) callTime
+        FROM
+            client_contact a,
+            operator_call_record b
+        WHERE
+            a.nid =#{nid}
+        AND a.nid = b.nid
+        AND a.contacts_phone = b.peer_number
+        AND a.contacts_phone LIKE '1%'
+        AND LENGTH(a.contacts_phone) = 11
+        <if test="type != null and ''!=type" >
+            AND b.location_type = #{type}
+        </if>
+        AND b.time >= DATE_SUB(FROM_UNIXTIME(#{applyTime} / 1000), INTERVAL #{day} DAY )
+    </select>
+
+    <select id="getCallAndCalledByDay" parameterType="map" resultType="map">
+        SELECT
+            count(1) contactNum,
+            IFNULL(sum(c.minCallNum),0) callNum,
+            IFNULL(SUM(c.allCallTime),0) callTime
+        from (
+            SELECT
+                a.contacts_phone phone,
+                CASE WHEN a.callNum>=b.callNum THEN b.callNum ELSE a.callNum END minCallNum,
+                a.callTime + b.callTime allCallTime
+            FROM (
+                SELECT
+                    a.contacts_phone,
+                    COUNT(1) callNum,
+                    SUM(duration) callTime
+                FROM
+                    client_contact a,
+                    operator_call_record b
+                WHERE
+                    a.nid = #{nid}
+                    AND a.nid = b.nid
+                    AND a.contacts_phone = b.peer_number
+                    AND a.contacts_phone LIKE '1%'
+                    AND LENGTH(a.contacts_phone) = 11
+                    AND b.location_type = 'DIAL'
+                    AND b.time >= DATE_SUB(FROM_UNIXTIME(#{applyTime} / 1000),INTERVAL #{day} DAY)
+                    GROUP BY a.contacts_phone
+                ) a, (
+                SELECT
+                    a.contacts_phone,
+                    COUNT(1) callNum,
+                    SUM(duration) callTime
+                FROM
+                    client_contact a,
+                    operator_call_record b
+                WHERE
+                    a.nid = #{nid}
+                    AND a.nid = b.nid
+                    AND a.contacts_phone = b.peer_number
+                    AND a.contacts_phone LIKE '1%'
+                    AND LENGTH(a.contacts_phone) = 11
+                    AND b.location_type = 'DIALED'
+                    AND b.time >= DATE_SUB(FROM_UNIXTIME(#{applyTime} / 1000),INTERVAL #{day} DAY)
+                    GROUP BY a.contacts_phone
+                ) b
+            WHERE a.contacts_phone = b.contacts_phone
+        ) c
+    </select>
+</mapper>

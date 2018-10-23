@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.risk.controller.service.dao.RiskXinyanLogDao">
+    <resultMap id="getMap" type="com.risk.controller.service.entity.RiskXinyanLog">
+    </resultMap>
+
+    <select id="getLastOne" resultMap="getMap">
+        select * from risk_xinyan_log WHERE id_no=#{0} AND code=#{1} AND status=1 ORDER BY id DESC limit 1;
+    </select>
+    <insert id="insert" parameterType="com.risk.controller.service.entity.RiskXinyanLog">
+        INSERT INTO `risk_xinyan_log`
+        (`code`, `id_no`, `id_name`, `url`, `req_param`, `req_time`, `req_cnt`, `trans_id`, `rep_errorcode`, `rep_param`, `status`, `add_time`, `add_user`, `update_time`, `update_user`,score) VALUES
+        (#{code}, #{idNo}, #{idName}, #{url}, #{reqParam}, #{reqTime}, #{reqCnt},#{transId}, #{repErrorcode},#{repParam}, #{status},#{addTime}, 0, #{updateTime}, 0,  #{score});
+    </insert>
+</mapper>

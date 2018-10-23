@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.risk.controller.service.dao.BlacklistIdfaDao">
+    <resultMap id="getMap" type="com.risk.controller.service.entity.BlacklistIdfa">
+    </resultMap>
+    <select id="getCountBySet" parameterType="java.util.Set" resultType="int">
+        select count(1) cnt from risk_blacklist_idfa where enable = 1 and idfa in
+        <foreach collection="set" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="countByset" parameterType="java.util.Set" resultType="int">
+        select count(1) cnt from risk_blacklist_idfa where enable = 1 and idfa in
+        <foreach collection="set" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="getListByIdfas" parameterType="java.util.List" resultType="string">
+        select idfa idCard from risk_blacklist_idfa where enable = 1 and idfa in
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="getLastOneByIdfa" resultMap="getMap">
+        select * from risk_blacklist_idfa where idfa =#{0} and enable = 1
+    </select>
+
+    <insert id="insert" parameterType="com.risk.controller.service.entity.BlacklistIdfa">
+        INSERT INTO `risk_blacklist_idfa` (`idfa`, `enable`, `source`, `remark`, `add_time`, `update_time`) VALUES (#{idfa},1, #{source}, #{remark},#{addTime}, #{updateTime})
+    </insert>
+</mapper>

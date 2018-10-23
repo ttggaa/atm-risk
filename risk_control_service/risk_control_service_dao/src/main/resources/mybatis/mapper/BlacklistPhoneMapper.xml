@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.risk.controller.service.dao.BlacklistPhoneDao">
+    <resultMap id="getMap" type="com.risk.controller.service.entity.BlacklistPhone">
+    </resultMap>
+    <select id="getLastOneByPhone" resultMap="getMap">
+        SELECT * from risk_blacklist_phone WHERE phone = #{0} order by id desc limit 1
+    </select>
+
+    <select id="countByphone" parameterType="java.util.Set" resultType="int">
+        select count(1) from risk_blacklist_phone where enable = 1 and phone in
+        <foreach collection="set" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <insert id="insert" parameterType="com.risk.controller.service.entity.BlacklistPhone">
+        INSERT INTO `risk_blacklist_phone` (`phone`, `enable`, `source`, `remark`, `add_time`, `update_time`) VALUES (#{phone},1, #{source}, #{remark},#{addTime}, #{updateTime})
+    </insert>
+
+    <select id="getListByPhones" parameterType="java.util.List" resultType="string">
+        select phone from risk_blacklist_phone where enable = 1 and phone in
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+</mapper>

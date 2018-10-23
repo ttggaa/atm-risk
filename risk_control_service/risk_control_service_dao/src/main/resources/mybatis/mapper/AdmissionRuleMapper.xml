@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.risk.controller.service.dao.AdmissionRuleDao" >
+  <resultMap id="BaseResultMap" type="com.risk.controller.service.entity.AdmissionRule" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="category" property="category" jdbcType="VARCHAR" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="enabled" property="enabled" jdbcType="TINYINT" />
+    <result column="priority" property="priority" jdbcType="INTEGER" />
+    <result column="handler" property="handler" jdbcType="VARCHAR" />
+    <result column="reject_reason_code" property="rejectReasonCode" jdbcType="VARCHAR" />
+    <result column="setting" property="setting" jdbcType="VARCHAR" />
+    <result column="add_time" property="addTime" jdbcType="BIGINT" />
+    <result column="add_user" property="addUser" jdbcType="BIGINT" />
+    <result column="update_time" property="updateTime" jdbcType="BIGINT" />
+    <result column="update_user" property="updateUser" jdbcType="BIGINT" />
+    <result column="max_suspend_timeout" property="maxSuspendTimeout" jdbcType="BIGINT" />
+    <result column="max_suspend_cnt" property="maxSuspendCnt" jdbcType="INTEGER" />
+    <result column="suspend_result" property="suspendResult" jdbcType="TINYINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, name, category, description, enabled, priority, handler, reject_reason_code, 
+    setting, add_time, add_user, update_time, update_user, max_suspend_timeout, max_suspend_cnt, 
+    suspend_result
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from risk_decision_rule
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+
+
+  <select id="getEnabledRuleByGroup" parameterType="com.risk.controller.service.entity.DecisionLabelGroupRuleMapping" resultMap="BaseResultMap">
+    select  a.id,
+    a.name,
+    a.category,
+    a.description,
+    a.enabled,
+    a.handler,
+    a.reject_reason_code,
+    a.setting,
+    a.add_time,
+    a.add_user,
+    a.update_time,
+    a.update_user,
+    b.priority,
+    a.max_suspend_timeout,
+    a.max_suspend_cnt,
+    a.suspend_result,
+    b.robot_action
+    from risk_decision_rule a
+    join risk_decision_label_group_rule_mapping b on b.rule_id = a.id
+    <where>
+      a.enabled = 1
+      and b.enabled = 1
+      and b.group_id = #{groupId}
+      <if test="null != stage">
+        and b.stage = #{stage}
+      </if>
+    </where>
+    ORDER BY b.stage ASC,a.priority DESC,a.id ASC
+  </select>
+
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from risk_decision_rule
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.risk.controller.service.entity.AdmissionRule" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into risk_decision_rule (name, category, description, 
+      enabled, priority, handler, 
+      reject_reason_code, setting, add_time, 
+      add_user, update_time, update_user, 
+      max_suspend_timeout, max_suspend_cnt, suspend_result
+      )
+    values (#{name,jdbcType=VARCHAR}, #{category,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
+      #{enabled,jdbcType=TINYINT}, #{priority,jdbcType=INTEGER}, #{handler,jdbcType=VARCHAR}, 
+      #{rejectReasonCode,jdbcType=VARCHAR}, #{setting,jdbcType=VARCHAR}, #{addTime,jdbcType=BIGINT}, 
+      #{addUser,jdbcType=BIGINT}, #{updateTime,jdbcType=BIGINT}, #{updateUser,jdbcType=BIGINT}, 
+      #{maxSuspendTimeout,jdbcType=BIGINT}, #{maxSuspendCnt,jdbcType=INTEGER}, #{suspendResult,jdbcType=TINYINT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.risk.controller.service.entity.AdmissionRule" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into risk_decision_rule
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="category != null" >
+        category,
+      </if>
+      <if test="description != null" >
+        description,
+      </if>
+      <if test="enabled != null" >
+        enabled,
+      </if>
+      <if test="priority != null" >
+        priority,
+      </if>
+      <if test="handler != null" >
+        handler,
+      </if>
+      <if test="rejectReasonCode != null" >
+        reject_reason_code,
+      </if>
+      <if test="setting != null" >
+        setting,
+      </if>
+      <if test="addTime != null" >
+        add_time,
+      </if>
+      <if test="addUser != null" >
+        add_user,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="updateUser != null" >
+        update_user,
+      </if>
+      <if test="maxSuspendTimeout != null" >
+        max_suspend_timeout,
+      </if>
+      <if test="maxSuspendCnt != null" >
+        max_suspend_cnt,
+      </if>
+      <if test="suspendResult != null" >
+        suspend_result,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="category != null" >
+        #{category,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="enabled != null" >
+        #{enabled,jdbcType=TINYINT},
+      </if>
+      <if test="priority != null" >
+        #{priority,jdbcType=INTEGER},
+      </if>
+      <if test="handler != null" >
+        #{handler,jdbcType=VARCHAR},
+      </if>
+      <if test="rejectReasonCode != null" >
+        #{rejectReasonCode,jdbcType=VARCHAR},
+      </if>
+      <if test="setting != null" >
+        #{setting,jdbcType=VARCHAR},
+      </if>
+      <if test="addTime != null" >
+        #{addTime,jdbcType=BIGINT},
+      </if>
+      <if test="addUser != null" >
+        #{addUser,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=BIGINT},
+      </if>
+      <if test="updateUser != null" >
+        #{updateUser,jdbcType=BIGINT},
+      </if>
+      <if test="maxSuspendTimeout != null" >
+        #{maxSuspendTimeout,jdbcType=BIGINT},
+      </if>
+      <if test="maxSuspendCnt != null" >
+        #{maxSuspendCnt,jdbcType=INTEGER},
+      </if>
+      <if test="suspendResult != null" >
+        #{suspendResult,jdbcType=TINYINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.risk.controller.service.entity.AdmissionRule" >
+    update risk_decision_rule
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="category != null" >
+        category = #{category,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="enabled != null" >
+        enabled = #{enabled,jdbcType=TINYINT},
+      </if>
+      <if test="priority != null" >
+        priority = #{priority,jdbcType=INTEGER},
+      </if>
+      <if test="handler != null" >
+        handler = #{handler,jdbcType=VARCHAR},
+      </if>
+      <if test="rejectReasonCode != null" >
+        reject_reason_code = #{rejectReasonCode,jdbcType=VARCHAR},
+      </if>
+      <if test="setting != null" >
+        setting = #{setting,jdbcType=VARCHAR},
+      </if>
+      <if test="addTime != null" >
+        add_time = #{addTime,jdbcType=BIGINT},
+      </if>
+      <if test="addUser != null" >
+        add_user = #{addUser,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=BIGINT},
+      </if>
+      <if test="updateUser != null" >
+        update_user = #{updateUser,jdbcType=BIGINT},
+      </if>
+      <if test="maxSuspendTimeout != null" >
+        max_suspend_timeout = #{maxSuspendTimeout,jdbcType=BIGINT},
+      </if>
+      <if test="maxSuspendCnt != null" >
+        max_suspend_cnt = #{maxSuspendCnt,jdbcType=INTEGER},
+      </if>
+      <if test="suspendResult != null" >
+        suspend_result = #{suspendResult,jdbcType=TINYINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.risk.controller.service.entity.AdmissionRule" >
+    update risk_decision_rule
+    set name = #{name,jdbcType=VARCHAR},
+      category = #{category,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      enabled = #{enabled,jdbcType=TINYINT},
+      priority = #{priority,jdbcType=INTEGER},
+      handler = #{handler,jdbcType=VARCHAR},
+      reject_reason_code = #{rejectReasonCode,jdbcType=VARCHAR},
+      setting = #{setting,jdbcType=VARCHAR},
+      add_time = #{addTime,jdbcType=BIGINT},
+      add_user = #{addUser,jdbcType=BIGINT},
+      update_time = #{updateTime,jdbcType=BIGINT},
+      update_user = #{updateUser,jdbcType=BIGINT},
+      max_suspend_timeout = #{maxSuspendTimeout,jdbcType=BIGINT},
+      max_suspend_cnt = #{maxSuspendCnt,jdbcType=INTEGER},
+      suspend_result = #{suspendResult,jdbcType=TINYINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <select id="getByRuleId" resultMap="BaseResultMap">
+    select * from risk_decision_rule where enabled=1 and id=#{0}
+  </select>
+</mapper>
