@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="risk_control_service_common" />
+        <module name="risk_control_service_dao" />
+        <module name="risk_control_service_entity" />
+        <module name="risk_control_service_mongo" />
+        <module name="risk_control_service_service" />
+        <module name="risk_control_service_web" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="risk_control_service_common" target="1.8" />
+      <module name="risk_control_service_dao" target="1.8" />
+      <module name="risk_control_service_entity" target="1.8" />
+      <module name="risk_control_service_mongo" target="1.8" />
+      <module name="risk_control_service_parent" target="1.8" />
+      <module name="risk_control_service_service" target="1.8" />
+      <module name="risk_control_service_web" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>
