@@ -75,6 +75,7 @@ public class ModelServiceImpl implements ModelService {
     }
 
     @Override
+    @Async
     public void modelLearn() {
         // 查询订单
         List<Map<String, Object>> list = robotResultDao.queryRepayOrder();
@@ -202,6 +203,7 @@ public class ModelServiceImpl implements ModelService {
     }
 
     @Override
+    @Async
     public List<Map<String, Object>> runModelBySql(String sql) {
         try {
             return robotResultDao.runModelBySql(sql);
