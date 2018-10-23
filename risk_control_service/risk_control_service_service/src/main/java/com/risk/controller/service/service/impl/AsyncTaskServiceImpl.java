@@ -226,7 +226,7 @@ public class AsyncTaskServiceImpl {
                 // 该规则是否未执行过
                 boolean isNoExec = request.getResultDetailMap() == null ? true : !request.getResultDetailMap().containsKey(rule.getId());
 
-                AdmissionRuleDTO ruleDto = this.fromAdmissionRule(rule);
+                AdmissionRuleDTO ruleDto = AdmissionRuleDTO.fromAdmissionRule(rule);
                 String handler = ruleDto.getHandler();
                 if (StringUtils.isEmpty(handler)) {
                     continue;
@@ -376,46 +376,6 @@ public class AsyncTaskServiceImpl {
         ret.setManualCount(manualCount);
         ret.setSuspendCount(suspentCount);
         ret.setResultByRuleResult();
-        return ret;
-    }
-
-
-    private AdmissionRuleDTO fromAdmissionRule(AdmissionRule rule) {
-        if (null == rule) {
-            return null;
-        }
-        AdmissionRuleDTO ret = new AdmissionRuleDTO();
-        ret.setId(rule.getId());
-        ret.setName(rule.getName());
-        ret.setCategory(rule.getCategory());
-        ret.setHandler(rule.getHandler());
-
-        ret.setDescription(rule.getDescription());
-        ret.setRejectReasonCode(rule.getRejectReasonCode()); // 拒绝原因编码
-        ret.setPriority(rule.getPriority());
-        ret.setEnabled(rule.getEnabled());
-
-        ret.setAddTime(rule.getAddTime());
-        ret.setUpdateTime(rule.getUpdateTime());
-        ret.setAddUser(rule.getAddUser());
-        ret.setUpdateUser(rule.getUpdateUser());
-        //挂起数据
-        ret.setMaxSuspendCnt(rule.getMaxSuspendCnt());
-        ret.setMaxSuspendTimeout(rule.getMaxSuspendTimeout());
-        ret.setSuspendResult(rule.getSuspendResult());
-        ret.setRobotAction(rule.getRobotAction()); // 评分动作: 1-执行评分, 2-跳过评分 在组与规则映射表中定义
-
-        if (StringUtils.isNotEmpty(rule.getSetting())) {
-            Map<String, String> st = new HashMap<String, String>();
-            ret.setSetting(st);
-
-            JSONObject json = JSON.parseObject(rule.getSetting());
-            Set<Map.Entry<String, Object>> set = json.entrySet();
-            for (Map.Entry<String, Object> item : set) {
-                st.put(item.getKey(), item.getValue() == null ? null : item.getValue().toString());
-            }
-        }
-
         return ret;
     }
 

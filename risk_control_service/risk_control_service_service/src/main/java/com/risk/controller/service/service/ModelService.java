@@ -1,5 +1,6 @@
 package com.risk.controller.service.service;
 
+import java.util.List;
 import java.util.Map;
 
 public interface ModelService {
@@ -44,4 +45,12 @@ public interface ModelService {
      * @return
      */
     Map<String, Object> getCallAndCalledByDay(String nid, Long applyTime, Integer day);
+
+    /**
+     * 通过sql注入动态查询nid列表
+     *
+     * @param sql
+     * @return
+     */
+    List<Map<String, Object>> runModelBySql(String sql);
 }
