@@ -83,4 +83,12 @@
             WHERE a.contacts_phone = b.contacts_phone
         ) c
     </select>
+
+    <select id="getRepeatPersons" resultType="int" parameterType="map">
+        SELECT COUNT(1) FROM (
+        SELECT c1.nid,c1.name,c1.contacts_phone,COUNT(DISTINCT NAME) AS repeatNum FROM `client_contact` c1
+        WHERE nid = #{nid} AND  LENGTH(contacts_phone) = 11 AND contacts_phone LIKE '1%'
+        GROUP BY c1.contacts_phone
+        ) t WHERE t.repeatNum > #{repeatNum}
+    </select>
 </mapper>

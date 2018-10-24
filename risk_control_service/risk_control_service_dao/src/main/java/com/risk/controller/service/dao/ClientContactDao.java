@@ -11,4 +11,7 @@ public interface ClientContactDao {
     Map<String, Object> getCallNumByDay(Map<String, Object> map);
 
     Map<String, Object> getCallAndCalledByDay(Map<String, Object> map);
+
+    int getRepeatPersons(Map<String, Object> map);
+
 }

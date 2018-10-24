@@ -23,7 +23,8 @@ public class DataOrderMappingServiceImpl implements DataOrderMappingService {
         mapping.setNid(nid);
         return dataOrderMappingDao.queryLastOne(mapping);
     }
-    
+
+    @Override
     public DataOrderMapping getLastOneByNid(String nid) {
         return dataOrderMappingDao.queryLastOneByNid(nid);
     }

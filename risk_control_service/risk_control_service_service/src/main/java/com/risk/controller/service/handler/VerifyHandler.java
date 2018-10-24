@@ -51,7 +51,8 @@ public class VerifyHandler implements AdmissionHandler {
     private BlacklistMacDao blacklistMacDao;
     @Resource
     private BlacklistIdcardDao blacklistIdcardDao;
-
+    @Resource
+    private ClientContactDao clientContactDao;
     @Resource
     private DataBaseUtils dataBaseUtils;
     @Resource
@@ -2197,6 +2198,46 @@ public class VerifyHandler implements AdmissionHandler {
             log.error("[决策校验-互相通话校验异常]：单号：{}", request.getNid(), e);
             result.setResult(AdmissionResultDTO.RESULT_EXCEPTIONAL);
             result.setData("生成并获取互通记录异常");
+            return result;
+        }
+    }
+
+    /**
+     * 1058 7天内，0次互相通话拒绝
+     */
+    public AdmissionResultDTO verifyRepeatContactPhone(DecisionHandleRequest request, AdmissionRuleDTO rule) {
+        AdmissionResultDTO result = new AdmissionResultDTO();
+        if (null == rule
+                || !rule.getSetting().containsKey("repeatPerson")
+                || !rule.getSetting().containsKey("repeatNum")) {
+
+            result.setResult(AdmissionResultDTO.RESULT_SKIP);
+            result.setData("规则为空，跳过");
+            return result;
+        }
+
+        try {
+
+            Integer repeatPerson = Integer.valueOf(rule.getSetting().get("repeatPerson"));//出现重复的人数
+            Integer repeatNum = Integer.valueOf(rule.getSetting().get("repeatNum"));// 单个号码重复次数
+
+            Map param = new HashMap();
+            param.put("repeatNum", repeatNum);
+            param.put("nid", request.getNid());
+            int repeatPersonCur = clientContactDao.getRepeatPersons(param);
+
+            // 校验
+            if (repeatPerson.intValue() <= repeatPersonCur) {
+                result.setResult(AdmissionResultDTO.RESULT_REJECTED);
+                return result;
+            }
+            result.setResult(AdmissionResultDTO.RESULT_APPROVED);
+            return result;
+
+        } catch (Exception e) {
+            log.error("[决策校验-同一联系人重复次数校验校验异常]：单号：{}", request.getNid(), e);
+            result.setResult(AdmissionResultDTO.RESULT_EXCEPTIONAL);
+            result.setData("同一联系人重复次数校验失败");
             return result;
         }
     }
