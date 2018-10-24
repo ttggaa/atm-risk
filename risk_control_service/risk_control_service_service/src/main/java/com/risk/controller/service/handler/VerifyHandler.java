@@ -2163,7 +2163,7 @@ public class VerifyHandler implements AdmissionHandler {
     }
 
     /**
-     * 7天内，0次互相通话拒绝
+     * 1058 7天内，0次互相通话拒绝
      */
     public AdmissionResultDTO verifyCallsEach(DecisionHandleRequest request, AdmissionRuleDTO rule) {
         AdmissionResultDTO result = new AdmissionResultDTO();
@@ -2176,31 +2176,28 @@ public class VerifyHandler implements AdmissionHandler {
             return result;
         }
 
-        Integer ruleNum = null;
-        Integer ruleDay = null;
-        Integer userCalledNum = null;
         try {
             // 保存基础数据
             operatorService.saveAllOperator(request.getNid());
             // 获取天数通话限制
-            ruleNum = Integer.valueOf(rule.getSetting().get("callNum"));
-            ruleDay = Integer.valueOf(rule.getSetting().get("callDay"));
-            userCalledNum = operatorService.robotCallAndCalledNum7(request.getNid(),request.getApplyTime(), ruleDay);
+            Integer ruleNum = Integer.valueOf(rule.getSetting().get("callNum"));
+            Integer ruleDay = Integer.valueOf(rule.getSetting().get("callDay"));
+            Integer userCalledNum = operatorService.robotCallAndCalledNum7(request.getNid(), request.getApplyTime(), ruleDay);
+            result.setData(userCalledNum);
+
+            // 校验
+            if (ruleNum.compareTo(userCalledNum) >= 0) {
+                result.setResult(AdmissionResultDTO.RESULT_REJECTED);
+                return result;
+            }
+            result.setResult(AdmissionResultDTO.RESULT_APPROVED);
+            return result;
+
         } catch (Exception e) {
             log.error("[决策校验-互相通话校验异常]：单号：{}", request.getNid(), e);
-            result.setResult(AdmissionResultDTO.RESULT_SUSPEND);
+            result.setResult(AdmissionResultDTO.RESULT_EXCEPTIONAL);
             result.setData("生成并获取互通记录异常");
             return result;
         }
-        // 校验
-        if (ruleNum >= userCalledNum) {
-            result.setResult(AdmissionResultDTO.RESULT_REJECTED);
-            result.setData(userCalledNum);
-            return result;
-        }
-
-        result.setData(userCalledNum);
-        result.setResult(AdmissionResultDTO.RESULT_APPROVED);
-        return result;
     }
 }
