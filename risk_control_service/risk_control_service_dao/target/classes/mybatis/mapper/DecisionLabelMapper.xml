@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.risk.controller.service.dao.DecisionLabelDao" >
+  <resultMap id="BaseResultMap" type="com.risk.controller.service.entity.DecisionLabel" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="short_name" property="shortName" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="enabled" property="enabled" jdbcType="TINYINT" />
+    <result column="merchant_id" property="merchantId" jdbcType="BIGINT" />
+    <result column="add_time" property="addTime" jdbcType="BIGINT" />
+    <result column="add_user" property="addUser" jdbcType="BIGINT" />
+    <result column="update_time" property="updateTime" jdbcType="BIGINT" />
+    <result column="update_user" property="updateUser" jdbcType="BIGINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, short_name, name, code, remark, enabled, merchant_id, add_time, add_user, update_time, 
+    update_user
+  </sql>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from risk_decision_label
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+
+  <select id="getByMerchantIdAndCode" resultMap="BaseResultMap" parameterType="com.risk.controller.service.entity.DecisionLabel" >
+    select
+      <include refid="Base_Column_List" />
+    from risk_decision_label
+    where code = #{code} and merchant_id = #{merchantId}
+    limit 1
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from risk_decision_label
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.risk.controller.service.entity.DecisionLabel" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into risk_decision_label (short_name, name, code, 
+      remark, enabled, merchant_id, 
+      add_time, add_user, update_time, 
+      update_user)
+    values (#{shortName,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, 
+      #{remark,jdbcType=VARCHAR}, #{enabled,jdbcType=TINYINT}, #{merchantId,jdbcType=BIGINT}, 
+      #{addTime,jdbcType=BIGINT}, #{addUser,jdbcType=BIGINT}, #{updateTime,jdbcType=BIGINT}, 
+      #{updateUser,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.risk.controller.service.entity.DecisionLabel" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into risk_decision_label
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="shortName != null" >
+        short_name,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="code != null" >
+        code,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+      <if test="enabled != null" >
+        enabled,
+      </if>
+      <if test="merchantId != null" >
+        merchant_id,
+      </if>
+      <if test="addTime != null" >
+        add_time,
+      </if>
+      <if test="addUser != null" >
+        add_user,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="updateUser != null" >
+        update_user,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="shortName != null" >
+        #{shortName,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null" >
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="enabled != null" >
+        #{enabled,jdbcType=TINYINT},
+      </if>
+      <if test="merchantId != null" >
+        #{merchantId,jdbcType=BIGINT},
+      </if>
+      <if test="addTime != null" >
+        #{addTime,jdbcType=BIGINT},
+      </if>
+      <if test="addUser != null" >
+        #{addUser,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=BIGINT},
+      </if>
+      <if test="updateUser != null" >
+        #{updateUser,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.risk.controller.service.entity.DecisionLabel" >
+    update risk_decision_label
+    <set >
+      <if test="shortName != null" >
+        short_name = #{shortName,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null" >
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="enabled != null" >
+        enabled = #{enabled,jdbcType=TINYINT},
+      </if>
+      <if test="merchantId != null" >
+        merchant_id = #{merchantId,jdbcType=BIGINT},
+      </if>
+      <if test="addTime != null" >
+        add_time = #{addTime,jdbcType=BIGINT},
+      </if>
+      <if test="addUser != null" >
+        add_user = #{addUser,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=BIGINT},
+      </if>
+      <if test="updateUser != null" >
+        update_user = #{updateUser,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.risk.controller.service.entity.DecisionLabel" >
+    update risk_decision_label
+    set short_name = #{shortName,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      code = #{code,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      enabled = #{enabled,jdbcType=TINYINT},
+      merchant_id = #{merchantId,jdbcType=BIGINT},
+      add_time = #{addTime,jdbcType=BIGINT},
+      add_user = #{addUser,jdbcType=BIGINT},
+      update_time = #{updateTime,jdbcType=BIGINT},
+      update_user = #{updateUser,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

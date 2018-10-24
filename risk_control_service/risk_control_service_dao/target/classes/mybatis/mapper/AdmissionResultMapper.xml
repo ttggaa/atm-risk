@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.risk.controller.service.dao.AdmissionResultDao">
+    <resultMap id="getMap" type="com.risk.controller.service.entity.AdmissionResult">
+    </resultMap>
+
+    <sql id="Base_Column_List" >
+        id, nid, result, time_cost, label_group_id, stop_stage, label_time_cost, fail_fast,
+        suspend_time, suspend_cnt, suspend_stage, suspend_rule_id, robot_action, add_time,
+        add_user, update_time, update_user
+    </sql>
+
+    <select id="selectByPrimaryKey" resultMap="getMap" parameterType="java.lang.Long" >
+        select
+        <include refid="Base_Column_List" />
+        from risk_decision_result
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <select id="getLastOneByNid" resultMap="getMap" parameterType="com.risk.controller.service.entity.AdmissionResult" >
+        select
+        <include refid="Base_Column_List" />
+        from risk_decision_result
+        where nid = #{nid} order by id desc limit 1
+    </select>
+
+    <!--根据nid查询-->
+    <select id="getResultLastOneByNid" resultMap="getMap">
+        select
+        <include refid="Base_Column_List" />
+        from risk_decision_result
+        where nid = #{nid} order by id desc limit 1
+    </select>
+
+    <select id="getByNid" resultMap="getMap" parameterType="com.risk.controller.service.entity.AdmissionResult" >
+        select
+        <include refid="Base_Column_List" />
+        from risk_decision_result
+        where nid = #{nid} order by id desc limit 1
+    </select>
+
+    <select id="getRejectReason" resultType="String" parameterType="Long">
+        select c.reject_reason_code from risk_decision_result a right join risk_decision_result_detail b on b.result_id = a.id left join risk_decision_rule c on c.id = b.rule_id where a.id = #{resultId} and b.result=2;
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+        delete from risk_decision_result
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <insert id="insert" parameterType="com.risk.controller.service.entity.AdmissionResult" >
+        <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into risk_decision_result (nid, result, time_cost,
+        label_group_id, stop_stage, label_time_cost,
+        fail_fast, suspend_time, suspend_cnt,
+        suspend_stage, suspend_rule_id, robot_action,
+        add_time, add_user, update_time,
+        update_user)
+        values (#{nid,jdbcType=VARCHAR}, #{result,jdbcType=TINYINT}, #{timeCost,jdbcType=BIGINT},
+        #{labelGroupId,jdbcType=BIGINT}, #{stopStage,jdbcType=INTEGER}, #{labelTimeCost,jdbcType=BIGINT},
+        #{failFast,jdbcType=TINYINT}, #{suspendTime,jdbcType=BIGINT}, #{suspendCnt,jdbcType=INTEGER},
+        #{suspendStage,jdbcType=INTEGER}, #{suspendRuleId,jdbcType=BIGINT}, #{robotAction,jdbcType=TINYINT},
+        #{addTime,jdbcType=BIGINT}, #{addUser,jdbcType=BIGINT}, #{updateTime,jdbcType=BIGINT},
+        #{updateUser,jdbcType=BIGINT})
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.risk.controller.service.entity.AdmissionResult" >
+        <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into risk_decision_result
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="nid != null" >
+                nid,
+            </if>
+            <if test="result != null" >
+                result,
+            </if>
+            <if test="timeCost != null" >
+                time_cost,
+            </if>
+            <if test="labelGroupId != null" >
+                label_group_id,
+            </if>
+            <if test="stopStage != null" >
+                stop_stage,
+            </if>
+            <if test="labelTimeCost != null" >
+                label_time_cost,
+            </if>
+            <if test="failFast != null" >
+                fail_fast,
+            </if>
+            <if test="suspendTime != null" >
+                suspend_time,
+            </if>
+            <if test="suspendCnt != null" >
+                suspend_cnt,
+            </if>
+            <if test="suspendStage != null" >
+                suspend_stage,
+            </if>
+            <if test="suspendRuleId != null" >
+                suspend_rule_id,
+            </if>
+            <if test="robotAction != null" >
+                robot_action,
+            </if>
+            <if test="addTime != null" >
+                add_time,
+            </if>
+            <if test="addUser != null" >
+                add_user,
+            </if>
+            <if test="updateTime != null" >
+                update_time,
+            </if>
+            <if test="updateUser != null" >
+                update_user,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="nid != null" >
+                #{nid,jdbcType=VARCHAR},
+            </if>
+            <if test="result != null" >
+                #{result,jdbcType=TINYINT},
+            </if>
+            <if test="timeCost != null" >
+                #{timeCost,jdbcType=BIGINT},
+            </if>
+            <if test="labelGroupId != null" >
+                #{labelGroupId,jdbcType=BIGINT},
+            </if>
+            <if test="stopStage != null" >
+                #{stopStage,jdbcType=INTEGER},
+            </if>
+            <if test="labelTimeCost != null" >
+                #{labelTimeCost,jdbcType=BIGINT},
+            </if>
+            <if test="failFast != null" >
+                #{failFast,jdbcType=TINYINT},
+            </if>
+            <if test="suspendTime != null" >
+                #{suspendTime,jdbcType=BIGINT},
+            </if>
+            <if test="suspendCnt != null" >
+                #{suspendCnt,jdbcType=INTEGER},
+            </if>
+            <if test="suspendStage != null" >
+                #{suspendStage,jdbcType=INTEGER},
+            </if>
+            <if test="suspendRuleId != null" >
+                #{suspendRuleId,jdbcType=BIGINT},
+            </if>
+            <if test="robotAction != null" >
+                #{robotAction,jdbcType=TINYINT},
+            </if>
+            <if test="addTime != null" >
+                #{addTime,jdbcType=BIGINT},
+            </if>
+            <if test="addUser != null" >
+                #{addUser,jdbcType=BIGINT},
+            </if>
+            <if test="updateTime != null" >
+                #{updateTime,jdbcType=BIGINT},
+            </if>
+            <if test="updateUser != null" >
+                #{updateUser,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.risk.controller.service.entity.AdmissionResult" >
+        update risk_decision_result
+        <set >
+            <if test="nid != null" >
+                nid = #{nid,jdbcType=VARCHAR},
+            </if>
+            <if test="result != null" >
+                result = #{result,jdbcType=TINYINT},
+            </if>
+            <if test="timeCost != null" >
+                time_cost = #{timeCost,jdbcType=BIGINT},
+            </if>
+            <if test="labelGroupId != null" >
+                label_group_id = #{labelGroupId,jdbcType=BIGINT},
+            </if>
+            <if test="stopStage != null" >
+                stop_stage = #{stopStage,jdbcType=INTEGER},
+            </if>
+            <if test="labelTimeCost != null" >
+                label_time_cost = #{labelTimeCost,jdbcType=BIGINT},
+            </if>
+            <if test="failFast != null" >
+                fail_fast = #{failFast,jdbcType=TINYINT},
+            </if>
+            <if test="suspendTime != null" >
+                suspend_time = #{suspendTime,jdbcType=BIGINT},
+            </if>
+            <if test="suspendCnt != null" >
+                suspend_cnt = #{suspendCnt,jdbcType=INTEGER},
+            </if>
+            <if test="suspendStage != null" >
+                suspend_stage = #{suspendStage,jdbcType=INTEGER},
+            </if>
+            <if test="suspendRuleId != null" >
+                suspend_rule_id = #{suspendRuleId,jdbcType=BIGINT},
+            </if>
+            <if test="robotAction != null" >
+                robot_action = #{robotAction,jdbcType=TINYINT},
+            </if>
+            <if test="addTime != null" >
+                add_time = #{addTime,jdbcType=BIGINT},
+            </if>
+            <if test="addUser != null" >
+                add_user = #{addUser,jdbcType=BIGINT},
+            </if>
+            <if test="updateTime != null" >
+                update_time = #{updateTime,jdbcType=BIGINT},
+            </if>
+            <if test="updateUser != null" >
+                update_user = #{updateUser,jdbcType=BIGINT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateByPrimaryKey" parameterType="com.risk.controller.service.entity.AdmissionResult" >
+        update risk_decision_result
+        set nid = #{nid,jdbcType=VARCHAR},
+        result = #{result,jdbcType=TINYINT},
+        time_cost = #{timeCost,jdbcType=BIGINT},
+        label_group_id = #{labelGroupId,jdbcType=BIGINT},
+        stop_stage = #{stopStage,jdbcType=INTEGER},
+        label_time_cost = #{labelTimeCost,jdbcType=BIGINT},
+        fail_fast = #{failFast,jdbcType=TINYINT},
+        suspend_time = #{suspendTime,jdbcType=BIGINT},
+        suspend_cnt = #{suspendCnt,jdbcType=INTEGER},
+        suspend_stage = #{suspendStage,jdbcType=INTEGER},
+        suspend_rule_id = #{suspendRuleId,jdbcType=BIGINT},
+        robot_action = #{robotAction,jdbcType=TINYINT},
+        add_time = #{addTime,jdbcType=BIGINT},
+        add_user = #{addUser,jdbcType=BIGINT},
+        update_time = #{updateTime,jdbcType=BIGINT},
+        update_user = #{updateUser,jdbcType=BIGINT}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+
+    <select id="queryNeedReRun" resultType="string">
+        SELECT nid
+        FROM risk_decision_result
+        WHERE result in (0,3,99)
+        AND add_time <![CDATA[ <= ]]> UNIX_TIMESTAMP()*1000-300000
+        AND add_time >= UNIX_TIMESTAMP()*1000-172800000
+        order by id asc
+        limit 30
+    </select>
+
+    <select id="getAllByCondition" resultType="string" parameterType="com.risk.controller.service.entity.AdmissionResult">
+        SELECT nid FROM risk_decision_result
+        <where>
+            <if test="null!=nid and ''!=nid">
+                and nid = #{nid}
+            </if>
+            <if test="null!=result and 0!=result">
+                and result = #{result}
+            </if>
+        </where>
+    </select>
+</mapper>

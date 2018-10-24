@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.risk.controller.service.dao.RobotRuleDetailDao">
+    <resultMap id="getMap" type="com.risk.controller.service.entity.RobotRuleDetail">
+    </resultMap>
+    <select id="getDetailByCondition" resultMap="getMap">
+        SELECT * from risk_robot_rule_detail WHERE rule_id=#{0} and enabled = 1 AND min_scope <![CDATA[ <= ]]> #{1} AND
+        max_scope > #{1} ORDER BY id DESC limit 1
+    </select>
+    <select id="getAllEnabled" resultMap="getMap">
+        SELECT * from risk_robot_rule_detail WHERE enabled = 1
+    </select>
+    <update id="updateAllSetZero">
+        update risk_robot_rule_detail set total_cnt=0,good_cnt=0,overdue_cnt=0
+    </update>
+
+    <update id="updateBatchById" parameterType="list">
+        update risk_robot_rule_detail set
+
+        total_cnt=
+        <foreach collection="list" item="item" index="index" separator=" " open="case id" close="end,">
+            when #{item.id} then #{item.totalCnt}
+        </foreach>
+
+        good_cnt=
+        <foreach collection="list" item="item" index="index" separator=" " open="case id" close="end,">
+            when #{item.id} then #{item.goodCnt}
+        </foreach>
+
+        overdue_cnt=
+        <foreach collection="list" item="item" index="index" separator=" " open="case id" close="end,">
+            when #{item.id} then #{item.overdueCnt}
+        </foreach>
+
+        good_percent=
+        <foreach collection="list" item="item" index="index" separator=" " open="case id" close="end,">
+            when #{item.id} then #{item.goodPercent}
+        </foreach>
+
+        overdue_percent=
+        <foreach collection="list" item="item" index="index" separator=" " open="case id" close="end">
+            when #{item.id} then #{item.overduePercent}
+        </foreach>
+
+        where id in
+        <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+            #{item.id}
+        </foreach>
+    </update>
+</mapper>

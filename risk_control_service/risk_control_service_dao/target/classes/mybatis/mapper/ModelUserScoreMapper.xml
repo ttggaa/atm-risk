@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.risk.controller.service.dao.ModelUserScoreDao">
+    <resultMap id="getMap" type="com.risk.controller.service.entity.ModelUserScore">
+    </resultMap>
+
+    <insert id="saveBatch" parameterType="list">
+        INSERT INTO `risk_model_user_score` (
+        `user_id`, `nid`, `rule_id`, `score`,`sub_score`, `add_time`) VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.userId}, #{item.nid}, #{item.ruleId},
+            #{item.score},#{item.subScore},SYSDATE()
+            )
+        </foreach>
+        on duplicate key update
+        score = VALUES(score), sub_score = VALUES(sub_score)
+        </insert>
+</mapper>

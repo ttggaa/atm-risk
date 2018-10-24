@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.risk.controller.service.dao.ModelOperatorReportDao">
+    <resultMap id="getMap" type="com.risk.controller.service.entity.ModelOperatorReport">
+    </resultMap>
+
+    <insert id="saveBatch" parameterType="list">
+        INSERT INTO `risk_model_operator_report`
+        (`user_id`, `nid`, `date`,
+        `all_call_num_in`, `all_call_num_out`, `all_call_num_un`, `all_call_time_in`, `all_call_time_out`, `all_call_time_un`,
+        `main_call_num_in`, `main_call_num_out`, `main_call_num_un`, `main_call_time_in`, `main_call_time_out`, `main_call_time_un`,
+        `all_sms_num_in`, `all_sms_num_out`, `all_sms_num_un`, `contact_sms_num_in`, `contact_sms_num_out`, `contact_sms_num_un`,
+        `add_time`,`update_time`,
+        `cnt_call_num_in`, `cnt_call_num_out`, `cnt_call_num_un`, `cnt_call_time_in`, `cnt_call_time_out`, `cnt_call_time_un`)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.userId}, #{item.nid}, #{item.date},
+            #{item.allCallNumIn},#{item.allCallNumOut},#{item.allCallNumUn}, #{item.allCallTimeIn}, #{item.allCallTimeOut}, #{item.allCallTimeUn},
+            #{item.mainCallNumIn}, #{item.mainCallNumOut}, #{item.mainCallNumUn}, #{item.mainCallTimeIn}, #{item.mainCallTimeOut}, #{item.mainCallTimeUn},
+            #{item.allSmsNumIn}, #{item.allSmsNumOut}, #{item.allSmsNumUn}, #{item.contactSmsNumIn}, #{item.contactSmsNumOut}, #{item.contactSmsNumUn},
+            SYSDATE(),SYSDATE(),
+            #{item.cntCallNumIn},#{item.cntCallNumOut},#{item.cntCallNumUn},#{item.cntCallTimeIn},#{item.cntCallTimeOut},#{item.cntCallTimeUn}
+            )
+        </foreach>
+        on duplicate key update
+        all_call_num_in = VALUES(all_call_num_in), all_call_num_out = VALUES(all_call_num_out), all_call_num_un = VALUES(all_call_num_un), all_call_time_in = VALUES(all_call_time_in), all_call_time_out = VALUES(all_call_time_out), all_call_time_un = VALUES(all_call_time_un),
+        main_call_num_in = VALUES(main_call_num_in), main_call_num_out = VALUES(main_call_num_out), main_call_num_un = VALUES(main_call_num_un), main_call_time_in = VALUES(main_call_time_in) , main_call_time_out = VALUES(main_call_time_out), main_call_time_un = VALUES(main_call_time_un),
+        all_sms_num_in = VALUES(all_sms_num_in), all_sms_num_out = VALUES(all_sms_num_out), all_sms_num_un = VALUES(all_sms_num_un), contact_sms_num_in = VALUES(contact_sms_num_in), contact_sms_num_out = VALUES(contact_sms_num_out), contact_sms_num_un = VALUES(contact_sms_num_un),
+        update_time=SYSDATE(),
+        cnt_call_num_in = VALUES(cnt_call_num_in), cnt_call_num_out = VALUES(cnt_call_num_out), cnt_call_num_un = VALUES(cnt_call_num_un), cnt_call_time_in = VALUES(cnt_call_time_in), cnt_call_time_out = VALUES(cnt_call_time_out), cnt_call_time_un = VALUES(cnt_call_time_un)
+    </insert>
+</mapper>

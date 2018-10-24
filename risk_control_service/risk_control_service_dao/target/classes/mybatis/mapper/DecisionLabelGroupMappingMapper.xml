@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.risk.controller.service.dao.DecisionLabelGroupMappingDao" >
+  <resultMap id="BaseResultMap" type="com.risk.controller.service.entity.DecisionLabelGroupMapping" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="group_id" property="groupId" jdbcType="BIGINT" />
+    <result column="label_id" property="labelId" jdbcType="BIGINT" />
+    <result column="enabled" property="enabled" jdbcType="TINYINT" />
+    <result column="add_time" property="addTime" jdbcType="BIGINT" />
+    <result column="add_user" property="addUser" jdbcType="BIGINT" />
+    <result column="update_time" property="updateTime" jdbcType="BIGINT" />
+    <result column="update_user" property="updateUser" jdbcType="BIGINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, group_id, label_id, enabled, add_time, add_user, update_time, update_user
+  </sql>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from risk_decision_label_group
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+
+  <select id="getGroupLabelCsv" parameterType="com.risk.controller.service.entity.DecisionLabelGroupMapping" resultType="com.risk.controller.service.dto.DecisionGroupLabelDTO">
+    select group_id groupId, group_concat(label_id) labelIdCsv
+    from risk_decision_label_group_mapping a
+    <where>
+      <if test="enabled != null">
+        and a.enabled = #{enabled}
+      </if>
+      <if test="groupId != null">
+        and a.group_id = #{groupId}
+      </if>
+    </where>
+    group by group_id
+  </select>
+
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from risk_decision_label_group_mapping
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.risk.controller.service.entity.DecisionLabelGroupMapping" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into risk_decision_label_group_mapping (group_id, label_id, enabled,
+      add_time, add_user, update_time, 
+      update_user)
+    values (#{groupId,jdbcType=BIGINT}, #{labelId,jdbcType=BIGINT}, #{enabled,jdbcType=TINYINT}, 
+      #{addTime,jdbcType=BIGINT}, #{addUser,jdbcType=BIGINT}, #{updateTime,jdbcType=BIGINT}, 
+      #{updateUser,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.risk.controller.service.entity.DecisionLabelGroupMapping" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into risk_decision_label_group_mapping
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="groupId != null" >
+        group_id,
+      </if>
+      <if test="labelId != null" >
+        label_id,
+      </if>
+      <if test="enabled != null" >
+        enabled,
+      </if>
+      <if test="addTime != null" >
+        add_time,
+      </if>
+      <if test="addUser != null" >
+        add_user,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="updateUser != null" >
+        update_user,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="groupId != null" >
+        #{groupId,jdbcType=BIGINT},
+      </if>
+      <if test="labelId != null" >
+        #{labelId,jdbcType=BIGINT},
+      </if>
+      <if test="enabled != null" >
+        #{enabled,jdbcType=TINYINT},
+      </if>
+      <if test="addTime != null" >
+        #{addTime,jdbcType=BIGINT},
+      </if>
+      <if test="addUser != null" >
+        #{addUser,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=BIGINT},
+      </if>
+      <if test="updateUser != null" >
+        #{updateUser,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.risk.controller.service.entity.DecisionLabelGroupMapping" >
+    update risk_decision_label_group_mapping
+    <set >
+      <if test="groupId != null" >
+        group_id = #{groupId,jdbcType=BIGINT},
+      </if>
+      <if test="labelId != null" >
+        label_id = #{labelId,jdbcType=BIGINT},
+      </if>
+      <if test="enabled != null" >
+        enabled = #{enabled,jdbcType=TINYINT},
+      </if>
+      <if test="addTime != null" >
+        add_time = #{addTime,jdbcType=BIGINT},
+      </if>
+      <if test="addUser != null" >
+        add_user = #{addUser,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=BIGINT},
+      </if>
+      <if test="updateUser != null" >
+        update_user = #{updateUser,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.risk.controller.service.entity.DecisionLabelGroupMapping" >
+    update risk_decision_label_group_mapping
+    set group_id = #{groupId,jdbcType=BIGINT},
+      label_id = #{labelId,jdbcType=BIGINT},
+      enabled = #{enabled,jdbcType=TINYINT},
+      add_time = #{addTime,jdbcType=BIGINT},
+      add_user = #{addUser,jdbcType=BIGINT},
+      update_time = #{updateTime,jdbcType=BIGINT},
+      update_user = #{updateUser,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

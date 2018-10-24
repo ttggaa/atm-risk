@@ -15,15 +15,14 @@ import com.risk.controller.service.entity.*;
 import com.risk.controller.service.enums.CacheCfgType;
 import com.risk.controller.service.enums.GetCacheModel;
 import com.risk.controller.service.request.DecisionHandleRequest;
-import com.risk.controller.service.service.DecisionBadSmsRuleService;
-import com.risk.controller.service.service.WanshuService;
-import com.risk.controller.service.service.XinyanService;
+import com.risk.controller.service.service.*;
 import com.risk.controller.service.service.impl.LocalCache;
 import com.risk.controller.service.util.AdmissionHandler;
 import com.risk.controller.service.utils.DataBaseUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -63,6 +62,8 @@ public class VerifyHandler implements AdmissionHandler {
     private WanshuService wanshuService;
     @Resource
     private MongoHandler mongoHandler;
+    @Autowired
+    private OperatorService operatorService;
 
     public AdmissionResultDTO handUp(DecisionHandleRequest request, AdmissionRuleDTO rule) {
         AdmissionResultDTO result = new AdmissionResultDTO();
@@ -2161,4 +2162,45 @@ public class VerifyHandler implements AdmissionHandler {
         }
     }
 
+    /**
+     * 7天内，0次互相通话拒绝
+     */
+    public AdmissionResultDTO verifyCallsEach(DecisionHandleRequest request, AdmissionRuleDTO rule) {
+        AdmissionResultDTO result = new AdmissionResultDTO();
+        if (null == rule
+                || !rule.getSetting().containsKey("callNum")
+                || !rule.getSetting().containsKey("callDay")) {
+
+            result.setResult(AdmissionResultDTO.RESULT_SKIP);
+            result.setData("规则为空，跳过");
+            return result;
+        }
+
+        Integer ruleNum = null;
+        Integer ruleDay = null;
+        Integer userCalledNum = null;
+        try {
+            // 保存基础数据
+            operatorService.saveAllOperator(request.getNid());
+            // 获取天数通话限制
+            ruleNum = Integer.valueOf(rule.getSetting().get("callNum"));
+            ruleDay = Integer.valueOf(rule.getSetting().get("callDay"));
+            userCalledNum = operatorService.robotCallAndCalledNum7(request.getNid(),request.getApplyTime(), ruleDay);
+        } catch (Exception e) {
+            log.error("[决策校验-互相通话校验异常]：单号：{}", request.getNid(), e);
+            result.setResult(AdmissionResultDTO.RESULT_SUSPEND);
+            result.setData("生成并获取互通记录异常");
+            return result;
+        }
+        // 校验
+        if (ruleNum >= userCalledNum) {
+            result.setResult(AdmissionResultDTO.RESULT_REJECTED);
+            result.setData(userCalledNum);
+            return result;
+        }
+
+        result.setData(userCalledNum);
+        result.setResult(AdmissionResultDTO.RESULT_APPROVED);
+        return result;
+    }
 }

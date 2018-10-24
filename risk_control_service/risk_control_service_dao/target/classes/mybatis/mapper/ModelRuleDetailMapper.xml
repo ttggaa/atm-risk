@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.risk.controller.service.dao.ModelRuleDetailDao">
+    <resultMap id="getMap" type="com.risk.controller.service.entity.ModelRuleDetail">
+    </resultMap>
+    <select id="getAll" resultType="com.risk.controller.service.entity.ModelRuleDetail" parameterType="long">
+        SELECT * from risk_model_rule_detail WHERE enabled = 1 and rule_id=#{ruleId}
+    </select>
+</mapper>

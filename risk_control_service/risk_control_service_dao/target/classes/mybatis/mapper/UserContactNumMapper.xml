@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.risk.controller.service.dao.UserContactNumDao">
+    <resultMap id="getMap" type="com.risk.controller.service.entity.UserContactNum">
+    </resultMap>
+
+    <insert id="insert" parameterType="com.risk.controller.service.entity.UserContactNum">
+        INSERT INTO `risk_user_contact_num`
+        ( `user_id`, `nid`,
+        `num_call_in30`, `num_call_in60`, `num_call_in90`, `num_call_in120`, `num_call_in150`, `num_call_in180`,
+        `num_call_out30`, `num_call_out60`, `num_call_out90`, `num_call_out120`, `num_call_out150`, `num_call_out180`,
+        `num_call_un_konw30`, `num_call_un_konw60`, `num_call_un_konw90`, `num_call_un_konw120`, `num_call_un_konw150`, `num_call_un_konw180`,
+        `time_call_in30`, `time_call_in60`, `time_call_in90`, `time_call_in120`, `time_call_in150`, `time_call_in180`,
+        `time_call_out30`, `time_call_out60`, `time_call_out90`, `time_call_out120`, `time_call_out150`, `time_call_out180`,
+        `time_call_un_konw30`, `time_call_un_konw60`, `time_call_un_konw90`, `time_call_un_konw120`, `time_call_un_konw150`,`time_call_un_konw180`,
+        `add_time`)
+        VALUES (#{userId}, #{nid},
+        #{numCallIn30},#{numCallIn60},#{numCallIn90},#{numCallIn120},#{numCallIn150},#{numCallIn180},
+        #{numCallOut30},#{numCallOut60},#{numCallOut90},#{numCallOut120},#{numCallOut150},#{numCallOut180},
+        #{numCallUnKonw30},#{numCallUnKonw60},#{numCallUnKonw90},#{numCallUnKonw120},#{numCallUnKonw150},#{numCallUnKonw180},
+        #{timeCallIn30},#{timeCallIn60},#{timeCallIn90},#{timeCallIn120},#{timeCallIn150},#{timeCallIn180},
+        #{timeCallOut30},#{timeCallOut60},#{timeCallOut90},#{timeCallOut120},#{timeCallOut150},#{timeCallOut180},
+        #{timeCallUnKonw30},#{timeCallUnKonw60},#{timeCallUnKonw90},#{timeCallUnKonw120},#{timeCallUnKonw150},#{timeCallUnKonw180},
+        #{addTime})
+    </insert>
+</mapper>

@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.risk.controller.service.dao.DecisionLabelGroupRuleMappingDao" >
+  <resultMap id="BaseResultMap" type="com.risk.controller.service.entity.DecisionLabelGroupRuleMapping" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="group_id" property="groupId" jdbcType="BIGINT" />
+    <result column="rule_id" property="ruleId" jdbcType="BIGINT" />
+    <result column="priority" property="priority" jdbcType="INTEGER" />
+    <result column="enabled" property="enabled" jdbcType="TINYINT" />
+    <result column="robot_action" property="robotAction" jdbcType="TINYINT" />
+    <result column="add_time" property="addTime" jdbcType="BIGINT" />
+    <result column="add_user" property="addUser" jdbcType="BIGINT" />
+    <result column="update_time" property="updateTime" jdbcType="BIGINT" />
+    <result column="update_user" property="updateUser" jdbcType="BIGINT" />
+    <result column="stage" property="stage" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, group_id, rule_id, priority, enabled, robot_action, add_time, add_user, update_time, 
+    update_user, stage
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from risk_decision_label_group_rule_mapping
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from risk_decision_label_group_rule_mapping
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.risk.controller.service.entity.DecisionLabelGroupRuleMapping" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into risk_decision_label_group_rule_mapping (group_id, rule_id, priority, 
+      enabled, robot_action, add_time, 
+      add_user, update_time, update_user, 
+      stage)
+    values (#{groupId,jdbcType=BIGINT}, #{ruleId,jdbcType=BIGINT}, #{priority,jdbcType=INTEGER}, 
+      #{enabled,jdbcType=TINYINT}, #{robotAction,jdbcType=TINYINT}, #{addTime,jdbcType=BIGINT}, 
+      #{addUser,jdbcType=BIGINT}, #{updateTime,jdbcType=BIGINT}, #{updateUser,jdbcType=BIGINT}, 
+      #{stage,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.risk.controller.service.entity.DecisionLabelGroupRuleMapping" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into risk_decision_label_group_rule_mapping
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="groupId != null" >
+        group_id,
+      </if>
+      <if test="ruleId != null" >
+        rule_id,
+      </if>
+      <if test="priority != null" >
+        priority,
+      </if>
+      <if test="enabled != null" >
+        enabled,
+      </if>
+      <if test="robotAction != null" >
+        robot_action,
+      </if>
+      <if test="addTime != null" >
+        add_time,
+      </if>
+      <if test="addUser != null" >
+        add_user,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="updateUser != null" >
+        update_user,
+      </if>
+      <if test="stage != null" >
+        stage,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="groupId != null" >
+        #{groupId,jdbcType=BIGINT},
+      </if>
+      <if test="ruleId != null" >
+        #{ruleId,jdbcType=BIGINT},
+      </if>
+      <if test="priority != null" >
+        #{priority,jdbcType=INTEGER},
+      </if>
+      <if test="enabled != null" >
+        #{enabled,jdbcType=TINYINT},
+      </if>
+      <if test="robotAction != null" >
+        #{robotAction,jdbcType=TINYINT},
+      </if>
+      <if test="addTime != null" >
+        #{addTime,jdbcType=BIGINT},
+      </if>
+      <if test="addUser != null" >
+        #{addUser,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=BIGINT},
+      </if>
+      <if test="updateUser != null" >
+        #{updateUser,jdbcType=BIGINT},
+      </if>
+      <if test="stage != null" >
+        #{stage,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.risk.controller.service.entity.DecisionLabelGroupRuleMapping" >
+    update risk_decision_label_group_rule_mapping
+    <set >
+      <if test="groupId != null" >
+        group_id = #{groupId,jdbcType=BIGINT},
+      </if>
+      <if test="ruleId != null" >
+        rule_id = #{ruleId,jdbcType=BIGINT},
+      </if>
+      <if test="priority != null" >
+        priority = #{priority,jdbcType=INTEGER},
+      </if>
+      <if test="enabled != null" >
+        enabled = #{enabled,jdbcType=TINYINT},
+      </if>
+      <if test="robotAction != null" >
+        robot_action = #{robotAction,jdbcType=TINYINT},
+      </if>
+      <if test="addTime != null" >
+        add_time = #{addTime,jdbcType=BIGINT},
+      </if>
+      <if test="addUser != null" >
+        add_user = #{addUser,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=BIGINT},
+      </if>
+      <if test="updateUser != null" >
+        update_user = #{updateUser,jdbcType=BIGINT},
+      </if>
+      <if test="stage != null" >
+        stage = #{stage,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.risk.controller.service.entity.DecisionLabelGroupRuleMapping" >
+    update risk_decision_label_group_rule_mapping
+    set group_id = #{groupId,jdbcType=BIGINT},
+      rule_id = #{ruleId,jdbcType=BIGINT},
+      priority = #{priority,jdbcType=INTEGER},
+      enabled = #{enabled,jdbcType=TINYINT},
+      robot_action = #{robotAction,jdbcType=TINYINT},
+      add_time = #{addTime,jdbcType=BIGINT},
+      add_user = #{addUser,jdbcType=BIGINT},
+      update_time = #{updateTime,jdbcType=BIGINT},
+      update_user = #{updateUser,jdbcType=BIGINT},
+      stage = #{stage,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

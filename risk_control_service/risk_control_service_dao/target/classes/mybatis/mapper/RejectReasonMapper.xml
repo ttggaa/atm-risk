@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.risk.controller.service.dao.RejectReasonDao">
+    <resultMap id="getMap" type="com.risk.controller.service.entity.RejectReason">
+    </resultMap>
+
+    <select id="getMaxCloseDays" parameterType="java.util.Set" resultType="int">
+        select max(close_days) from risk_reject_reason where code in
+        <foreach collection="set" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+</mapper>

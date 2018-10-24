@@ -6,14 +6,14 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.risk.controller.service.dto.AdmissionResultDTO;
+import com.risk.controller.service.dto.AdmissionRuleDTO;
+import com.risk.controller.service.handler.VerifyHandler;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
@@ -44,10 +44,13 @@ public class PaixuController {
     @Autowired
     private PaixuServiceImpl paixuServiceImpl;
 
+	@Autowired
+	private VerifyHandler verifyHandler;
+
     /**
      * 
-     * @param param
-     * @param expire
+     * @param
+     * @param
      * @return
      */
     @RequestMapping(value = "api/apply", method = RequestMethod.POST)
@@ -442,4 +445,25 @@ public class PaixuController {
         return paixuServiceImpl.sendPaixu(req, nids);
     }
 
+	@RequestMapping(value = "/test3")
+	@ResponseBody
+	public void verifyXinyanData() {
+		//{"amount":720,"applyTime":1540203002864,"cardId":"350781199007094415","devicePlatform":"android","failFast":1,"isRobot":1,"labelGroupId":1009,"name":"黄陆平","nid":"218102218100294838","productId":1,"robotRequestDTO":{},"userId":168,"userName":"13850900870","userNation":"汉"}
+		DecisionHandleRequest request = new DecisionHandleRequest();
+		request.setNid("218102218100294838");
+		request.setApplyTime(1540203002864L);
+		// {"callNum":"1","callDay":"7"}
+		AdmissionRuleDTO rule = new AdmissionRuleDTO();
+		Map<String,String> set = new HashMap<>();
+		set.put("callNum","1");
+		set.put("callDay","7");
+		rule.setSetting(set);
+
+		AdmissionResultDTO record = verifyHandler.verifyCallsEach(request, rule);
+
+		System.out.println("===========================");
+		//{"approvedCount":0,"data":0,"exceptionalCount":0,"finalApprovedCount":0,"manualCount":0,"rejectedCount":0,"result":2,"suspendCount":0}
+		System.out.println(JSONObject.toJSONString(record));
+		System.out.println("===========================");
+	}
 }
