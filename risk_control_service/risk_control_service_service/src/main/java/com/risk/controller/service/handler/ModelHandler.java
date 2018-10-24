@@ -171,7 +171,6 @@ public class ModelHandler implements AdmissionHandler {
                 return result;
             }
 
-
             if (allCallTime == 0 || allCallNum == 0 || cntCallTime == 0 || cntCallNum == 0) {
                 result.setData("通话时长通话次数为0");
                 result.setResult(AdmissionResultDTO.RESULT_REJECTED);
@@ -208,16 +207,16 @@ public class ModelHandler implements AdmissionHandler {
                 }
                 // callTimePercent < 最小值
                 else {
-                    result.setResult(AdmissionResultDTO.RESULT_REJECTED);
+                    result.setResult(AdmissionResultDTO.RESULT_MANUAL);
                 }
             }
             // timeAndNumPercent < 最小值
             else {
-                result.setResult(AdmissionResultDTO.RESULT_REJECTED);
+                result.setResult(AdmissionResultDTO.RESULT_MANUAL);
             }
 
             // 2、30天比值 与180天比值 在+-0.1之间过
-            if (result.getResult() != AdmissionResultDTO.RESULT_REJECTED
+            if (result.getResult() != AdmissionResultDTO.RESULT_MANUAL
                     && allCallTime30 > 0 && allCallNum30 > 0 && cntCallTime30 > 0 && cntCallNum30 > 0) {
 
                 Double callTimePercent30 = cntCallTime30 / allCallTime30; //30天通话时长比率
