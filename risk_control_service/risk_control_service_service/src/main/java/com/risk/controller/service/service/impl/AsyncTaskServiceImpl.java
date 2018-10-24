@@ -117,21 +117,20 @@ public class AsyncTaskServiceImpl {
                     AdmissionResultDTO stageResult = this.handle(config, stage, request, ruleList);
                     ret.getRejectReason().addAll(stageResult.getRejectReason());
 
-                    // insert admission result detail
+                    // 保存决策明细
                     decisionRuleService.saveAdmissionResult(admissionResult.getId(), stageResult.getResultDetail());
 
-                    int stageRobotAction = (stageResult.getRobotAction() == null) ? AdmissionResultDTO.ROBOT_ACTION_SCORE : stageResult.getRobotAction();
-                    if (AdmissionResultDTO.ROBOT_ACTION_SKIP == stageRobotAction) {
-                        ret.setRobotAction(AdmissionResultDTO.ROBOT_ACTION_SKIP);
-                    }
-
                     int stageResultStatus = stageResult.getResult();
+
+                    // 挂起和异常结束
                     if (stageResultStatus == AdmissionResultDTO.RESULT_SUSPEND || stageResultStatus == AdmissionResultDTO.RESULT_EXCEPTIONAL) {
                         admissionResult.setSuspendStage(stage);
                         ret.setSuspendDetail(stageResult.getSuspendDetail());
+                        ret.setResult(stageResultStatus);
+                        break;
                     }
-
-                    if (stageResultStatus != AdmissionResultDTO.RESULT_APPROVED) {
+                    // 拒绝结束
+                    if (stageResultStatus == AdmissionResultDTO.RESULT_REJECTED) {
                         ret.setResult(stageResultStatus);
                         break;
                     }
