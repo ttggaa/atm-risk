@@ -24,8 +24,7 @@ public class DecisionHandleRequest {
     public static String DEVICE_IOS = "ios"; //设备类型
     public static String DEVICE_ANDROID = "android";//设备类型
 
-    public static final Integer USER_BAD = 0;//坏户状态
-    public static final Integer USER_GOOD = 2;//坏户状态
+    public static final Integer USER_GOOD = 2;//正常还款
 
     public static final Long lableGroupIdNew = 1005L; //新用户
     public static final Long lableGroupIdSNew = 1007L;// 次新户

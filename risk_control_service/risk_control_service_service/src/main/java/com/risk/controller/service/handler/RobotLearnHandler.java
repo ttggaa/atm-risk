@@ -74,6 +74,7 @@ public class RobotLearnHandler implements AdmissionHandler {
 
     /**
      * 批量修改规则明细
+     *
      * @param ruleDetailsList
      */
     private void updateBatchRobotRuleDetail(List<RobotRuleDetail> ruleDetailsList) {
@@ -116,6 +117,7 @@ public class RobotLearnHandler implements AdmissionHandler {
 
                     String nid = (String) map.get("orderNo");// 订单号
                     int status = Integer.valueOf(String.valueOf(map.get("state"))); //0坏户，2好户
+                    int overdueDays = Integer.valueOf(String.valueOf(map.get("overdueDays"))); //逾期天数
 
                     // 查询请求参数
                     DecisionReqLog decisionReqLog = decisionReqLogDao.getbyNid(nid);
@@ -123,8 +125,6 @@ public class RobotLearnHandler implements AdmissionHandler {
 
                         // 入参
                         DecisionHandleRequest request = JSONObject.parseObject(decisionReqLog.getReqData(), DecisionHandleRequest.class);
-
-                        Map<Long, RobotRuleDetail> detailMap = new HashMap<>();
 
                         for (RobotRule robotRule : ruleList) {
                             if (StringUtils.isBlank(robotRule.getHandler())) {
@@ -145,10 +145,10 @@ public class RobotLearnHandler implements AdmissionHandler {
                                 continue;
                             }
 
-                            Object count =  methodObj.invoke(handlerObj, request);
+                            Object count = methodObj.invoke(handlerObj, request);
 
                             // 3.查询方法返回值对应的规则明细
-                            this.setRobotDetailData(ruleDetailsList, detailMap, robotRule.getId(), count, status);
+                            this.setRobotDetailData(ruleDetailsList, robotRule.getId(), count, status, overdueDays);
                         }
 
                     }
@@ -166,27 +166,26 @@ public class RobotLearnHandler implements AdmissionHandler {
      * @param ruleDetailsList
      * @param ruldId          规则id
      * @param count           个数
-     * @param status          0：坏户，2好户
-     * @param detailMap
+     * @param status          0：未还款，1：部分还款，2结清
+     * @param overdueDays     逾期天数
      * @return
      */
-    private void setRobotDetailData(List<RobotRuleDetail> ruleDetailsList, Map<Long, RobotRuleDetail> detailMap, Long ruldId, Object count, int status) {
+    private void setRobotDetailData(List<RobotRuleDetail> ruleDetailsList, Long ruldId, Object count, int status, int overdueDays) {
         if (null != ruleDetailsList && ruleDetailsList.size() > 0) {
 
             for (RobotRuleDetail robotRuleDetail : ruleDetailsList) {
                 if (robotRuleDetail.getRuleId().equals(ruldId)
-                        && robotRuleDetail.getMinScope().compareTo(new BigDecimal(String.valueOf(count)))<=0
-                        && robotRuleDetail.getMaxScope().compareTo(new BigDecimal(String.valueOf(count)))>0
+                        && robotRuleDetail.getMinScope().compareTo(new BigDecimal(String.valueOf(count))) <= 0
+                        && robotRuleDetail.getMaxScope().compareTo(new BigDecimal(String.valueOf(count))) > 0
                         && robotRuleDetail.getEnabled() == 1) {
 
 
                     // 计算好户坏户个数
                     robotRuleDetail.setTotalCnt(robotRuleDetail.getTotalCnt() + 1);
-                    if (DecisionHandleRequest.USER_BAD == status) {
-                        robotRuleDetail.setOverdueCnt(robotRuleDetail.getOverdueCnt() + 1);
-                    }
-                    if (DecisionHandleRequest.USER_GOOD == status) {
+                    if (DecisionHandleRequest.USER_GOOD == status && overdueDays <= 0) {
                         robotRuleDetail.setGoodCnt(robotRuleDetail.getGoodCnt() + 1);
+                    } else {
+                        robotRuleDetail.setOverdueCnt(robotRuleDetail.getOverdueCnt() + 1);
                     }
                     break;
                 }
