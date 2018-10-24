@@ -87,13 +87,13 @@ public class RobotLearnHandler implements AdmissionHandler {
                     if (detail.getGoodCnt() == 0) {
                         detail.setGoodPercent(BigDecimal.ZERO);
                     } else {
-                        detail.setGoodPercent(new BigDecimal(detail.getGoodCnt() / detail.getTotalCnt()));
+                        detail.setGoodPercent(new BigDecimal(detail.getGoodCnt()).divide(new BigDecimal(detail.getTotalCnt()), 4, BigDecimal.ROUND_HALF_UP));
                     }
 
                     if (detail.getOverdueCnt() == 0) {
                         detail.setOverduePercent(BigDecimal.ZERO);
                     } else {
-                        detail.setOverduePercent(new BigDecimal(detail.getOverdueCnt() / detail.getTotalCnt()));
+                        detail.setOverduePercent(new BigDecimal(detail.getOverdueCnt()).divide(new BigDecimal(detail.getTotalCnt()), 4, BigDecimal.ROUND_HALF_UP));
                     }
                 }
             }
@@ -145,7 +145,7 @@ public class RobotLearnHandler implements AdmissionHandler {
                                 continue;
                             }
 
-                            Integer count = (Integer) methodObj.invoke(handlerObj, request);
+                            Object count =  methodObj.invoke(handlerObj, request);
 
                             // 3.查询方法返回值对应的规则明细
                             this.setRobotDetailData(ruleDetailsList, detailMap, robotRule.getId(), count, status);
@@ -170,13 +170,13 @@ public class RobotLearnHandler implements AdmissionHandler {
      * @param detailMap
      * @return
      */
-    private void setRobotDetailData(List<RobotRuleDetail> ruleDetailsList, Map<Long, RobotRuleDetail> detailMap, Long ruldId, Integer count, int status) {
+    private void setRobotDetailData(List<RobotRuleDetail> ruleDetailsList, Map<Long, RobotRuleDetail> detailMap, Long ruldId, Object count, int status) {
         if (null != ruleDetailsList && ruleDetailsList.size() > 0) {
 
             for (RobotRuleDetail robotRuleDetail : ruleDetailsList) {
                 if (robotRuleDetail.getRuleId().equals(ruldId)
-                        && robotRuleDetail.getMinScope().compareTo(new BigDecimal(count))<=0
-                        && robotRuleDetail.getMaxScope().compareTo(new BigDecimal(count))>0
+                        && robotRuleDetail.getMinScope().compareTo(new BigDecimal(String.valueOf(count)))<=0
+                        && robotRuleDetail.getMaxScope().compareTo(new BigDecimal(String.valueOf(count)))>0
                         && robotRuleDetail.getEnabled() == 1) {
 
 

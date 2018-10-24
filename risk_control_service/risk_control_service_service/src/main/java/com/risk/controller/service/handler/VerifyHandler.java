@@ -1129,7 +1129,7 @@ public class VerifyHandler implements AdmissionHandler {
         int nameCount = vierifyStr(request.getName(), name);
         int idcardCount = vierifyStr(request.getCardId(), idcard);
 
-        if ((1 == reliability || -1 == reliability) && (nameCount > 0 || idcardCount > 0)) {
+        if (-1 == reliability && (nameCount > 0 || idcardCount > 0)) {
             result.setResult(AdmissionResultDTO.RESULT_APPROVED);
             return result;
         }

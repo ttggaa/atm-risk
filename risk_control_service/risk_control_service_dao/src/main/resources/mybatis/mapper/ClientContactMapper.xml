@@ -19,7 +19,7 @@
     <select id="getCallNumByDay" resultType="map" parameterType="map">
         SELECT
             COUNT(1) callNum,
-            SUM(duration) callTime
+            IFNULL(SUM(duration),0) callTime
         FROM
             client_contact a,
             operator_call_record b

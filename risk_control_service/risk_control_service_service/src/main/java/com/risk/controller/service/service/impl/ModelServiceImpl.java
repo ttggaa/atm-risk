@@ -6,6 +6,7 @@ import com.risk.controller.service.dao.*;
 import com.risk.controller.service.entity.*;
 import com.risk.controller.service.handler.ModelHandler;
 import com.risk.controller.service.handler.MongoHandler;
+import com.risk.controller.service.handler.RobotHandler;
 import com.risk.controller.service.handler.RobotLearnHandler;
 import com.risk.controller.service.request.DecisionHandleRequest;
 import com.risk.controller.service.service.ModelService;
@@ -105,7 +106,6 @@ public class ModelServiceImpl implements ModelService {
     }
 
     @Override
-    @Scheduled(cron = "0 0/5 * * * ? ")
     public void saveAllOperator() {
         log.warn("定时拉取运营商模型数据");
         this.saveAllOperator(null);
@@ -191,4 +191,15 @@ public class ModelServiceImpl implements ModelService {
         map.put("day", day);
         return this.clientContactDao.getCallAndCalledByDay(map);
     }
+
+    @Override
+    public List<Map<String, Object>> runModelBySql(String sql) {
+        try {
+            return robotResultDao.runModelBySql(sql);
+        } catch (Exception e) {
+            log.error("执行sql异常：sql:{}", sql, e);
+        }
+        return null;
+    }
+
 }

@@ -1,5 +1,6 @@
 package com.risk.controller.service.handler;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.risk.controller.service.common.httpclient.HttpClientUtils;
@@ -19,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Method;
@@ -53,6 +55,8 @@ public class RobotHandler implements AdmissionHandler {
     private RobotResultDao robotResultDao;
     @Autowired
     private WanshuService wanshuService;
+    @Autowired
+    private DecisionReqLogDao decisionReqLogDao;
     @Autowired
     private ModelService modelService;
 
@@ -129,7 +133,10 @@ public class RobotHandler implements AdmissionHandler {
                     continue;
                 }
                 int ruleResult = 0;
-                if (null != detail && detail.getOverduePercent().compareTo(rulePercent) >= 0) {
+                if (null != detail
+                        && detail.getOverduePercent().compareTo(rulePercent) <= 0
+                        && detail.getOverduePercent().compareTo(BigDecimal.ZERO) > 0) {
+
                     userPassCount++;
                     ruleResult = 1;
                 }
@@ -1170,7 +1177,7 @@ public class RobotHandler implements AdmissionHandler {
         Object count = 0;
         try {
             if (null == request.getRobotRequestDTO().getUserCallNum10() || 0 == request.getRobotRequestDTO().getUserCallNum10()
-                    && null == request.getRobotRequestDTO().getUserCallTime10() && 0 == request.getRobotRequestDTO().getUserCallTime10()) {
+                    || null == request.getRobotRequestDTO().getUserCallTime10() || 0 == request.getRobotRequestDTO().getUserCallTime10()) {
 
                 Map<String, Object> map = this.modelService.getCallNumByDay(request.getNid(), request.getApplyTime(), DAY_10, CALL);
                 if (null == map) {
@@ -1183,7 +1190,7 @@ public class RobotHandler implements AdmissionHandler {
             }
 
             if (null == request.getRobotRequestDTO().getUserCalledNum10() || 0 == request.getRobotRequestDTO().getUserCalledNum10()
-                    && null == request.getRobotRequestDTO().getUserCalledTime10() && 0 == request.getRobotRequestDTO().getUserCalledTime10()) {
+                    || null == request.getRobotRequestDTO().getUserCalledTime10() || 0 == request.getRobotRequestDTO().getUserCalledTime10()) {
 
                 Map<String, Object> map = this.modelService.getCallNumByDay(request.getNid(), request.getApplyTime(), DAY_10, CALLED);
                 if (null == map) {
@@ -1384,7 +1391,7 @@ public class RobotHandler implements AdmissionHandler {
         Object count = 0;
         try {
             if (null == request.getRobotRequestDTO().getUserCallNum30() || 0 == request.getRobotRequestDTO().getUserCallNum30()
-                    && null == request.getRobotRequestDTO().getUserCallTime30() && 0 == request.getRobotRequestDTO().getUserCallTime30()) {
+                    || null == request.getRobotRequestDTO().getUserCallTime30() || 0 == request.getRobotRequestDTO().getUserCallTime30()) {
 
                 Map<String, Object> map = this.modelService.getCallNumByDay(request.getNid(), request.getApplyTime(), DAY_30, CALL);
                 if (null == map) {
@@ -1397,7 +1404,7 @@ public class RobotHandler implements AdmissionHandler {
             }
 
             if (null == request.getRobotRequestDTO().getUserCalledNum30() || 0 == request.getRobotRequestDTO().getUserCalledNum30()
-                    && null == request.getRobotRequestDTO().getUserCalledTime30() && 0 == request.getRobotRequestDTO().getUserCalledTime30()) {
+                    || null == request.getRobotRequestDTO().getUserCalledTime30() || 0 == request.getRobotRequestDTO().getUserCalledTime30()) {
 
                 Map<String, Object> map = this.modelService.getCallNumByDay(request.getNid(), request.getApplyTime(), DAY_30, CALLED);
                 if (null == map) {
@@ -1598,7 +1605,7 @@ public class RobotHandler implements AdmissionHandler {
         Object count = 0;
         try {
             if (null == request.getRobotRequestDTO().getUserCallNum60() || 0 == request.getRobotRequestDTO().getUserCallNum60()
-                    && null == request.getRobotRequestDTO().getUserCallTime60() && 0 == request.getRobotRequestDTO().getUserCallTime60()) {
+                    || null == request.getRobotRequestDTO().getUserCallTime60() || 0 == request.getRobotRequestDTO().getUserCallTime60()) {
 
                 Map<String, Object> map = this.modelService.getCallNumByDay(request.getNid(), request.getApplyTime(), DAY_60, CALL);
                 if (null == map) {
@@ -1611,7 +1618,7 @@ public class RobotHandler implements AdmissionHandler {
             }
 
             if (null == request.getRobotRequestDTO().getUserCalledNum60() || 0 == request.getRobotRequestDTO().getUserCalledNum60()
-                    && null == request.getRobotRequestDTO().getUserCalledTime60() && 0 == request.getRobotRequestDTO().getUserCalledTime60()) {
+                    || null == request.getRobotRequestDTO().getUserCalledTime60() || 0 == request.getRobotRequestDTO().getUserCalledTime60()) {
 
                 Map<String, Object> map = this.modelService.getCallNumByDay(request.getNid(), request.getApplyTime(), DAY_60, CALLED);
                 if (null == map) {
@@ -1636,5 +1643,36 @@ public class RobotHandler implements AdmissionHandler {
             log.error("模型：60天内通话时长和次数比值-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
+    }
+
+    /**
+     * 通过sql注入批量跑模型数据(必须包含nid)
+     * select nid from table
+     *
+     * @param sql
+     */
+    public void runModelBySql(String sql) {
+        List<Map<String, Object>> list = this.modelService.runModelBySql(sql);
+
+        if (null != list && list.size() > 0) {
+
+            AdmissionRule rule = admissionRuleDao.getByRuleId(1057L);
+            AdmissionRuleDTO ruleDto = AdmissionRuleDTO.fromAdmissionRule(rule);
+            if (null != ruleDto) {
+
+                for (Map<String, Object> map : list) {
+                    Object nidObject = map.get("nid");
+                    if (null != nidObject) {
+                        String nid = (String) nidObject;
+                        DecisionReqLog reqLog = decisionReqLogDao.getbyNid(nid);
+                        if (null != reqLog) {
+                            DecisionHandleRequest request = JSONObject.parseObject(reqLog.getReqData(), DecisionHandleRequest.class);
+                            AdmissionResultDTO record = this.verifyRobot(request, ruleDto);
+                            log.debug("模型重跑结果：nid：{}，结果：{}", nid, JSONObject.toJSONString(record));
+                        }
+                    }
+                }
+            }
+        }
     }
 }

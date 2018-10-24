@@ -134,7 +134,7 @@ public class Test001 {
         String key = "欠款,欠债,拖欠,已逾期,已经逾期,吸毒,贩毒,抽大烟,麻古,麻果,k粉,冰妹,过不下去,活不下去,赌徒,赌输,输完,输光,飞叶子,溜冰,上门催收,滞纳金,逾期未还,还钱,扣款失败";
 //        key = "法催部,严重逾期,恶意透支,逃避欠款,逃避还款,催收录音,大耳窿,涉嫌违法,婊子,起诉,委外";
         String[] keys = key.split(",");
-        File file = new File("C:\\Users\\Administrator\\Desktop\\1.log");
+        File file = new File("C:\\Users\\Administrator\\Desktop\\2.log");
         BufferedReader reader = null;
         Set<String> set = new HashSet<>();
         List<String> listMsg = new ArrayList<>();

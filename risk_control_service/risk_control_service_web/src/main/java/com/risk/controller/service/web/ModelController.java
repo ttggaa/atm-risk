@@ -4,6 +4,7 @@ import com.risk.controller.service.common.utils.ResponseEntity;
 import com.risk.controller.service.dto.AdmissionResultDTO;
 import com.risk.controller.service.dto.AdmissionRuleDTO;
 import com.risk.controller.service.dto.RobotResultRequest;
+import com.risk.controller.service.handler.RobotHandler;
 import com.risk.controller.service.handler.VerifyHandler;
 import com.risk.controller.service.request.DecisionHandleRequest;
 import com.risk.controller.service.service.ModelService;
@@ -25,6 +26,8 @@ public class ModelController {
 
     @Autowired
     private ModelService modelService;
+    @Autowired
+    private RobotHandler robotHandler;
 
     /**
      * 计算用户运营商数据
@@ -56,6 +59,13 @@ public class ModelController {
     @RequestMapping(value = "/saveAllOperator", method = RequestMethod.GET)
     public ResponseEntity saveAllOperator(String nid) {
         modelService.saveAllOperator(nid);
+        return new ResponseEntity(ResponseEntity.STATUS_OK);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/runModelBySql", method = RequestMethod.POST)
+    public ResponseEntity runModelBySql(String sql) {
+        robotHandler.runModelBySql(sql);
         return new ResponseEntity(ResponseEntity.STATUS_OK);
     }
 }
