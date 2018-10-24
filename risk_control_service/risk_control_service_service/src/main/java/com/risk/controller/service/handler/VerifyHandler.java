@@ -1126,43 +1126,23 @@ public class VerifyHandler implements AdmissionHandler {
         String name = operatorReport.getString("name");
         String idcard = operatorReport.getString("idcard");
 
-        int nameCount = vierifyStr(request.getName(), name);
-        int idcardCount = vierifyStr(request.getCardId(), idcard);
-
-        if (-1 == reliability && (nameCount > 0 || idcardCount > 0)) {
+        if (1 == reliability) {
             result.setResult(AdmissionResultDTO.RESULT_APPROVED);
             return result;
-        }
-        result.setResult(AdmissionResultDTO.RESULT_REJECTED);
-        return result;
-    }
-
-    /**
-     * 验证两个字符串相同位置相同字符的个数
-     * @param str1
-     * @param str2
-     * @return
-     */
-    private int vierifyStr(String str1, String str2) {
-        if (StringUtils.isBlank(str1) || StringUtils.isBlank(str2)) {
-            return 0;
-        }
-        if (str1.length() > str2.length()) {
-            String temp = str1;
-            str1 = str2;
-            str2 = temp;
-        }
-        char strs1[] = str1.toCharArray();
-        char strs2[] = str2.toCharArray();
-
-        int count = 0;
-        for (int i = 0; i < strs1.length; i++) {
-            if (strs1[i] == strs2[i]) {
-                count++;
+        } else if (-1 == reliability) {
+            if (StringUtils.isNotBlank(name) && StringUtils.isNotBlank(idcard)) {
+                result.setResult(AdmissionResultDTO.RESULT_SKIP);
+                return result;
+            } else {
+                result.setResult(AdmissionResultDTO.RESULT_MANUAL);
+                return result;
             }
+        } else {
+            result.setResult(AdmissionResultDTO.RESULT_REJECTED);
+            return result;
         }
-        return count;
     }
+
 
     /**
      * 决策1031 手机号码使用时间验证
