@@ -80,16 +80,6 @@ public class ModelServiceImpl implements ModelService {
         // 查询订单
         List<Map<String, Object>> list = robotResultDao.queryRepayOrder();
         if (null != list && list.size() > 0) {
-
-            for (Map<String, Object> map : list) {
-                String nid = (String) map.get("orderNo");// 订单号
-                try {
-                    this.saveAllOperator(nid);
-                } catch (Exception e) {
-                    log.error("保存数据失败,订单号：nid:{},error:{}", nid, e);
-                }
-            }
-
             this.robotLearnHandler.robotLearnDetail(list, false);
         }
     }
