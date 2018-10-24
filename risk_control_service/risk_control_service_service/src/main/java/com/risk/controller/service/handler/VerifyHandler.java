@@ -2183,7 +2183,7 @@ public class VerifyHandler implements AdmissionHandler {
     }
 
     /**
-     * 1058 7天内，0次互相通话拒绝
+     * 1059 同一联系人重复次数校验
      */
     public AdmissionResultDTO verifyRepeatContactPhone(DecisionHandleRequest request, AdmissionRuleDTO rule) {
         AdmissionResultDTO result = new AdmissionResultDTO();
@@ -2215,7 +2215,7 @@ public class VerifyHandler implements AdmissionHandler {
             return result;
 
         } catch (Exception e) {
-            log.error("[决策校验-同一联系人重复次数校验校验异常]：单号：{}", request.getNid(), e);
+            log.error("[决策校验-同一联系人重复次数校验异常]：单号：{}", request.getNid(), e);
             result.setResult(AdmissionResultDTO.RESULT_EXCEPTIONAL);
             result.setData("同一联系人重复次数校验失败");
             return result;
