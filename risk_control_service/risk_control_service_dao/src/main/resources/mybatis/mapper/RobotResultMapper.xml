@@ -21,7 +21,7 @@
         FROM zx_atm.zx_repay_order f
         WHERE NOT EXISTS (select 1 From zx_atm.zx_repay_order where client_id=f.client_id and f.create_time > create_time)
         AND create_time >= DATE_ADD(SYSDATE(), INTERVAL - 6 MONTH)
-        AND (`status`=2 OR (`status`=0 AND overdue_days > 0))
+        AND NOT (`status`=0 AND overdue_days=0)
     </select>
 
     <select id="runModelBySql" resultType="map" parameterType="string">
