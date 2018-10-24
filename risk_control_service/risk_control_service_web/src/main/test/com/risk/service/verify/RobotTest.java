@@ -56,4 +56,10 @@ public class RobotTest {
     public void modelLearn() {
         modelService.modelLearn();
     }
+    @Test
+    public void runModelBySql() {
+        String sql = "select nid from risk_decision_req_log order by id desc limit 10";
+        robotHandler.runModelBySql(sql);
+    }
+
 }

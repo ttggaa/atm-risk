@@ -133,7 +133,10 @@ public class RobotHandler implements AdmissionHandler {
                     continue;
                 }
                 int ruleResult = 0;
-                if (null != detail && detail.getOverduePercent().compareTo(rulePercent) >= 0) {
+                if (null != detail
+                        && detail.getOverduePercent().compareTo(rulePercent) <= 0
+                        && detail.getOverduePercent().compareTo(BigDecimal.ZERO) > 0) {
+
                     userPassCount++;
                     ruleResult = 1;
                 }
@@ -1648,20 +1651,22 @@ public class RobotHandler implements AdmissionHandler {
      *
      * @param sql
      */
-    @Async
     public void runModelBySql(String sql) {
         List<Map<String, Object>> list = this.modelService.runModelBySql(sql);
+
         if (null != list && list.size() > 0) {
-            for (Map<String, Object> map : list) {
-                Object nidObject = map.get("nid");
-                if (null != nidObject) {
-                    String nid = (String) nidObject;
-                    DecisionReqLog reqLog = decisionReqLogDao.getbyNid(nid);
-                    if (null != reqLog) {
-                        DecisionHandleRequest request = JSONObject.parseObject(reqLog.getReqData(), DecisionHandleRequest.class);
-                        AdmissionRule rule = admissionRuleDao.getByRuleId(1057L);
-                        AdmissionRuleDTO ruleDto = AdmissionRuleDTO.fromAdmissionRule(rule);
-                        if (null != ruleDto) {
+
+            AdmissionRule rule = admissionRuleDao.getByRuleId(1057L);
+            AdmissionRuleDTO ruleDto = AdmissionRuleDTO.fromAdmissionRule(rule);
+            if (null != ruleDto) {
+
+                for (Map<String, Object> map : list) {
+                    Object nidObject = map.get("nid");
+                    if (null != nidObject) {
+                        String nid = (String) nidObject;
+                        DecisionReqLog reqLog = decisionReqLogDao.getbyNid(nid);
+                        if (null != reqLog) {
+                            DecisionHandleRequest request = JSONObject.parseObject(reqLog.getReqData(), DecisionHandleRequest.class);
                             AdmissionResultDTO record = this.verifyRobot(request, ruleDto);
                             log.debug("模型重跑结果：nid：{}，结果：{}", nid, JSONObject.toJSONString(record));
                         }

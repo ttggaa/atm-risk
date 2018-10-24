@@ -1,6 +1,7 @@
 package com.risk.controller.service.dao;
 
 import com.risk.controller.service.entity.RobotResult;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -15,5 +16,5 @@ public interface RobotResultDao {
      */
     List<Map<String, Object>> queryRepayOrder();
 
-    List<Map<String, Object>> runModelBySql(String sql);
+    List<Map<String, Object>> runModelBySql(@Param("sql") String sql);
 }

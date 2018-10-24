@@ -203,7 +203,6 @@ public class ModelServiceImpl implements ModelService {
     }
 
     @Override
-    @Async
     public List<Map<String, Object>> runModelBySql(String sql) {
         try {
             return robotResultDao.runModelBySql(sql);

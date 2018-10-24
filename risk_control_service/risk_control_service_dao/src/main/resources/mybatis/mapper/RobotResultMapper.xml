@@ -24,7 +24,7 @@
           AND create_time >= DATE_ADD(SYSDATE(), INTERVAL - 6 MONTH)
     </select>
 
-    <select id="runModelBySql" resultType="map">
-        ${0}
+    <select id="runModelBySql" resultType="map" parameterType="string">
+        ${sql}
     </select>
 </mapper>
