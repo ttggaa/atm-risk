@@ -21,9 +21,10 @@ import java.util.Map;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = SpringBootStart.class)
-public class XinyanTest {
+public class CallEachTest {
     @Resource
     private VerifyHandler verifyHandler;
+
     @Test
     public void verifyXinyanData() {
         //{"amount":720,"applyTime":1540203002864,"cardId":"350781199007094415","devicePlatform":"android","failFast":1,"isRobot":1,"labelGroupId":1009,"name":"黄陆平","nid":"218102218100294838","productId":1,"robotRequestDTO":{},"userId":168,"userName":"13850900870","userNation":"汉"}
@@ -32,9 +33,9 @@ public class XinyanTest {
         request.setApplyTime(1540203002864L);
         // {"callNum":"1","callDay":"7"}
         AdmissionRuleDTO rule = new AdmissionRuleDTO();
-        Map<String,String> set = new HashMap<>();
-        set.put("callNum","1");
-        set.put("callDay","7");
+        Map<String, String> set = new HashMap<>();
+        set.put("callNum", "1");
+        set.put("callDay", "7");
         rule.setSetting(set);
 
         AdmissionResultDTO record = verifyHandler.verifyCallsEach(request, rule);
