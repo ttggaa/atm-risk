@@ -2205,7 +2205,7 @@ public class VerifyHandler implements AdmissionHandler {
             param.put("repeatNum", repeatNum);
             param.put("nid", request.getNid());
             int repeatPersonCur = clientContactDao.getRepeatPersons(param);
-
+            result.setData(repeatPersonCur);
             // 校验
             if (repeatPerson.intValue() <= repeatPersonCur) {
                 result.setResult(AdmissionResultDTO.RESULT_REJECTED);
