@@ -62,28 +62,6 @@ public class RobotHandler implements AdmissionHandler {
 
     public AdmissionResultDTO verifyRobot(DecisionHandleRequest request, AdmissionRuleDTO rule) {
         AdmissionResultDTO result = new AdmissionResultDTO();
-        if (null == rule
-                || !rule.getSetting().containsKey("callNum")
-                || !rule.getSetting().containsKey("callDay")) {
-
-            result.setResult(AdmissionResultDTO.RESULT_SKIP);
-            result.setData("规则为空，跳过");
-            return result;
-        }
-        // 保存基础数据
-        this.modelService.saveAllOperator(request.getNid());
-
-        // 模型之前规则验证
-        Integer ruleNum = Integer.valueOf(rule.getSetting().get("callNum"));
-        Integer ruleDay = Integer.valueOf(rule.getSetting().get("callDay"));
-        int userCalledNum = this.robotCallAndCalledNum7(request, ruleDay);
-
-        if (ruleNum >= userCalledNum) {
-            result.setResult(AdmissionResultDTO.RESULT_REJECTED);
-            result.setData(userCalledNum);
-            return result;
-        }
-
         // 验证模型
         if (null == rule
                 || !rule.getSetting().containsKey("passPercent")
