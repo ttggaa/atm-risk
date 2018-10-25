@@ -123,17 +123,24 @@ public class AsyncTaskServiceImpl {
                     int stageResultStatus = stageResult.getResult();
 
                     // 挂起和异常结束
-                    if (stageResultStatus == AdmissionResultDTO.RESULT_SUSPEND || stageResultStatus == AdmissionResultDTO.RESULT_EXCEPTIONAL) {
+                    if (stageResultStatus == AdmissionResultDTO.RESULT_SUSPEND
+                            || stageResultStatus == AdmissionResultDTO.RESULT_EXCEPTIONAL) {
+
                         admissionResult.setSuspendStage(stage);
                         ret.setSuspendDetail(stageResult.getSuspendDetail());
                         ret.setResult(stageResultStatus);
                         break;
                     }
                     // 拒绝结束
-                    if (stageResultStatus == AdmissionResultDTO.RESULT_REJECTED) {
+                    else if (stageResultStatus == AdmissionResultDTO.RESULT_REJECTED) {
                         ret.setResult(stageResultStatus);
                         break;
                     }
+                    // 人工审核则设置最终结果为人工审核
+                    else if (stageResultStatus == AdmissionResultDTO.RESULT_MANUAL) {
+                        ret.setResult(stageResultStatus);
+                    }
+
                 }
             } else { // 非快速失败
                 int approvedCount = 0;
