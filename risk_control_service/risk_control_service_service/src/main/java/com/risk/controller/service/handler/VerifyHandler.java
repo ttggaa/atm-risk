@@ -2248,7 +2248,7 @@ public class VerifyHandler implements AdmissionHandler {
 
             Integer ruleAllCallNum30 = Integer.valueOf(rule.getSetting().get("allCallNum30"));//30天内所有通话次数
             Integer ruleCntCallNum30 = Integer.valueOf(rule.getSetting().get("cntCallNum30"));// 30天内通讯录在运营商有效通话次数
-            Double callDetailNum = Double.valueOf(rule.getSetting().get("callDetailNum"));// 30天内运营商互相通话次数
+            Double ruleCallDetailNum = Double.valueOf(rule.getSetting().get("callDetailNum"));// 30天内运营商互相通话次数
             Integer ruleCallNumDays = Integer.valueOf(rule.getSetting().get("callNumDays"));// 30天
             Integer ruleCallDetailDays = Integer.valueOf(rule.getSetting().get("callDetailDays"));// 多少天内的互相通话次数
             ruleCallNumDays = null == ruleCallNumDays ? 30 : ruleCallNumDays;
@@ -2291,8 +2291,8 @@ public class VerifyHandler implements AdmissionHandler {
                     return result;
                 }
                 Double callDetail = Double.valueOf(String.valueOf(callDetailNumAndTime.get("timeNum")));
-                if (callDetailNum.compareTo(callDetail) > 0) {
-                    result.setData(callDetailNum);
+                if (ruleCallDetailNum.compareTo(callDetail) > 0) {
+                    result.setData(callDetail);
                     result.setResult(AdmissionResultDTO.RESULT_REJECTED);
                     return result;
                 }
