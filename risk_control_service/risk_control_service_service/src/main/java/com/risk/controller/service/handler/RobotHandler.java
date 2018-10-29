@@ -13,6 +13,7 @@ import com.risk.controller.service.enums.CacheCfgType;
 import com.risk.controller.service.enums.GetCacheModel;
 import com.risk.controller.service.request.DecisionHandleRequest;
 import com.risk.controller.service.service.ModelService;
+import com.risk.controller.service.service.OperatorService;
 import com.risk.controller.service.service.WanshuService;
 import com.risk.controller.service.service.impl.LocalCache;
 import com.risk.controller.service.util.AdmissionHandler;
@@ -59,6 +60,8 @@ public class RobotHandler implements AdmissionHandler {
     private DecisionReqLogDao decisionReqLogDao;
     @Autowired
     private ModelService modelService;
+    @Autowired
+    private OperatorService operatorService;
 
     public AdmissionResultDTO verifyRobot(DecisionHandleRequest request, AdmissionRuleDTO rule) {
         AdmissionResultDTO result = new AdmissionResultDTO();
@@ -1640,6 +1643,11 @@ public class RobotHandler implements AdmissionHandler {
 
                 for (Map<String, Object> map : list) {
                     Object nidObject = map.get("nid");
+                    try{
+                    operatorService.saveAllOperator(String.valueOf(nidObject));
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
                     if (null != nidObject) {
                         String nid = (String) nidObject;
                         DecisionReqLog reqLog = decisionReqLogDao.getbyNid(nid);

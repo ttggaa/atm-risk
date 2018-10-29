@@ -531,4 +531,27 @@ public class VerifyServiceNewTest {
         System.out.println("==============================================");
     }
 
+    @Test
+    public void verify30DaysCallDetail() {
+
+        DecisionHandleRequest request = new DecisionHandleRequest();
+        request.setNid("31806050084165325");
+        request.setUserId(113856L);
+        request.setLabelGroupId(1009L);
+        request.setApplyTime(1536209698052L);
+        AdmissionRuleDTO rule = new AdmissionRuleDTO();
+        Map<String, String> set = new HashMap<>();
+        set.put("allCallNum30", "100");
+        set.put("cntCallNum30", "10");
+        set.put("callDetailNum", "5");
+        set.put("callNumDays", "30");
+        set.put("callDetailDays", "7");
+        rule.setSetting(set);
+
+        AdmissionResultDTO record2 = verifyHandler.verify30DaysCallDetail(request, rule);
+        System.out.println("==============================================");
+        System.out.println(JSONObject.toJSONString(record2));
+        System.out.println("==============================================");
+    }
+
 }

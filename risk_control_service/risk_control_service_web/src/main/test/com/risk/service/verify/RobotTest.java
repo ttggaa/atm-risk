@@ -58,7 +58,7 @@ public class RobotTest {
     }
     @Test
     public void runModelBySql() {
-        String sql = "select nid from risk_decision_req_log order by id desc limit 10";
+        String sql = "select nid from risk_decision_req_log ";
         robotHandler.runModelBySql(sql);
     }
 

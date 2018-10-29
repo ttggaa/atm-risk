@@ -26,9 +26,11 @@ public class DecisionHandleRequest {
 
     public static final Integer USER_GOOD = 2;//正常还款
 
+    public static final Long LABLEGROUPIDNEW_1 = 1000L;//新户
+    public static final Long lableGroupIdOld = 1009L;//老户
+
     public static final Long lableGroupIdNew = 1005L; //新用户
     public static final Long lableGroupIdSNew = 1007L;// 次新户
-    public static final Long lableGroupIdOld = 1009L;//老户
     public static final Long lableGroupIdPass = 1001L;//老户
     public static final Long lableGroupIdReject = 1002L;//老户
 

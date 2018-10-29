@@ -2221,4 +2221,96 @@ public class VerifyHandler implements AdmissionHandler {
             return result;
         }
     }
+
+
+    /**
+     * 新户-验证30天内运营商所有通话次数
+     * 新户-验证30天内通讯录在运营商有效通话次数
+     * 老户-验证30天内运营商互相通话次数
+     * "allCallNum30":"100","cntCallNum30":"10"，callDetailNum:"1"
+     * @param request
+     * @param rule
+     * @return
+     */
+    public AdmissionResultDTO verify30DaysCallDetail(DecisionHandleRequest request, AdmissionRuleDTO rule) {
+        AdmissionResultDTO result = new AdmissionResultDTO();
+        if (null == rule
+                || !rule.getSetting().containsKey("allCallNum30")
+                || !rule.getSetting().containsKey("cntCallNum30")
+                || !rule.getSetting().containsKey("callDetailNum")) {
+
+            result.setResult(AdmissionResultDTO.RESULT_SKIP);
+            result.setData("规则为空，跳过");
+            return result;
+        }
+
+        try {
+
+            Integer ruleAllCallNum30 = Integer.valueOf(rule.getSetting().get("allCallNum30"));//30天内所有通话次数
+            Integer ruleCntCallNum30 = Integer.valueOf(rule.getSetting().get("cntCallNum30"));// 30天内通讯录在运营商有效通话次数
+            Double callDetailNum = Double.valueOf(rule.getSetting().get("callDetailNum"));// 30天内运营商互相通话次数
+            Integer ruleCallNumDays = Integer.valueOf(rule.getSetting().get("callNumDays"));// 30天
+            Integer ruleCallDetailDays = Integer.valueOf(rule.getSetting().get("callDetailDays"));// 多少天内的互相通话次数
+            ruleCallNumDays = null == ruleCallNumDays ? 30 : ruleCallNumDays;
+            ruleCallDetailDays = null == ruleCallDetailDays ? 7 : ruleCallDetailDays;
+
+            // 新户
+            if (DecisionHandleRequest.LABLEGROUPIDNEW_1.equals(request.getLabelGroupId())) {
+
+                Map<String, Object> param = new HashMap<>();
+                param.put("userId", request.getUserId());
+                param.put("nid", request.getNid());
+                param.put("applyTime", request.getApplyTime());
+                param.put("days", ruleCallNumDays);
+
+                Integer cntCallNum30 = clientContactDao.getValidCallDetail(param);
+                if (ruleCntCallNum30.compareTo(cntCallNum30) > 0) {
+                    result.setData(cntCallNum30);
+                    result.setResult(AdmissionResultDTO.RESULT_REJECTED);
+                    return result;
+                }
+
+                Integer allCallNum30 = clientContactDao.getAllCallDetail(param);
+                if (ruleAllCallNum30.compareTo(allCallNum30) > 0) {
+                    result.setData(allCallNum30);
+                    result.setResult(AdmissionResultDTO.RESULT_REJECTED);
+                    return result;
+                }
+            }
+            // 老户
+            else if (DecisionHandleRequest.lableGroupIdOld.equals(request.getLabelGroupId())) {
+                Map<String, Object> param = new HashMap<>();
+                param.put("userId", request.getUserId());
+                param.put("nid", request.getNid());
+                param.put("applyTime", request.getApplyTime());
+                param.put("days", ruleCallDetailDays);
+
+                Map<String, Object> callDetailNumAndTime = clientContactDao.getOpertorCallAndCalledNum(param);
+                if (null == callDetailNumAndTime) {
+                    result.setResult(AdmissionResultDTO.RESULT_SUSPEND);
+                    return result;
+                }
+                Double callDetail = Double.valueOf(String.valueOf(callDetailNumAndTime.get("timeNum")));
+                if (callDetailNum.compareTo(callDetail) > 0) {
+                    result.setData(callDetailNum);
+                    result.setResult(AdmissionResultDTO.RESULT_REJECTED);
+                    return result;
+                }
+            }
+            // 其他
+            else {
+                result.setData(request.getLabelGroupId());
+                result.setResult(AdmissionResultDTO.RESULT_SKIP);
+                return result;
+            }
+            result.setResult(AdmissionResultDTO.RESULT_APPROVED);
+            return result;
+
+        } catch (Exception e) {
+            log.error("[验证30天内通话次数异常]：单号：{}", request.getNid(), e);
+            result.setResult(AdmissionResultDTO.RESULT_EXCEPTIONAL);
+            result.setData("验证30天内通话次数失败");
+            return result;
+        }
+    }
 }
