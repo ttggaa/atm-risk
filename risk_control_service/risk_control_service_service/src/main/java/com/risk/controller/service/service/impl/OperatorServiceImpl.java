@@ -51,7 +51,7 @@ public class OperatorServiceImpl implements OperatorService {
     private OperatorCallRecordDao operatorCallRecordDao;
 
     @Override
-    public void saveAllOperator(String nid) {
+    public void saveAllOperator(String nid) throws Exception {
         List<Map<String, String>> result = dataOrderMappingDao.getAllByNid(nid);
         if (null != result && result.size() > 0) {
             for (Map<String, String> map : result) {
@@ -66,6 +66,7 @@ public class OperatorServiceImpl implements OperatorService {
                     this.saveUserContact(clientNum, mapNid);
                 } catch (Exception e) {
                     log.error("保存数据异常，nid:{},error:{}", nid, e);
+                    throw new Exception("保存数据异常");
                 }
             }
         }

@@ -9,5 +9,5 @@ public interface OperatorService {
 
 	public Integer robotCallAndCalledNum7(String nid, Long applyTime, Integer days);
 
-	void saveAllOperator(String nid);
+	void saveAllOperator(String nid) throws Exception;
 }
