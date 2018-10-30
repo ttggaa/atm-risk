@@ -3,8 +3,10 @@ package com.risk.service.verify;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.risk.controller.service.SpringBootStart;
+import com.risk.controller.service.dao.DecisionReqLogDao;
 import com.risk.controller.service.dto.AdmissionResultDTO;
 import com.risk.controller.service.dto.AdmissionRuleDTO;
+import com.risk.controller.service.entity.DecisionReqLog;
 import com.risk.controller.service.handler.VerifyHandler;
 import com.risk.controller.service.handler.XinyanHandler;
 import com.risk.controller.service.request.DecisionHandleRequest;
@@ -29,6 +31,8 @@ public class VerifyServiceNewTest {
     private VerifyHandler verifyHandler;
     @Resource
     private XinyanHandler xinyanHandler;
+    @Resource
+    private DecisionReqLogDao reqLogDao;
 
     @Test
     public void verifyDevice() {
@@ -534,19 +538,17 @@ public class VerifyServiceNewTest {
     @Test
     public void verify30DaysCallDetail() {
 
-        DecisionHandleRequest request = new DecisionHandleRequest();
-        request.setNid("218091310154033418");
-        request.setUserId(141L);
-        request.setLabelGroupId(1009L);
-        request.setApplyTime(1536804940296L);
+        DecisionReqLog reqLog = reqLogDao.getbyNid("218103007243914642");
+        DecisionHandleRequest request = JSONObject.parseObject(reqLog.getReqData(), DecisionHandleRequest.class);
         AdmissionRuleDTO rule = new AdmissionRuleDTO();
         Map<String, String> set = new HashMap<>();
-        set.put("allCallNum30", "100");
-        set.put("cntCallNum30", "10");
-        set.put("callDetailNum", "1");
+        set.put("callDetailDays", "7");
         set.put("callNumDays", "30");
-        set.put("callDetailDays", "30");
+        set.put("callDetailNum", "1");
+        set.put("cntCallNum30", "10");
+        set.put("allCallNum30", "100");
         rule.setSetting(set);
+
 
         AdmissionResultDTO record2 = verifyHandler.verify30DaysCallDetail(request, rule);
         System.out.println("==============================================");

@@ -981,6 +981,8 @@ public class VerifyHandler implements AdmissionHandler {
                 result.setData("未查询到运营商通话记录");
                 return result;
             }
+            // 保存基础数据
+            operatorService.saveAllOperator(request.getNid());
 
             List<JSONObject> contacts = this.mongoHandler.getUserDeviceContact(request);
             List<JSONObject> callRecords = this.mongoHandler.getUserDeviceCallRecord(request);
@@ -2158,8 +2160,6 @@ public class VerifyHandler implements AdmissionHandler {
         }
 
         try {
-            // 保存基础数据
-            operatorService.saveAllOperator(request.getNid());
             // 获取天数通话限制
             Integer ruleNum = Integer.valueOf(rule.getSetting().get("callNum"));
             Integer ruleDay = Integer.valueOf(rule.getSetting().get("callDay"));
@@ -2222,7 +2222,6 @@ public class VerifyHandler implements AdmissionHandler {
         }
     }
 
-
     /**
      * 新户-验证30天内运营商所有通话次数
      * 新户-验证30天内通讯录在运营商有效通话次数
@@ -2264,21 +2263,23 @@ public class VerifyHandler implements AdmissionHandler {
                 param.put("days", ruleCallNumDays);
 
                 Integer cntCallNum30 = clientContactDao.getValidCallDetail(param);
+                result.setData(cntCallNum30);
+
                 if (ruleCntCallNum30.compareTo(cntCallNum30) > 0) {
-                    result.setData(cntCallNum30);
                     result.setResult(AdmissionResultDTO.RESULT_REJECTED);
                     return result;
                 }
 
                 Integer allCallNum30 = clientContactDao.getAllCallDetail(param);
+                result.setData(allCallNum30);
                 if (ruleAllCallNum30.compareTo(allCallNum30) > 0) {
-                    result.setData(allCallNum30);
                     result.setResult(AdmissionResultDTO.RESULT_REJECTED);
                     return result;
                 }
             }
             // 老户
             else if (DecisionHandleRequest.lableGroupIdOld.equals(request.getLabelGroupId())) {
+
                 Map<String, Object> param = new HashMap<>();
                 param.put("userId", request.getUserId());
                 param.put("nid", request.getNid());
@@ -2291,8 +2292,8 @@ public class VerifyHandler implements AdmissionHandler {
                     return result;
                 }
                 Double callDetail = Double.valueOf(String.valueOf(callDetailNumAndTime.get("timeNum")));
+                result.setData(callDetail);
                 if (ruleCallDetailNum.compareTo(callDetail) > 0) {
-                    result.setData(callDetail);
                     result.setResult(AdmissionResultDTO.RESULT_REJECTED);
                     return result;
                 }

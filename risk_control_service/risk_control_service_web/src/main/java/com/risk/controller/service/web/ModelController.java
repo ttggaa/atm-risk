@@ -8,6 +8,7 @@ import com.risk.controller.service.handler.RobotHandler;
 import com.risk.controller.service.handler.VerifyHandler;
 import com.risk.controller.service.request.DecisionHandleRequest;
 import com.risk.controller.service.service.ModelService;
+import com.risk.controller.service.service.OperatorService;
 import com.risk.controller.service.service.impl.PaixuServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,8 @@ public class ModelController {
     private ModelService modelService;
     @Autowired
     private RobotHandler robotHandler;
+    @Autowired
+    private OperatorService operatorService;
 
     /**
      * 计算用户运营商数据
@@ -58,7 +61,11 @@ public class ModelController {
     @ResponseBody
     @RequestMapping(value = "/saveAllOperator", method = RequestMethod.GET)
     public ResponseEntity saveAllOperator(String nid) {
-        modelService.saveAllOperator(nid);
+        try {
+            operatorService.saveAllOperator(nid);
+        } catch (Exception e) {
+            return new ResponseEntity(ResponseEntity.STATUS_FAIL);
+        }
         return new ResponseEntity(ResponseEntity.STATUS_OK);
     }
 

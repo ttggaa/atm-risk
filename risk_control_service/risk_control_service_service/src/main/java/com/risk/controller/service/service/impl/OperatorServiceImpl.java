@@ -106,12 +106,14 @@ public class OperatorServiceImpl implements OperatorService {
         if (null != operator && operator.size() > 0) {
             List<OperatorCallRecord> list = new ArrayList<>();
             for (JSONObject json : operator) {
+                String peer_number = json.getString("peer_number");
+                if (!PhoneUtils.isMobile(peer_number)) {
+                    continue;
+                }
                 OperatorCallRecord record = new OperatorCallRecord();
                 record.setUserId(json.getLong("clientId"));
                 record.setNid(nid);
                 record.setPhone(json.getString("phone"));
-                String peer_number = json.getString("peer_number");
-                peer_number = peer_number.length() > 32 ? peer_number.substring(0, 30) : peer_number;
                 record.setPeerNumber(peer_number);
                 record.setLocationType(json.getString("dial_type"));
                 record.setDuration(json.getLong("duration"));
@@ -130,6 +132,11 @@ public class OperatorServiceImpl implements OperatorService {
         if (null != client && client.size() > 0) {
             List<ClientContact> list = new ArrayList<>();
             for (JSONObject json : client) {
+                String contactPhone = PhoneUtils.cleanTel(json.getString("contactsPhone"));
+                if (!PhoneUtils.isMobile(contactPhone)) {
+                    continue;
+                }
+
                 ClientContact contact = new ClientContact();
                 contact.setNid(nid);
                 // 替换emoji表情
@@ -141,7 +148,6 @@ public class OperatorServiceImpl implements OperatorService {
                 contact.setName(name);
                 contact.setUserId(json.getLong("clientId"));
                 contact.setPhone(json.getString("phone"));
-                String contactPhone = PhoneUtils.cleanTel(json.getString("contactsPhone"));
                 contactPhone = contactPhone.length() > 32 ? contactPhone.substring(0, 30) : contactPhone;
                 contact.setContactsPhone(contactPhone);
                 list.add(contact);

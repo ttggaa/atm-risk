@@ -19,13 +19,6 @@ public interface ModelService {
     void modelLearn();
 
     /**
-     * 保存所有运营商通话记录
-     */
-    void saveAllOperator(String nid);
-
-    void saveAllOperator();
-
-    /**
      * 查询最近10天主叫通话次数
      *
      * @param nid       订单号

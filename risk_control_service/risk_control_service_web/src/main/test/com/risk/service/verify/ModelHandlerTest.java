@@ -72,10 +72,4 @@ public class ModelHandlerTest {
         System.out.println("==============================================");
     }
 
-    @Test
-    public void saveAllOperator() {
-        String nid = "218090716122631329";
-        modelService.saveAllOperator(nid);
-    }
-
 }
