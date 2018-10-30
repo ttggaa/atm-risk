@@ -1632,6 +1632,7 @@ public class RobotHandler implements AdmissionHandler {
      *
      * @param sql
      */
+    @Async
     public void runModelBySql(String sql) {
         List<Map<String, Object>> list = this.modelService.runModelBySql(sql);
 
