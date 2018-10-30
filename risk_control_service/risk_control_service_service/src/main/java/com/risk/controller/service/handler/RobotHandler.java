@@ -1643,11 +1643,6 @@ public class RobotHandler implements AdmissionHandler {
 
                 for (Map<String, Object> map : list) {
                     Object nidObject = map.get("nid");
-                    try{
-                    operatorService.saveAllOperator(String.valueOf(nidObject));
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
                     if (null != nidObject) {
                         String nid = (String) nidObject;
                         DecisionReqLog reqLog = decisionReqLogDao.getbyNid(nid);
