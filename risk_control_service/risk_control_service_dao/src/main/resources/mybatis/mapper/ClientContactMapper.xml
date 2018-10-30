@@ -43,7 +43,7 @@
         from (
             SELECT
                 a.contacts_phone phone,
-                CASE WHEN a.callNum>=b.callNum THEN b.callNum ELSE a.callNum END minCallNum,
+                ROUND((a.callNum+b.callNum)/2) minCallNum,
                 a.callTime + b.callTime allCallTime
             FROM (
                 SELECT
@@ -132,7 +132,7 @@
         from (
             SELECT
                 a.peer_number,
-                CASE WHEN b.cnt >= a.cnt THEN a.cnt ELSE b.cnt END num
+                ROUND((b.cnt+ a.cnt)/2) num
             from (
                 SELECT
                     peer_number,COUNT(1) cnt
