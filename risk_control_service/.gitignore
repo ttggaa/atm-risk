@@ -2,3 +2,4 @@
 /.idea/
 *.iml
 */target/
+/risk_control_service_web/src/main/resources/logback.xml
