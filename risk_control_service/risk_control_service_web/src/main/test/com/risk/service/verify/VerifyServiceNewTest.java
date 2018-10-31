@@ -210,14 +210,16 @@ public class VerifyServiceNewTest {
     @Test
     public void testverifySMSSensitiveWord() {
         DecisionHandleRequest request = new DecisionHandleRequest();
-        request.setNid("118083113503887209");
+        request.setNid("218103110214679753");
+        request.setApplyTime(1540374375491L);
+        request.getRobotRequestDTO().setClientNum("b1810301622251000000173559435");
 
         AdmissionRuleDTO rule = new AdmissionRuleDTO();
         Map<String, String> set = new HashMap<>();
         set.put("SensitiveWord", "欠款,欠债,拖欠,已逾期,已经逾期,吸毒,贩毒,抽大烟,麻古,麻果,k粉,冰妹,过不下去,活不下去,赌徒,赌输,输完,输光,飞叶子,溜冰,挂失,有点想念,咪咕视频");
         set.put("SensitiveWordCount", "1");
         set.put("NotSensitiveWord", "秒白条,交警,电费,水费,水电费,物业费,如已还款,若已还款,要不要");
-
+        set.put("days","60");
         rule.setSetting(set);
         AdmissionResultDTO sms = verifyHandler.verifySMSSensitiveWord(request, rule);
         System.out.println("==============================================");

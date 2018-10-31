@@ -598,7 +598,8 @@ public class VerifyHandler implements AdmissionHandler {
                 || null == rule.getSetting()
                 || rule.getSetting().size() <= 0
                 || !rule.getSetting().containsKey("KeyWord")
-                || !rule.getSetting().containsKey("KeyWordCount")) {
+                || !rule.getSetting().containsKey("KeyWordCount")
+                || !rule.getSetting().containsKey("days")) {
 
             result.setResult(AdmissionResultDTO.RESULT_SKIP);
             result.setData("规则为空，跳过");
@@ -617,11 +618,18 @@ public class VerifyHandler implements AdmissionHandler {
             // 规则黑名单名称，和命中次数
             String KeyWord = rule.getSetting().get("KeyWord");
             int keyWordCount = Integer.valueOf(rule.getSetting().get("KeyWordCount"));
+            int ruleDays = Integer.valueOf(rule.getSetting().get("days"));
 
             String[] keys = KeyWord.split(",");
             int hitCount = 0;
             for (JSONObject json : list) {
                 String body = json.getString("body");
+                String strTime = json.getString("data");// 短信时间
+                // 短信有效期内才計算
+                Long diffDays = Math.abs(DateTools.getDayDiff(new Date(request.getApplyTime()), DateTools.convert(strTime)));
+                if (ruleDays < diffDays) {
+                    continue;
+                }
                 if (StringUtils.isNotBlank(body)) {
                     for (String key : keys) {
                         if (body.indexOf(key) >= 0) {
@@ -660,7 +668,8 @@ public class VerifyHandler implements AdmissionHandler {
                 || null == rule.getSetting()
                 || rule.getSetting().size() <= 0
                 || !rule.getSetting().containsKey("SensitiveWord")
-                || !rule.getSetting().containsKey("SensitiveWordCount")) {
+                || !rule.getSetting().containsKey("SensitiveWordCount")
+                || !rule.getSetting().containsKey("days")) {
 
             result.setResult(AdmissionResultDTO.RESULT_SKIP);
             result.setData("规则为空，跳过");
@@ -678,6 +687,7 @@ public class VerifyHandler implements AdmissionHandler {
             // 规则黑名单名称，和命中次数
             String KeyWord = rule.getSetting().get("SensitiveWord");
             int sensitiveWordCount = Integer.valueOf(rule.getSetting().get("SensitiveWordCount"));
+            int ruleDays = Integer.valueOf(rule.getSetting().get("days"));
             String NotSensitiveWord = rule.getSetting().get("NotSensitiveWord"); //非敏感词
             String[] notKeys = NotSensitiveWord.split(",");
             String[] keys = KeyWord.split(",");
@@ -685,7 +695,15 @@ public class VerifyHandler implements AdmissionHandler {
             int hitCount = 0;
             for (JSONObject json : list) {
                 String content = json.getString("body");
-                if (StringUtils.isNotBlank(content)) {
+                String strTime = json.getString("data");// 短信时间
+
+                if (StringUtils.isNotBlank(content) && StringUtils.isNotBlank(strTime)) {
+                    // 短信有效期内才計算
+                    Long diffDays = Math.abs(DateTools.getDayDiff(new Date(request.getApplyTime()), DateTools.convert(strTime)));
+                    if (ruleDays < diffDays) {
+                        continue;
+                    }
+
                     for (String key : keys) {
                         if (content.indexOf(key) >= 0) {
                             boolean hit = false;
@@ -2060,7 +2078,7 @@ public class VerifyHandler implements AdmissionHandler {
     }
 
     /**
-     * 30天内，有效通话人数，次数
+     * 1055：30天内，有效通话人数，次数
      *
      * @param request
      * @param rule
