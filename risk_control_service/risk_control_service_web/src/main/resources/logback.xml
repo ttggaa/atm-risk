@@ -3,8 +3,8 @@
 
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
 
-    <property scope="context" name="FILE_NAME" value="saas-risk-api"/>
-    <property scope="context" name="LOG_PATH" value="/data/boot/logs"/>
+    <property scope="context" name="FILE_NAME" value="risk-api"/>
+    <property scope="context" name="LOG_PATH" value="/data/www/project/zx_education/risk_control_service/logs"/>
 
     <timestamp key="byDay" datePattern="yyyy-MM-dd"/>
     <property scope="context" name="GLOBAL_LEVEL" value="WARN"/>
@@ -53,14 +53,9 @@
         <encoder>
             <pattern>${FILE_LOG_PATTERN}</pattern>
         </encoder>
-       <!-- <file>${LOG_PATH}/${FILE_NAME}-INFO-${byDay}.log</file>-->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>${LOG_PATH}/${FILE_NAME}-INFO.%d.log</fileNamePattern>
         </rollingPolicy>
-        <!--<triggeringPolicy
-                class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-            <MaxFileSize>50MB</MaxFileSize>
-        </triggeringPolicy>-->
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
             <level>INFO</level>
             <onMatch>ACCEPT</onMatch>
@@ -124,8 +119,8 @@
     <logger name="org.springframework" level="${SPRING_LEVEL}"/>
 
     <root level="${GLOBAL_LEVEL}">
-        <!--<appender-ref ref="file-info"/>-->
-        <!--<appender-ref ref="file-debug"/>-->
+        <appender-ref ref="file-info"/>
+        <appender-ref ref="file-debug"/>
         <appender-ref ref="file-warn"/>
         <appender-ref ref="file-error"/>
     </root>
