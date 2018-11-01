@@ -1,12 +1,10 @@
 package com.risk.controller.service.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.risk.controller.service.common.utils.PhoneUtils;
 import com.risk.controller.service.dao.*;
 import com.risk.controller.service.entity.*;
 import com.risk.controller.service.handler.ModelHandler;
 import com.risk.controller.service.handler.MongoHandler;
-import com.risk.controller.service.handler.RobotHandler;
 import com.risk.controller.service.handler.RobotLearnHandler;
 import com.risk.controller.service.request.DecisionHandleRequest;
 import com.risk.controller.service.service.ModelService;
@@ -14,10 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -76,11 +72,11 @@ public class ModelServiceImpl implements ModelService {
 
     @Override
     @Async
-    public void modelLearn() {
+    public void modelLearn(Long ruleId) {
         // 查询订单
         List<Map<String, Object>> list = robotResultDao.queryRepayOrder();
         if (null != list && list.size() > 0) {
-            this.robotLearnHandler.robotLearnDetail(list, false);
+            this.robotLearnHandler.robotLearnDetail(list, ruleId, false);
         }
     }
     @Override

@@ -15,8 +15,9 @@ public interface ModelService {
 
     /**
      * 训练模型
+     * @param ruleId
      */
-    void modelLearn();
+    void modelLearn(Long ruleId);
 
     /**
      * 查询最近10天主叫通话次数

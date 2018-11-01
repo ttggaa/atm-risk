@@ -4,8 +4,11 @@
     <resultMap id="getMap" type="com.risk.controller.service.entity.RobotRule">
     </resultMap>
 
-    <select id="getAllrobotRule" resultMap="getMap">
+    <select id="getAllrobotRule" resultMap="getMap" parameterType="Long">
         SELECT * from risk_robot_rule WHERE enabled = 1
+        <if test="null!=ruleId and 0!=ruleId">
+            and id = #{ruleId}
+        </if>
     </select>
 
 </mapper>

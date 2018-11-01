@@ -53,8 +53,8 @@ public class ModelController {
      */
     @ResponseBody
     @RequestMapping(value = "/modelLearn", method = RequestMethod.GET)
-    public ResponseEntity modelLearn() {
-        modelService.modelLearn();
+    public ResponseEntity modelLearn(Long ruleId) {
+        modelService.modelLearn(ruleId);
         return new ResponseEntity(ResponseEntity.STATUS_OK);
     }
 

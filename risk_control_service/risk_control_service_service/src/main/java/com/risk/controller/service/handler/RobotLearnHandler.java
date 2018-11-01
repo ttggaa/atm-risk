@@ -50,17 +50,17 @@ public class RobotLearnHandler implements AdmissionHandler {
 
     /**
      * 训练模型入口
-     *
-     * @param list
+     *  @param list
+     * @param ruleId
      * @param bool true:累加，false从0开始计算
      */
-    public void robotLearnDetail(List<Map<String, Object>> list, boolean bool) {
+    public void robotLearnDetail(List<Map<String, Object>> list, Long ruleId, boolean bool) {
 
         if (null != list && list.size() > 0) {
             // 1.设置默认值
-            List<RobotRule> ruleList = robotRuleDao.getAllrobotRule();
+            List<RobotRule> ruleList = robotRuleDao.getAllrobotRule(ruleId);
             if (!bool) {
-                robotRuleDetailDao.updateAllSetZero();
+                robotRuleDetailDao.updateAllSetZero(ruleId);
             }
             List<RobotRuleDetail> ruleDetailsList = robotRuleDetailDao.getAllEnabled();
 

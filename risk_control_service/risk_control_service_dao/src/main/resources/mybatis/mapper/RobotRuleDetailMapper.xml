@@ -10,8 +10,11 @@
     <select id="getAllEnabled" resultMap="getMap">
         SELECT * from risk_robot_rule_detail WHERE enabled = 1
     </select>
-    <update id="updateAllSetZero">
+    <update id="updateAllSetZero" parameterType="Long">
         update risk_robot_rule_detail set total_cnt=0,good_cnt=0,overdue_cnt=0
+        <if test="null!=ruleId and 0!=ruleId">
+            where rule_id = #{ruleId}
+        </if>
     </update>
 
     <update id="updateBatchById" parameterType="list">

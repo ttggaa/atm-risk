@@ -4,9 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.risk.controller.service.SpringBootStart;
 import com.risk.controller.service.dto.AdmissionResultDTO;
 import com.risk.controller.service.dto.AdmissionRuleDTO;
-import com.risk.controller.service.entity.RobotRule;
 import com.risk.controller.service.handler.RobotHandler;
-import com.risk.controller.service.handler.XinyanHandler;
 import com.risk.controller.service.request.DecisionHandleRequest;
 import com.risk.controller.service.service.ModelService;
 import org.junit.Test;
@@ -54,7 +52,8 @@ public class RobotTest {
 
     @Test
     public void modelLearn() {
-        modelService.modelLearn();
+//        modelService.modelLearn(23L);
+        modelService.modelLearn(null);
     }
     @Test
     public void runModelBySql() {

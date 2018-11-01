@@ -1,6 +1,5 @@
 package com.risk.controller.service.handler;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.risk.controller.service.common.httpclient.HttpClientUtils;
@@ -18,7 +17,6 @@ import com.risk.controller.service.service.WanshuService;
 import com.risk.controller.service.service.impl.LocalCache;
 import com.risk.controller.service.util.AdmissionHandler;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -82,7 +80,7 @@ public class RobotHandler implements AdmissionHandler {
             List<RobotResult> listRobot = new ArrayList<>();
 
             // 查询所有模型规则
-            List<RobotRule> ruleList = robotRuleDao.getAllrobotRule();
+            List<RobotRule> ruleList = robotRuleDao.getAllrobotRule(null);
             for (RobotRule robotRule : ruleList) {
 
                 if (StringUtils.isBlank(robotRule.getHandler())) {
