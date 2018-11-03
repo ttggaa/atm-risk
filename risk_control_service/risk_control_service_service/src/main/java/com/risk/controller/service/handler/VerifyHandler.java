@@ -1191,6 +1191,12 @@ public class VerifyHandler implements AdmissionHandler {
             if (StringUtils.isBlank(openTimeStr)) {
                 JSONArray array = operatorReport.getJSONArray("bills");
                 monthCount = null == array ? 0 : array.size();
+                if (monthCount < minCount) {
+                    JSONObject month_info = operatorReport.getJSONObject("month_info");
+                    if (null != month_info) {
+                        monthCount = month_info.getInteger("month_count");
+                    }
+                }
             } else {
                 Date openTime = DateTools.convert(openTimeStr);
                 monthCount = DateConvert.getMonthDiff(new Date(), openTime);
