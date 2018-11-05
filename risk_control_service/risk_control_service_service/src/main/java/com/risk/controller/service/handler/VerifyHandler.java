@@ -2250,7 +2250,7 @@ public class VerifyHandler implements AdmissionHandler {
      * 新户-验证30天内运营商所有通话次数
      * 新户-验证30天内通讯录在运营商有效通话次数
      * 老户-验证30天内运营商互相通话次数
-     * "allCallNum30":"100","cntCallNum30":"10"，callDetailNum:"1"
+     * {"oldDays": "7","oldPassNum":"1","newDays": "30","newCntPassNum": "10","newAllPassNum":"100"}
      * @param request
      * @param rule
      * @return
@@ -2258,9 +2258,9 @@ public class VerifyHandler implements AdmissionHandler {
     public AdmissionResultDTO verify30DaysCallDetail(DecisionHandleRequest request, AdmissionRuleDTO rule) {
         AdmissionResultDTO result = new AdmissionResultDTO();
         if (null == rule
-                || !rule.getSetting().containsKey("allCallNum30")
-                || !rule.getSetting().containsKey("cntCallNum30")
-                || !rule.getSetting().containsKey("callDetailNum")) {
+                || !rule.getSetting().containsKey("newDays")
+                || !rule.getSetting().containsKey("newCntPassNum")
+                || !rule.getSetting().containsKey("newAllPassNum")) {
 
             result.setResult(AdmissionResultDTO.RESULT_SKIP);
             result.setData("规则为空，跳过");
@@ -2268,14 +2268,11 @@ public class VerifyHandler implements AdmissionHandler {
         }
 
         try {
-
-            Integer ruleAllCallNum30 = Integer.valueOf(rule.getSetting().get("allCallNum30"));//30天内所有通话次数
-            Integer ruleCntCallNum30 = Integer.valueOf(rule.getSetting().get("cntCallNum30"));// 30天内通讯录在运营商有效通话次数
-            Double ruleCallDetailNum = Double.valueOf(rule.getSetting().get("callDetailNum"));// 30天内运营商互相通话次数
-            Integer ruleCallNumDays = Integer.valueOf(rule.getSetting().get("callNumDays"));// 30天
-            Integer ruleCallDetailDays = Integer.valueOf(rule.getSetting().get("callDetailDays"));// 多少天内的互相通话次数
-            ruleCallNumDays = null == ruleCallNumDays ? 30 : ruleCallNumDays;
-            ruleCallDetailDays = null == ruleCallDetailDays ? 7 : ruleCallDetailDays;
+            int oldDays = Integer.valueOf(rule.getSetting().get("oldDays"));//
+            int newDays = Integer.valueOf(rule.getSetting().get("newDays"));//
+            int oldPassNum = Integer.valueOf(rule.getSetting().get("oldPassNum"));//
+            int newCntPassNum = Integer.valueOf(rule.getSetting().get("newCntPassNum"));//
+            int newAllPassNum = Integer.valueOf(rule.getSetting().get("newAllPassNum"));//
 
             // 新户
             if (DecisionHandleRequest.LABLEGROUPIDNEW_1.equals(request.getLabelGroupId())) {
@@ -2284,19 +2281,19 @@ public class VerifyHandler implements AdmissionHandler {
                 param.put("userId", request.getUserId());
                 param.put("nid", request.getNid());
                 param.put("applyTime", request.getApplyTime());
-                param.put("days", ruleCallNumDays);
+                param.put("days", newDays);
 
-                Integer cntCallNum30 = clientContactDao.getValidCallDetail(param);
+                int cntCallNum30 = clientContactDao.getValidCallDetail(param);
                 result.setData(cntCallNum30);
 
-                if (ruleCntCallNum30.compareTo(cntCallNum30) > 0) {
+                if (newCntPassNum > cntCallNum30) {
                     result.setResult(AdmissionResultDTO.RESULT_REJECTED);
                     return result;
                 }
 
-                Integer allCallNum30 = clientContactDao.getAllCallDetail(param);
+                int allCallNum30 = clientContactDao.getAllCallDetail(param);
                 result.setData(allCallNum30);
-                if (ruleAllCallNum30.compareTo(allCallNum30) > 0) {
+                if (newAllPassNum > allCallNum30) {
                     result.setResult(AdmissionResultDTO.RESULT_REJECTED);
                     return result;
                 }
@@ -2308,16 +2305,11 @@ public class VerifyHandler implements AdmissionHandler {
                 param.put("userId", request.getUserId());
                 param.put("nid", request.getNid());
                 param.put("applyTime", request.getApplyTime());
-                param.put("days", ruleCallDetailDays);
+                param.put("days", oldDays);
 
-                Map<String, Object> callDetailNumAndTime = clientContactDao.getOpertorCallAndCalledNum(param);
-                if (null == callDetailNumAndTime) {
-                    result.setResult(AdmissionResultDTO.RESULT_SUSPEND);
-                    return result;
-                }
-                Double callDetail = Double.valueOf(String.valueOf(callDetailNumAndTime.get("timeNum")));
-                result.setData(callDetail);
-                if (ruleCallDetailNum.compareTo(callDetail) > 0) {
+                int count = clientContactDao.getAllCallDetail(param);
+                result.setData(count);
+                if (oldPassNum > count) {
                     result.setResult(AdmissionResultDTO.RESULT_REJECTED);
                     return result;
                 }
@@ -2332,9 +2324,9 @@ public class VerifyHandler implements AdmissionHandler {
             return result;
 
         } catch (Exception e) {
-            log.error("[验证30天内通话次数异常]：单号：{}", request.getNid(), e);
+            log.error("[决策1060异常]：单号：{}", request.getNid(), e);
             result.setResult(AdmissionResultDTO.RESULT_EXCEPTIONAL);
-            result.setData("验证30天内通话次数失败");
+            result.setData("决策1060异常");
             return result;
         }
     }
