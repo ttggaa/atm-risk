@@ -29,22 +29,27 @@ public class PaixuHandler implements AdmissionHandler {
     /**
      * 1049
      * {"checkScore":"450","passScore":"580","excludeScore":"-777,0","randomNum":"10","passPercent":"0.34","passCount":"0"}
-     * {"checkScore":"400","passScore":"599","excludeScore":"-777"}
      * checkScore：人工审核分数最低值
      * passScore：直接通过最低分值
      * excludeScore:排除分数（支持多个，用逗号隔开）
      **/
     public AdmissionResultDTO verifyPaixuDecision(DecisionHandleRequest request, AdmissionRuleDTO rule) {
-        if (rule != null && rule.getSetting() != null && rule.getSetting().containsKey("randomNum")) {
-            int rulePercent = Integer.valueOf(rule.getSetting().get("randomNum"));
-            int randomNum = new Random().nextInt(100);
-            if (rulePercent >= randomNum){
-                return robotHandler.verifyRobot(request, rule);
-            }
+        if ((new Integer(1)).equals(request.getRobotRequestDTO().getModelNum())) {
+            return this.verifyPaixuDecisionV2(request, rule);
+        } else {
+            AdmissionResultDTO result = new AdmissionResultDTO();
+            result.setResult(AdmissionResultDTO.RESULT_SKIP);
+            result.setData(request.getRobotRequestDTO().getModelNum());
+            return result;
         }
-        return this.verifyPaixuDecisionV2(request, rule);
     }
 
+    /**
+     * 排序模型
+     * @param request
+     * @param rule
+     * @return
+     */
     public AdmissionResultDTO verifyPaixuDecisionV2(DecisionHandleRequest request, AdmissionRuleDTO rule) {
         AdmissionResultDTO result = new AdmissionResultDTO();
         try {

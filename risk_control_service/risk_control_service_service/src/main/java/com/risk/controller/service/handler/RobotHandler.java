@@ -61,7 +61,36 @@ public class RobotHandler implements AdmissionHandler {
     @Autowired
     private OperatorService operatorService;
 
+    /**
+     * 1057 模型
+     * {"passPercent":"0.34","passCount":"0","randomNum":"-1"}
+     * @param request
+     * @param rule
+     * @return
+     */
     public AdmissionResultDTO verifyRobot(DecisionHandleRequest request, AdmissionRuleDTO rule) {
+
+        // 随机数内，执行本地模型
+        if (rule != null && rule.getSetting() != null && rule.getSetting().containsKey("randomNum")) {
+            request.getRobotRequestDTO().setModelNum(2);
+            int rulePercent = Integer.valueOf(rule.getSetting().get("randomNum"));
+            int randomNum = new Random().nextInt(100) + 1;
+            if (rulePercent >= randomNum) {
+                return this.verifyRobotV2(request, rule);
+            }
+        }
+        // 其他跳过，执行
+        request.getRobotRequestDTO().setModelNum(1);
+        AdmissionResultDTO result = new AdmissionResultDTO();
+        result.setResult(AdmissionResultDTO.RESULT_SKIP);
+        result.setData(request.getRobotRequestDTO().getModelNum());
+        return result;
+
+    }
+
+
+    public AdmissionResultDTO verifyRobotV2(DecisionHandleRequest request, AdmissionRuleDTO rule) {
+
         AdmissionResultDTO result = new AdmissionResultDTO();
         // 验证模型
         if (null == rule
