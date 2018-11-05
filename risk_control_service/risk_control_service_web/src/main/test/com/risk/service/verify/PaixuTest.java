@@ -2,8 +2,14 @@ package com.risk.service.verify;
 
 import com.alibaba.fastjson.JSONObject;
 import com.risk.controller.service.SpringBootStart;
+import com.risk.controller.service.dao.AdmissionResultDao;
+import com.risk.controller.service.dao.AdmissionRuleDao;
+import com.risk.controller.service.dao.DecisionReqLogDao;
 import com.risk.controller.service.dto.AdmissionResultDTO;
 import com.risk.controller.service.dto.AdmissionRuleDTO;
+import com.risk.controller.service.entity.AdmissionResult;
+import com.risk.controller.service.entity.AdmissionRule;
+import com.risk.controller.service.entity.DecisionReqLog;
 import com.risk.controller.service.handler.PaixuHandler;
 import com.risk.controller.service.request.DecisionHandleRequest;
 import org.junit.Test;
@@ -23,17 +29,25 @@ import java.util.Map;
 public class PaixuTest {
     @Resource
     private PaixuHandler paixuHandler;
+    @Resource
+    private DecisionReqLogDao decisionReqLogDao;
     @Test
     public void verifyPaixuDecision() {
         DecisionHandleRequest request = new DecisionHandleRequest();
 
-        String str = "{\"applyTime\":1538122930142,\"cardId\":\"340321199210061846\",\"devicePlatform\":\"ios\",\"failFast\":1,\"isRobot\":1,\"labelGroupId\":1001,\"name\":\"年竹青\",\"nid\":\"218092816221049359\",\"userId\":20,\"userName\":\"15000297289\",\"userNation\":\"汉\"}";
-        request = JSONObject.parseObject(str,DecisionHandleRequest.class);
+        DecisionReqLog result = new DecisionReqLog();
+        request.setUserName("18883315455");
+        request.setCardId("500200198910100111");
+        request.setNid("218091810415578876");
+
         AdmissionRuleDTO rule = new AdmissionRuleDTO();
         Map<String,String> set = new HashMap<>();
         set.put("checkScore","460");
         set.put("passScore","530");
         set.put("excludeScore","-777");
+        set.put("randomNum","100");
+        set.put("passPercent","0.31");
+        set.put("passCount","14");
         rule.setSetting(set);
 
         AdmissionResultDTO record = paixuHandler.verifyPaixuDecision(request, rule);

@@ -13,6 +13,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Random;
 
 /**
  * 排序
@@ -22,19 +23,33 @@ import javax.annotation.Resource;
 public class PaixuHandler implements AdmissionHandler {
     @Resource
     private PaixuService paixuService;
+    @Resource
+    private RobotHandler robotHandler;
 
     /**
-     * 1042
+     * 1049
+     * {"checkScore":"450","passScore":"580","excludeScore":"-777,0","randomNum":"10","passPercent":"0.34","passCount":"0"}
      * {"checkScore":"400","passScore":"599","excludeScore":"-777"}
      * checkScore：人工审核分数最低值
      * passScore：直接通过最低分值
      * excludeScore:排除分数（支持多个，用逗号隔开）
      **/
     public AdmissionResultDTO verifyPaixuDecision(DecisionHandleRequest request, AdmissionRuleDTO rule) {
+        if (rule != null && rule.getSetting() != null && rule.getSetting().containsKey("randomNum")) {
+            int rulePercent = Integer.valueOf(rule.getSetting().get("randomNum"));
+            int randomNum = new Random().nextInt(100);
+            if (rulePercent >= randomNum){
+                return robotHandler.verifyRobot(request, rule);
+            }
+        }
+        return this.verifyPaixuDecisionV2(request, rule);
+    }
+
+    public AdmissionResultDTO verifyPaixuDecisionV2(DecisionHandleRequest request, AdmissionRuleDTO rule) {
         AdmissionResultDTO result = new AdmissionResultDTO();
         try {
 
-            if (rule.getSetting() == null
+            if (rule == null
                     || rule.getSetting() == null
                     || !rule.getSetting().containsKey("checkScore")
                     || !rule.getSetting().containsKey("passScore")) {
@@ -47,7 +62,6 @@ public class PaixuHandler implements AdmissionHandler {
             Double rulePassScore = Double.valueOf(rule.getSetting().get("passScore"));
             String ruleExcludeScore = rule.getSetting().get("excludeScore");
             String ruleExScores[] = StringUtils.isBlank(ruleExcludeScore) ? new String[]{} : ruleExcludeScore.split(",");
-
 
 
             ResponseEntity rs = paixuService.requestPaixu(request);

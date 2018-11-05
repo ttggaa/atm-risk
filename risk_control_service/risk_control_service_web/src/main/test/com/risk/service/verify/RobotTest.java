@@ -37,7 +37,7 @@ public class RobotTest {
         request.setApplyTime(1537200000000L);
         AdmissionRuleDTO rule = new AdmissionRuleDTO();
         Map<String,String> set = new HashMap<>();
-        set.put("passPercent","0.1");
+        set.put("passPercent","0.31");
         set.put("passCount","1");
         set.put("callNum","0");
         set.put("callDay","7");
