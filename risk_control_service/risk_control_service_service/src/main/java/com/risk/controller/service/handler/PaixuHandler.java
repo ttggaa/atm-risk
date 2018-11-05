@@ -34,13 +34,13 @@ public class PaixuHandler implements AdmissionHandler {
      * excludeScore:排除分数（支持多个，用逗号隔开）
      **/
     public AdmissionResultDTO verifyPaixuDecision(DecisionHandleRequest request, AdmissionRuleDTO rule) {
-        if ((new Integer(1)).equals(request.getRobotRequestDTO().getModelNum())) {
-            return this.verifyPaixuDecisionV2(request, rule);
-        } else {
+        if ((new Integer(2)).equals(request.getRobotRequestDTO().getModelNum())) {
             AdmissionResultDTO result = new AdmissionResultDTO();
             result.setResult(AdmissionResultDTO.RESULT_SKIP);
             result.setData(request.getRobotRequestDTO().getModelNum());
             return result;
+        } else {
+            return this.verifyPaixuDecisionV2(request, rule);
         }
     }
 

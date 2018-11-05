@@ -63,6 +63,7 @@ public class DecisionHandleRequest {
 
     private Integer productId;// 产品id
     private BigDecimal amount;//借款金额
+    private BigDecimal zmScore;//芝麻分
 
     public Integer getProductId() {
         if (null == this.productId || this.productId <= 0) {
