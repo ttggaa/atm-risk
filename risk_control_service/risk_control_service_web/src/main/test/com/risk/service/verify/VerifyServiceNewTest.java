@@ -558,4 +558,20 @@ public class VerifyServiceNewTest {
         System.out.println("==============================================");
     }
 
+    @Test
+    public void verifyMaxOverdueDay() {
+
+        DecisionHandleRequest request = new DecisionHandleRequest();
+        request.setMaxOverdueDay(5);
+        AdmissionRuleDTO rule = new AdmissionRuleDTO();
+        Map<String, String> set = new HashMap<>();
+        set.put("maxOverdueDay", "5");
+        rule.setSetting(set);
+
+        AdmissionResultDTO record2 = verifyHandler.verifyMaxOverdueDay(request, rule);
+        System.out.println("==============================================");
+        System.out.println(JSONObject.toJSONString(record2));
+        System.out.println("==============================================");
+    }
+
 }

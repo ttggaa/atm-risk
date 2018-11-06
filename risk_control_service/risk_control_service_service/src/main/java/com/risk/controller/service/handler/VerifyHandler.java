@@ -2330,4 +2330,42 @@ public class VerifyHandler implements AdmissionHandler {
             return result;
         }
     }
+
+
+    /**
+     * 1061验证最大逾期天数
+     * @param request
+     * @param rule
+     * @return
+     */
+    public AdmissionResultDTO verifyMaxOverdueDay(DecisionHandleRequest request, AdmissionRuleDTO rule) {
+        AdmissionResultDTO result = new AdmissionResultDTO();
+        if (null == rule
+                || !rule.getSetting().containsKey("maxOverdueDay")) {
+
+            result.setResult(AdmissionResultDTO.RESULT_SKIP);
+            result.setData("规则为空，跳过");
+            return result;
+        }
+
+        try {
+            Integer ruleMaxOverdueDay = Integer.valueOf(rule.getSetting().get("maxOverdueDay"));//历史最大逾期天数
+            Integer maxOverdueDay = request.getMaxOverdueDay();
+            maxOverdueDay = null == maxOverdueDay ? 0 : maxOverdueDay;
+
+            result.setData(maxOverdueDay);
+            if (maxOverdueDay >= ruleMaxOverdueDay) {
+                result.setResult(AdmissionResultDTO.RESULT_REJECTED);
+                return result;
+            } else {
+                result.setResult(AdmissionResultDTO.RESULT_APPROVED);
+                return result;
+            }
+        } catch (Exception e) {
+            log.error("[决策1060异常]：单号：{}", request.getNid(), e);
+            result.setResult(AdmissionResultDTO.RESULT_EXCEPTIONAL);
+            result.setData("决策1060异常");
+            return result;
+        }
+    }
 }
