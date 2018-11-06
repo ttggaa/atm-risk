@@ -41,6 +41,7 @@ public class RobotTest {
         set.put("passCount","1");
         set.put("callNum","0");
         set.put("callDay","7");
+        set.put("randomNum","100");
         rule.setSetting(set);
 
         AdmissionResultDTO record = robotHandler.verifyRobot(request, rule);

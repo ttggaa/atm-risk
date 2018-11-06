@@ -65,5 +65,6 @@ public class RobotRequestDTO {
     private Integer userCallAndCalledPercent60;		//60天内通话时长和次数比值-手机
 
     private Integer modelNum;//1排序模型（），2:本地模型
+    private Integer source;//1生产数据，2训练数据
 
 }

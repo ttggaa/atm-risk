@@ -29,7 +29,7 @@ public class ModelServiceImpl implements ModelService {
     @Autowired
     private DecisionReqLogDao decisionReqLogDao;
     @Autowired
-    private RobotResultDao robotResultDao;
+    private RobotResultDetailDao robotResultDetailDao;
     @Autowired
     private RobotLearnHandler robotLearnHandler;
     @Autowired
@@ -74,7 +74,7 @@ public class ModelServiceImpl implements ModelService {
     @Async
     public void modelLearn(Long ruleId) {
         // 查询订单
-        List<Map<String, Object>> list = robotResultDao.queryRepayOrder();
+        List<Map<String, Object>> list = robotResultDetailDao.queryRepayOrder();
         if (null != list && list.size() > 0) {
             this.robotLearnHandler.robotLearnDetail(list, ruleId, false);
         }
@@ -111,7 +111,7 @@ public class ModelServiceImpl implements ModelService {
     @Override
     public List<Map<String, Object>> runModelBySql(String sql) {
         try {
-            return robotResultDao.runModelBySql(sql);
+            return robotResultDetailDao.runModelBySql(sql);
         } catch (Exception e) {
             log.error("执行sql异常：sql:{}", sql, e);
         }

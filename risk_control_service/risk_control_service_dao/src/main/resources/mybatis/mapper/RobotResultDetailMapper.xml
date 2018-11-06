@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.risk.controller.service.dao.RobotResultDetailDao">
+    <resultMap id="getMap" type="com.risk.controller.service.entity.RobotResultDetail">
+    </resultMap>
+    <insert id="saveBatch" parameterType="list">
+        INSERT INTO `zx_risk`.`risk_robot_result_detail`
+        ( `result_id`, `detail_id`, `num`, `result`, `add_time`, `update_time`)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.resultId}, #{item.detailId},#{item.num},#{item.result},SYSDATE(),SYSDATE()
+            )
+        </foreach>
+        on duplicate key update
+        num = VALUES(num), result = VALUES(result),update_time=SYSDATE()
+    </insert>
+
+    <select id="queryRepayOrder" resultType="map">
+        SELECT order_no orderNo,overdue_days overdueDays, `status`*1 state
+        FROM zx_atm.zx_repay_order f
+        WHERE NOT EXISTS (select 1 From zx_atm.zx_repay_order where client_id=f.client_id and f.create_time > create_time)
+        AND create_time >= DATE_ADD(SYSDATE(), INTERVAL - 6 MONTH)
+        AND NOT (`status`=0 AND overdue_days=0)
+    </select>
+
+    <select id="runModelBySql" resultType="map" parameterType="string">
+        ${sql}
+    </select>
+</mapper>

@@ -51,6 +51,8 @@ public class RobotHandler implements AdmissionHandler {
     @Autowired
     private AdmissionRuleDao admissionRuleDao;
     @Autowired
+    private RobotResultDetailDao robotResultDetailDao;
+    @Autowired
     private RobotResultDao robotResultDao;
     @Autowired
     private WanshuService wanshuService;
@@ -106,7 +108,7 @@ public class RobotHandler implements AdmissionHandler {
         Integer rulePassCount = Integer.valueOf(rule.getSetting().get("passCount"));
         Integer userPassCount = 0;
         try {
-            List<RobotResult> listRobot = new ArrayList<>();
+            List<RobotResultDetail> listRobot = new ArrayList<>();
 
             // 查询所有模型规则
             List<RobotRule> ruleList = robotRuleDao.getAllrobotRule(null);
@@ -149,18 +151,23 @@ public class RobotHandler implements AdmissionHandler {
                     ruleResult = 1;
                 }
 
-                RobotResult robotResult = new RobotResult(request.getNid(), robotRule.getId(), detail.getId(), count, ruleResult);
-                listRobot.add(robotResult);
+                RobotResultDetail robotResultDetail = new RobotResultDetail(detail.getId(), count, ruleResult);
+                listRobot.add(robotResultDetail);
             }
 
-            if (listRobot.size() > 0) {
-                robotResultDao.saveBatch(listRobot);
-            }
+
             result.setData(userPassCount);
             if (userPassCount >= rulePassCount) {
                 result.setResult(AdmissionResultDTO.RESULT_APPROVED);
             } else {
                 result.setResult(AdmissionResultDTO.RESULT_REJECTED);
+            }
+
+            RobotResult robotResult = new RobotResult(request.getNid(), userPassCount, result.getResult(), request.getRobotRequestDTO().getSource());
+            robotResultDao.insert(robotResult);
+            if (listRobot.size() > 0) {
+                listRobot.forEach(robot -> robot.setResultId(robotResult.getId()));
+                robotResultDetailDao.saveBatch(listRobot);
             }
             return result;
         } catch (Exception e) {
@@ -1667,8 +1674,9 @@ public class RobotHandler implements AdmissionHandler {
 
             AdmissionRule rule = admissionRuleDao.getByRuleId(1057L);
             AdmissionRuleDTO ruleDto = AdmissionRuleDTO.fromAdmissionRule(rule);
-            if (null != ruleDto) {
+            ruleDto.getSetting().put("randomNum","100");
 
+            if (null != ruleDto) {
                 for (Map<String, Object> map : list) {
                     Object nidObject = map.get("nid");
                     if (null != nidObject) {
@@ -1676,6 +1684,7 @@ public class RobotHandler implements AdmissionHandler {
                         DecisionReqLog reqLog = decisionReqLogDao.getbyNid(nid);
                         if (null != reqLog) {
                             DecisionHandleRequest request = JSONObject.parseObject(reqLog.getReqData(), DecisionHandleRequest.class);
+                            request.getRobotRequestDTO().setSource(RobotResult.SOURCE_2);
                             AdmissionResultDTO record = this.verifyRobot(request, ruleDto);
                             log.debug("模型重跑结果：nid：{}，结果：{}", nid, JSONObject.toJSONString(record));
                         }
