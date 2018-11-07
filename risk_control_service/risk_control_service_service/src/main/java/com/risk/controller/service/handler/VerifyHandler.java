@@ -329,7 +329,6 @@ public class VerifyHandler implements AdmissionHandler {
             int backCount = this.blacklistPhoneDao.countByphone(set);
             int minCount = Integer.valueOf(rule.getSetting().get("MinCount"));
             result.setData(backCount);
-            request.getRobotRequestDTO().setUserDeviceCallRecordBlackList(backCount);
 
             if (backCount >= minCount) {
                 result.setResult(AdmissionResultDTO.RESULT_REJECTED);
@@ -724,7 +723,6 @@ public class VerifyHandler implements AdmissionHandler {
             }
 
             result.setData(hitCount);
-            request.getRobotRequestDTO().setUserDeviceSmsSensitiveWordCount(hitCount);
             if (hitCount >= sensitiveWordCount) {
                 result.setResult(AdmissionResultDTO.RESULT_REJECTED);
                 return result;
@@ -1142,7 +1140,6 @@ public class VerifyHandler implements AdmissionHandler {
         Integer reliability = null == operatorReport ? 0 : operatorReport.getInteger("reliability");
         reliability = null == reliability ? 0 : reliability;
         result.setData(reliability);
-        request.getRobotRequestDTO().setUserOpertorRealnameCheck(reliability);
 
         String name = operatorReport.getString("name");
         String idcard = operatorReport.getString("idcard");
@@ -1279,7 +1276,6 @@ public class VerifyHandler implements AdmissionHandler {
             int minCount = Integer.valueOf(rule.getSetting().get("MinCount"));
 
             result.setData(count);
-            request.getRobotRequestDTO().setUserDeviceContactUsedCount(count);
 
             if (count >= minCount) {
                 result.setResult(AdmissionResultDTO.RESULT_REJECTED);
@@ -1571,8 +1567,6 @@ public class VerifyHandler implements AdmissionHandler {
                     callTime += duration;
                 }
             }
-            request.getRobotRequestDTO().setUserMainContactNum(callCount);
-            request.getRobotRequestDTO().setUserMainContactTime(callTime);
 
             result.setData(callCount);
             if (callCount >= ruleCallCount) {
@@ -1654,8 +1648,6 @@ public class VerifyHandler implements AdmissionHandler {
                     callTime += duration;
                 }
             }
-            request.getRobotRequestDTO().setUserMainContactTime(callTime);
-            request.getRobotRequestDTO().setUserMainContactNum(callCount);
 
             int ruelCallTime = Integer.valueOf(rule.getSetting().get("callTime")); // 通话时间
             if (callTime >= ruelCallTime) {
@@ -1925,7 +1917,6 @@ public class VerifyHandler implements AdmissionHandler {
             Integer ruleIosCount = Integer.valueOf(rule.getSetting().get("ios"));
 
             result.setData(count);
-            request.getRobotRequestDTO().setUserDeviceAndOperatorCount(count);
 
             if (DecisionHandleRequest.DEVICE_IOS.equals(request.getDevicePlatform())) {
                 if (count >= ruleIosCount) {
