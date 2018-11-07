@@ -1,6 +1,7 @@
 package com.risk.controller.service.service.impl;
 
 import com.risk.controller.service.handler.MongoHandler;
+import com.risk.controller.service.request.DecisionHandleRequest;
 import com.risk.controller.service.service.ModelDataService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +19,10 @@ public class ModelDataServiceImpl implements ModelDataService {
 
     /**
      * 入口方法
-     * @param nid
+     * @param request
      */
     @Override
-    public void saveData(String nid) {
+    public void saveData(DecisionHandleRequest request) {
 
     }
 }

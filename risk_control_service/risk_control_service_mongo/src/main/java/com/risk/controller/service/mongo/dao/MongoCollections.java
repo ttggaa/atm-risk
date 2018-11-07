@@ -11,17 +11,15 @@ public class MongoCollections {
     public static final String DB_DEVICE_CONTACT = "client_mall_list";//设备通讯录
     public static final String DB_DEVICE_SMS = "client_sms";//设备短信
     public static final String DB_OPERATOR_INFO = "operator_info";//运营商原始报告
-    
     public static final String DB_USER_MAIN_CONTACT = "client_urgent_persons";//用户紧急联系人信息
     public static final String DB_SHUMEI_BLACK = "sm_black";//树美黑名单
     public static final String DB_SHUMEI_BORROWS = "sm_borrows";//树美多头借贷
     public static final String DB_SHUMEI_RECHARGES = "operator_recharges";//树美多头借贷
     public static final String DB_OPERATOR_ORIGINAL_DATA = "operator_original_data";//运营商原始数据
-    public static final String DB_OPERATOR_MOJIE_INFO = "operator_mojie_report";//运营商原始报告
     public static final String DB_OPERATOR_SMS = "operator_smses_detail";//运营商短信
-    
     public static final String DB_OPERATOR_CALLS_DETAIL = "operator_calls_detail";//运营商短信
 
-
+    public static final String DB_OPERATOR_MOJIE_INFO = "operator_mojie_report";//运营商原始报告
+    public static final String CALL_RISK_ANALYSIS = "call_risk_analysis";// 运营商原始报告-子节点
 
 }
