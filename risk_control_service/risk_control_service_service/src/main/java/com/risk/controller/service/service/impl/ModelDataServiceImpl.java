@@ -160,7 +160,7 @@ public class ModelDataServiceImpl implements ModelDataService {
                                     eachCalledNum.put(peerNumber, eachCalledNum.get(peerNumber) + 1);
                                     eachCallTime.put(peerNumber, eachCallTime.get(peerNumber) + duration);
                                 } else {
-                                    eachCallNum.put(peerNumber, 1);
+                                    eachCalledNum.put(peerNumber, 1);
                                     eachCallTime.put(peerNumber, duration);
                                 }
                             } else if ("DIAL".equals(dialType)) {
@@ -310,7 +310,7 @@ public class ModelDataServiceImpl implements ModelDataService {
         });
 
         userBaseinfo.setOptShortNum(callShortSet.size());
-        JSONObject rs = this.thirdService.getRegisterCount(contactSet);
+        JSONObject rs = this.thirdService.getRegisterCount(callSet);
         if (null == rs || null == rs.get("data") || !"0".equals(rs.getString("code"))) {
             userBaseinfo.setOptCallsRegisterNum(0);
         } else {

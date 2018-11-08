@@ -29,7 +29,7 @@ public class ModelDataServiceTest {
 
     @Test
     public void saveData() throws Exception {
-        String sql = "select nid from risk_decision_req_log";
+        String sql = "SELECT nid FROM risk_decision_req_log where nid in ('218090716140277998','218101817464814150','218101913572114374','31806021379960164','31806050084165325');";
         List<Map<String, Object>> list = this.modelService.runModelBySql(sql);
         for (Map<String, Object> map : list) {
             try {
