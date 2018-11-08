@@ -4,4 +4,32 @@
     <resultMap id="getMap" type="com.risk.controller.service.entity.StaOperatorCalls">
     </resultMap>
 
+    <insert id="saveOrUpdateBatch" parameterType="list">
+
+        INSERT INTO `zx_risk`.`sta_operator_calls`
+        ( `nid`, `day`, `opt_call_num`, `opt_call_time`, `opt_call_man_num`,
+        `opt_called_num`, `opt_called_time`, `opt_called_man_num`, `opt_man_num`, `opt_sms_send_num`,
+        `opt_sms_receive_num`, `opt_sms_man_num`, `cnt_call_num`, `cnt_call_time`, `cnt_call_man_num`,
+        `cnt_called_num`, `cnt_called_time`, `cnt_called_man_num`, `cnt_valid_num`, `cnt_valid_time`,
+        `cnt_valid_man_num`, `cnt_each_other_num`, `cnt_each_other_time`, `cnt_each_other_man_num`,`add_time`, `update_time`
+        ) VALUES
+
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.nid},#{item.day},#{item.optCallNum},#{item.optCallTime},#{item.optCallManNum},
+            #{item.optCalledNum},#{item.optCalledTime},#{item.optCalledManNum},#{item.optManNum},#{item.optSmsSendNum},
+            #{item.optSmsReceiveNum},#{item.optSmsManNum},#{item.cntCallNum},#{item.cntCallTime},#{item.cntCallManNum},
+            #{item.cntCalledNum},#{item.cntCalledTime},#{item.cntCalledManNum},#{item.cntValidNum},#{item.cntValidTime},
+            #{item.cntValidManNum},#{item.cntEachOtherNum},#{item.cntEachOtherTime},#{item.cntEachOtherManNum}, SYSDATE(), SYSDATE()
+            )
+        </foreach>
+        on duplicate key update
+        day = VALUES(day), opt_call_num = VALUES(opt_call_num), opt_call_time = VALUES(opt_call_time), opt_call_man_num = VALUES(opt_call_man_num),
+        opt_called_num= VALUES(opt_called_num),opt_called_time = VALUES(opt_called_time), opt_called_man_num= VALUES(opt_called_man_num), opt_man_num= VALUES(opt_man_num), opt_sms_send_num= VALUES(opt_sms_send_num),
+        opt_sms_receive_num= VALUES(opt_sms_receive_num),opt_sms_man_num = VALUES(opt_sms_man_num), cnt_call_num= VALUES(cnt_call_num), cnt_call_time= VALUES(cnt_call_time), cnt_call_man_num= VALUES(cnt_call_man_num),
+        cnt_called_num= VALUES(cnt_called_num),cnt_called_time = VALUES(cnt_called_time),cnt_called_man_num = VALUES(cnt_called_man_num), cnt_valid_num= VALUES(cnt_valid_num), cnt_valid_time= VALUES(cnt_valid_time),
+        cnt_valid_man_num= VALUES(cnt_valid_man_num), cnt_each_other_num= VALUES(cnt_each_other_num), cnt_each_other_time= VALUES(cnt_each_other_time), cnt_each_other_man_num= VALUES(cnt_each_other_man_num), update_time= SYSDATE()
+
+
+    </insert>
 </mapper>
