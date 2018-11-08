@@ -2,6 +2,7 @@ package com.risk.controller.service.entity;
 
 import lombok.Data;
 
+
 /**
  * 实体类的基本类
  *

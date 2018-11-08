@@ -69,6 +69,7 @@ public class RobotHandler implements AdmissionHandler {
     /**
      * 1057 模型
      * {"passPercent":"0.34","passCount":"0","randomNum":"-1"}
+     *
      * @param request
      * @param rule
      * @return
@@ -235,21 +236,6 @@ public class RobotHandler implements AdmissionHandler {
     }
 
     /**
-     * 用户手机连号验证
-     *
-     * @return
-     */
-    public Integer robotConsecutiveNumbers(DecisionHandleRequest request) {
-        Integer count = 0;
-        try {
-            count = PhoneUtils.checkPhoneContinuous(request.getUserName());
-        } catch (Exception e) {
-            log.error("模型：用户手机连号验证异常，nid;{},error", request.getNid(), e);
-        }
-        return count;
-    }
-
-    /**
      * 验证年龄
      *
      * @param request
@@ -357,124 +343,6 @@ public class RobotHandler implements AdmissionHandler {
     }
 
     /**
-     * 设备通话记录验证黑名单
-     *
-     * @param request
-     * @return
-     */
-    public Integer robotDeviceCallRecordBlackList(DecisionHandleRequest request) {
-        Integer count = 0;
-        try {
-
-            if (null != request.getRobotRequestDTO().getUserDeviceCallRecordBlackList()) {
-                count = request.getRobotRequestDTO().getUserDeviceCallRecordBlackList();
-            } else {
-                List<JSONObject> list = this.mongoHandler.getUserDeviceCallRecord(request);
-                if (null != list && list.size() > 0) {
-                    Set<String> set = new HashSet<>();
-                    list.forEach(json -> {
-                        String phone = json.getString("contactsPhone");
-                        phone = PhoneUtils.cleanTel(phone);
-                        if (PhoneUtils.isMobile(phone)) {
-                            set.add(phone);
-                        }
-                    });
-                    count = this.blacklistPhoneDao.countByphone(set);
-                }
-            }
-        } catch (Exception e) {
-            log.error("模型：设备通话记录验证黑名单异常，nid;{},error", request.getNid(), e);
-        }
-        return count;
-    }
-
-    /**
-     * 短信一般敏感词
-     *
-     * @param request
-     * @return
-     */
-    public Integer robotDeviceSmsSensitiveWord(DecisionHandleRequest request) {
-        Integer count = 0;
-        try {
-            if (null != request.getRobotRequestDTO().getUserDeviceSmsSensitiveWordCount()) {
-                count = request.getRobotRequestDTO().getUserDeviceSmsSensitiveWordCount();
-            } else {
-                List<JSONObject> list = this.mongoHandler.getUserDeviceSms(request);
-                if (null != list && list.size() > 0) {
-                    // 规则黑名单名称，和命中次数
-                    AdmissionRule rule = admissionRuleDao.getByRuleId(1021L);
-                    if (null != rule) {
-                        JSONObject setting = JSONObject.parseObject(rule.getSetting());
-                        String KeyWord = setting.getString("SensitiveWord");
-                        String NotSensitiveWord = setting.getString("NotSensitiveWord"); //非敏感词
-                        String[] notKeys = NotSensitiveWord.split(",");
-                        String[] keys = KeyWord.split(",");
-
-                        for (JSONObject json : list) {
-                            String content = json.getString("body");
-                            if (StringUtils.isNotBlank(content)) {
-                                for (String key : keys) {
-                                    if (content.indexOf(key) >= 0) {
-                                        boolean hit = false;
-                                        // 如果短信命中敏感词，并且命中非敏感词，不计入敏感词短信条数
-                                        for (String notKey : notKeys) {
-                                            if (content.indexOf(notKey) >= 0) {
-                                                hit = true;
-                                                break;
-                                            }
-                                        }
-                                        if (!hit) {
-                                            count++;//命中敏感词，+1
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                    }
-                }
-            }
-        } catch (Exception e) {
-            log.error("模型：短信验证-一般敏感词异常，nid;{},error", request.getNid(), e);
-        }
-        return count;
-    }
-
-    /**
-     * 通讯录中注册用户检查
-     *
-     * @param request
-     * @return
-     */
-    public Integer robotDeviceContactRegisterCount(DecisionHandleRequest request) {
-        Integer count = 0;
-        try {
-
-            if (null != request.getRobotRequestDTO().getUserDeviceCallRecordBlackList()) {
-                count = request.getRobotRequestDTO().getUserDeviceCallRecordBlackList();
-            } else {
-                List<JSONObject> list = this.mongoHandler.getUserDeviceCallRecord(request);
-                if (null != list && list.size() > 0) {
-                    Set<String> set = new HashSet<>();
-                    list.forEach(json -> {
-                        String phone = json.getString("contactsPhone");
-                        phone = PhoneUtils.cleanTel(phone);
-                        if (PhoneUtils.isMobile(phone)) {
-                            set.add(phone);
-                        }
-                    });
-                    count = this.blacklistPhoneDao.countByphone(set);
-                }
-            }
-        } catch (Exception e) {
-            log.error("模型：设备通话记录验证黑名单异常，nid;{},error", request.getNid(), e);
-        }
-        return count;
-    }
-
-    /**
      * 通讯录中联系人数量
      *
      * @param request
@@ -503,38 +371,6 @@ public class RobotHandler implements AdmissionHandler {
             }
         } catch (Exception e) {
             log.error("模型：通讯录中联系人数量异常，nid;{},error", request.getNid(), e);
-        }
-        return count;
-    }
-
-    /**
-     * 运营商通话记录验证黑名单（手机）
-     *
-     * @param request
-     * @return
-     */
-    public Integer robotOpertorCallRecordBlackList(DecisionHandleRequest request) {
-        int count = 0;
-        try {
-
-            Set<String> phones = new HashSet<>(); // 存放有效通讯录
-
-            List<JSONObject> operatorCallDetail = this.mongoHandler.getUserOperatorCallDetail(request);
-//            JSONObject operationReport = this.mongoHandler.getUserOperatorReport(request);
-            if (null != operatorCallDetail && operatorCallDetail.size() > 0) {
-                for (JSONObject json : operatorCallDetail) {
-                    String phone = json.getString("peer_number");
-                    Long duration = json.getLong("duration");//通话时长
-                    if (StringUtils.isNotBlank(phone) && null != duration && duration > 0) {
-                        phones.add(phone);
-                    }
-                }
-            }
-            if (phones.size() != 0) {
-                count = blacklistPhoneDao.countByphone(phones);
-            }
-        } catch (Exception e) {
-            log.error("模型：运营商通话记录验证黑名单异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -610,81 +446,6 @@ public class RobotHandler implements AdmissionHandler {
     }
 
     /**
-     * 运营商手机号码实名认证
-     *
-     * @param request
-     * @return
-     */
-    public Integer robotOperatorRealNameCheck(DecisionHandleRequest request) {
-        int count = 0;
-        try {
-
-            if (null != request.getRobotRequestDTO().getUserShortNumCount()) {
-                count = request.getRobotRequestDTO().getUserShortNumCount();
-            } else {
-                JSONObject operatorReport = this.mongoHandler.getOperatorInfo(request);
-
-                if (null != operatorReport) {
-                    // 本机实名状态 -1未知　0未实名 1已实名
-                    Integer reliability = null == operatorReport ? 0 : operatorReport.getInteger("reliability");
-                    count = null == reliability ? 0 : reliability;
-                }
-            }
-        } catch (Exception e) {
-            log.error("模型：运营商通话记录验证黑名单异常，nid;{},error", request.getNid(), e);
-        }
-        return count;
-    }
-
-    /**
-     * 设备有效通讯录黑名单验证
-     */
-    public Integer robotDeviceContactUsedCount(DecisionHandleRequest request) {
-        int count = 0;
-        try {
-            if (null != request.getRobotRequestDTO().getUserDeviceContactUsedCount()) {
-                count = request.getRobotRequestDTO().getUserDeviceContactUsedCount();
-            } else {
-
-                Set<String> devicePhones = new HashSet<>();
-                // 查询设备通讯录
-                List<JSONObject> deviceContactList = this.mongoHandler.getUserDeviceContact(request);
-                if (null != deviceContactList && deviceContactList.size() > 0) {
-                    deviceContactList.forEach(json -> {
-                        String phone = json.getString("contactsPhone");
-                        phone = PhoneUtils.cleanTel(phone);
-                        if (PhoneUtils.isMobile(phone)) {
-                            devicePhones.add(phone);
-                        }
-                    });
-                }
-
-                if (devicePhones.size() > 0) {
-                    Set<String> phones = new HashSet<>(); // 存放有效通讯录
-//                    JSONObject operationReport = this.mongoHandler.getUserOperatorReport(request);
-                    List<JSONObject> operatorCallDetail = this.mongoHandler.getUserOperatorCallDetail(request);
-                    if (null != operatorCallDetail && operatorCallDetail.size() > 0) {
-                        for (JSONObject json : operatorCallDetail) {
-                            String phone = json.getString("peer_number");
-                            Long duration = json.getLong("duration");//通话时长
-                            if (StringUtils.isNotBlank(phone) && null != duration && duration > 0 && devicePhones.contains(phone)) {
-                                phones.add(phone);
-                            }
-                        }
-                    }
-
-                    if (phones.size() > 0) {
-                        count = blacklistPhoneDao.countByphone(phones);
-                    }
-                }
-            }
-        } catch (Exception e) {
-            log.error("模型：运营商通话记录验证黑名单异常，nid;{},error", request.getNid(), e);
-        }
-        return count;
-    }
-
-    /**
      * 手机号码使用时间
      *
      * @param request
@@ -717,50 +478,6 @@ public class RobotHandler implements AdmissionHandler {
     }
 
     /**
-     * 通讯录与运营商通通话次数(手机号码)
-     *
-     * @param request
-     * @return
-     */
-    public Integer robotDeviceAndOperatorCount(DecisionHandleRequest request) {
-        int count = 0;
-        try {
-            if (null != request.getRobotRequestDTO().getUserDeviceAndOperatorCount()) {
-                count = request.getRobotRequestDTO().getUserDeviceAndOperatorCount();
-            } else {
-                // 设备通讯录去重
-                Set<String> set = new HashSet<>();
-                List<JSONObject> deviceContact = this.mongoHandler.getUserDeviceContact(request);
-                if (null != deviceContact && deviceContact.size() >= 0) {
-                    for (JSONObject contact : deviceContact) {
-                        String phone = contact.getString("contactsPhone");
-                        phone = PhoneUtils.cleanTel(phone);
-                        if (PhoneUtils.isMobile(phone)) {
-                            set.add(phone);
-                        }
-                    }
-                }
-                if (set.size() > 0) {
-//                    JSONObject operatorReport = this.mongoHandler.getUserOperatorReport(request);
-                    List<JSONObject> operatorCallDetail = this.mongoHandler.getUserOperatorCallDetail(request);
-                    if (null != operatorCallDetail && operatorCallDetail.size() > 0) {
-                        for (JSONObject jsonObject : operatorCallDetail) {
-                            String peerNumber = jsonObject.getString("peer_number");//通话手机号码
-                            Long duration = jsonObject.getLong("duration");//通话时长
-                            if (PhoneUtils.isMobile(peerNumber) && null != duration && duration > 0 && set.contains(peerNumber)) {
-                                count++;
-                            }
-                        }
-                    }
-                }
-            }
-        } catch (Exception e) {
-            log.error("模型：通讯录与运营商通通话个数(手机号码)异常，nid;{},error", request.getNid(), e);
-        }
-        return count;
-    }
-
-    /**
      * 运营商平均话费验证（分）
      *
      * @param request
@@ -778,138 +495,6 @@ public class RobotHandler implements AdmissionHandler {
             }
         } catch (Exception e) {
             log.error("模型：运营商平均话费验证（分）异常，nid;{},error", request.getNid(), e);
-        }
-        return count;
-    }
-
-    /**
-     * 紧急联系人通话次数
-     *
-     * @param request
-     * @return
-     */
-    public Integer robotMainContactNum(DecisionHandleRequest request) {
-        Integer count = 0;
-        try {
-            if (null != request.getRobotRequestDTO().getUserMainContactNum()) {
-                count = request.getRobotRequestDTO().getUserMainContactNum();
-            } else {
-                Set<String> phoneSet = new HashSet<>();
-                List<JSONObject> list = this.mongoHandler.getUserMainContact(request);
-                if (null != list && list.size() > 0) {
-                    list.forEach(json -> {
-                        String phone = json.getString("contactsPhone");
-                        phone = PhoneUtils.cleanTel(phone);
-                        if (PhoneUtils.isMobile(phone)) {
-                            phoneSet.add(phone);
-                        }
-                    });
-                }
-//                JSONObject operationReport = this.mongoHandler.getUserOperatorReport(request);
-                List<JSONObject> operatorCallDetail = this.mongoHandler.getUserOperatorCallDetail(request);
-                if (null != operatorCallDetail && operatorCallDetail.size() > 0) {
-                    for (JSONObject jsonObject : operatorCallDetail) {
-                        String peerNumber = jsonObject.getString("peer_number");//通话手机号码
-                        Integer duration = jsonObject.getInteger("duration");//通话时长
-                        if (PhoneUtils.isMobile(peerNumber)
-                                && null != duration && duration > 0
-                                && peerNumber.contains(peerNumber)) {
-
-                            count++;
-                        }
-                    }
-                }
-            }
-        } catch (Exception e) {
-            log.error("模型：紧急联系人通话次数异常，nid;{},error", request.getNid(), e);
-        }
-        return count;
-    }
-
-    /**
-     * 紧急联系人通话时长（秒）
-     *
-     * @param request
-     * @return
-     */
-    public Integer robotMainContactTime(DecisionHandleRequest request) {
-        Integer count = 0;
-        try {
-            if (null != request.getRobotRequestDTO().getUserMainContactTime()) {
-                count = request.getRobotRequestDTO().getUserMainContactTime();
-            } else {
-                Set<String> phoneSet = new HashSet<>();
-                List<JSONObject> list = this.mongoHandler.getUserMainContact(request);
-                if (null != list && list.size() > 0) {
-                    list.forEach(json -> {
-                        String phone = json.getString("contactsPhone");
-                        phone = PhoneUtils.cleanTel(phone);
-                        if (PhoneUtils.isMobile(phone)) {
-                            phoneSet.add(phone);
-                        }
-                    });
-                }
-//                JSONObject operationReport = this.mongoHandler.getUserOperatorReport(request);
-                List<JSONObject> operatorCallDetail = this.mongoHandler.getUserOperatorCallDetail(request);
-                if (null != operatorCallDetail && operatorCallDetail.size() > 0) {
-                    for (JSONObject jsonObject : operatorCallDetail) {
-                        String peerNumber = jsonObject.getString("peer_number");//通话手机号码
-                        Integer duration = jsonObject.getInteger("duration");//通话时长
-
-                        if (PhoneUtils.isMobile(peerNumber)
-                                && null != duration && duration > 0
-                                && peerNumber.contains(peerNumber)) {
-
-                            count += duration;
-                        }
-                    }
-                }
-            }
-        } catch (Exception e) {
-            log.error("模型：紧急联系人通话时长（秒）异常，nid;{},error", request.getNid(), e);
-        }
-        return count;
-    }
-
-    /**
-     * 运营商通话总次数（手机）
-     *
-     * @param request
-     * @return
-     */
-    public Integer robotOperatorNum(DecisionHandleRequest request) {
-        Integer count = 0;
-//        JSONObject operationReport = this.mongoHandler.getUserOperatorReport(request);
-        List<JSONObject> operatorCallDetail = this.mongoHandler.getUserOperatorCallDetail(request);
-        if (null != operatorCallDetail && operatorCallDetail.size() > 0) {
-            for (JSONObject jsonObject : operatorCallDetail) {
-                String peerNumber = jsonObject.getString("peer_number");//通话手机号码
-                Long duration = jsonObject.getLong("duration");//通话时长
-                if (PhoneUtils.isMobile(peerNumber) && null != duration && duration > 0) {
-                    count++;
-                }
-            }
-        }
-        return count;
-    }
-
-    /**
-     * 运营商通话总时长（手机）
-     *
-     * @param request
-     * @return
-     */
-    public Integer robotOperatorTime(DecisionHandleRequest request) {
-        Integer count = 0;
-        List<JSONObject> operatorCallDetail = this.mongoHandler.getUserOperatorCallDetail(request);
-        if (null != operatorCallDetail && operatorCallDetail.size() > 0) {
-            for (JSONObject jsonObject : operatorCallDetail) {
-                String peerNumber = jsonObject.getString("peer_number");//通话手机号码
-                Integer duration = jsonObject.getInteger("duration");//通话时长
-                if (PhoneUtils.isMobile(peerNumber) && null != duration && duration > 0) {
-                    count += duration;
-                }
-            }
         }
         return count;
     }
@@ -935,91 +520,6 @@ public class RobotHandler implements AdmissionHandler {
             log.error("模型：树美多头借贷异常，nid;{},error", request.getNid(), e);
         }
         return count;
-    }
-
-    /**
-     * 树美在多个不同网贷平台被拒绝
-     *
-     * @param request
-     * @return
-     */
-    public Integer robotShumeiRejectCount(DecisionHandleRequest request) {
-        Integer count = 0;
-        try {
-            if (null != request.getRobotRequestDTO().getUserShumeiRejectCount()) {
-                count = request.getRobotRequestDTO().getUserShumeiRejectCount();
-            } else {
-                JSONObject rs = this.mongoHandler.getShumeiMultipoint(request);
-                if (null != rs && null != rs.get("detail") && null != rs.getJSONObject("detail").get("itfin_loan_refuses")) {
-                    count = rs.getJSONObject("detail").getInteger("itfin_loan_refuses");
-                }
-            }
-        } catch (Exception e) {
-            log.error("模型：树美在多个不同网贷平台被拒绝异常，nid;{},error", request.getNid(), e);
-        }
-        return count;
-    }
-
-    /**
-     * 用户、紧急联系人手机号码空号、羊毛党验证
-     *
-     * @param request
-     * @return
-     */
-    public Integer robotKhYmdCount(DecisionHandleRequest request) {
-        Integer count = 0;
-        try {
-            if (null != request.getRobotRequestDTO().getRobotKhYmdCount()) {
-                count = request.getRobotRequestDTO().getRobotKhYmdCount();
-            } else {
-                List<JSONObject> list = this.mongoHandler.getUserMainContact(request);
-                Set<String> phoneSet = new HashSet<>();
-                phoneSet.add(request.getUserName());
-                if (null != list && list.size() > 0) {
-                    list.forEach(json -> {
-                        String phone = json.getString("contactsPhone");
-                        phone = PhoneUtils.cleanTel(phone);
-                        if (PhoneUtils.isMobile(phone)) {
-                            phoneSet.add(phone);
-                        }
-                    });
-                }
-                for (String phone : phoneSet) {
-                    boolean bool = this.checkUserPhoneAndMainContact(request.getNid(), phone);
-                    if (!bool) {
-                        count++;
-                    }
-                }
-            }
-        } catch (Exception e) {
-            log.error("模型：树美在多个不同网贷平台被拒绝异常，nid;{},error", request.getNid(), e);
-        }
-        return count;
-    }
-
-    /**
-     * 查询是否是羊毛党，空号
-     *
-     * @param nid
-     * @param phone
-     * @return
-     */
-    private boolean checkUserPhoneAndMainContact(String nid, String phone) {
-        WanshuReqLog wanshuReqLog = wanshuService.queryKonghao(nid, phone);
-        if (null != wanshuReqLog) {
-            if (StringUtils.isNotBlank(wanshuReqLog.getStatus()) && !"1".equals(wanshuReqLog.getStatus())) {
-                return false;
-            }
-        }
-
-        // 羊毛党
-        wanshuReqLog = wanshuService.yangmaodang(nid, phone);
-        if (null != wanshuReqLog) {
-            if (StringUtils.isNotBlank(wanshuReqLog.getStatus()) && !"W1".equals(wanshuReqLog.getStatus())) {
-                return false;
-            }
-        }
-        return true;
     }
 
     /**
@@ -2291,7 +1791,7 @@ public class RobotHandler implements AdmissionHandler {
 
             AdmissionRule rule = admissionRuleDao.getByRuleId(1057L);
             AdmissionRuleDTO ruleDto = AdmissionRuleDTO.fromAdmissionRule(rule);
-            ruleDto.getSetting().put("randomNum","100");
+            ruleDto.getSetting().put("randomNum", "100");
 
             if (null != ruleDto) {
                 for (Map<String, Object> map : list) {

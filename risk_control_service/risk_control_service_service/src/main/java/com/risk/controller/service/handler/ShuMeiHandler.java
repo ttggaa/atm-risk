@@ -100,7 +100,6 @@ public class ShuMeiHandler implements AdmissionHandler {
         int rejectCount = detail.getInteger("itfin_loan_refuses");
         int minCount = Integer.valueOf(rule.getSetting().get("minCount"));
         result.setData(rejectCount);
-        request.getRobotRequestDTO().setUserShumeiRejectCount(rejectCount);
 
         if (rejectCount >= minCount) {
             result.setResult(AdmissionResultDTO.RESULT_REJECTED);
