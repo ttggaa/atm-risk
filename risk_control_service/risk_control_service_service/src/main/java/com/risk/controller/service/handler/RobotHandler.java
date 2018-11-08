@@ -1,5 +1,6 @@
 package com.risk.controller.service.handler;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.risk.controller.service.common.httpclient.HttpClientUtils;
@@ -10,12 +11,14 @@ import com.risk.controller.service.dto.AdmissionRuleDTO;
 import com.risk.controller.service.entity.*;
 import com.risk.controller.service.enums.CacheCfgType;
 import com.risk.controller.service.enums.GetCacheModel;
+import com.risk.controller.service.mongo.dao.MongoCollections;
 import com.risk.controller.service.request.DecisionHandleRequest;
 import com.risk.controller.service.service.ModelService;
 import com.risk.controller.service.service.OperatorService;
 import com.risk.controller.service.service.WanshuService;
 import com.risk.controller.service.service.impl.LocalCache;
 import com.risk.controller.service.util.AdmissionHandler;
+import com.risk.controller.service.utils.Average;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -1657,6 +1660,620 @@ public class RobotHandler implements AdmissionHandler {
         } catch (Exception e) {
             log.error("模型：60天内通话时长和次数比值-手机异常，nid;{},error", request.getNid(), e);
         }
+        return count;
+    }
+
+    /**
+     *  通话风险分析-与催收类号码联系情况次数（3个月总次数）
+     */
+    public Integer robotCallRiskAnalysisCollection(DecisionHandleRequest request) {
+        Integer count = 0;
+        try {
+            JSONObject operatorReport = request.getRobotRequestDTO().getOperatorReport();
+            JSONArray call_risk_analysis = operatorReport.getJSONArray(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CALL_RISK_ANALYSIS.getValue());
+            if (null == call_risk_analysis || call_risk_analysis.size() == 0) {
+                return null;
+            }
+
+            for (Object item : call_risk_analysis) {
+                JSONObject itemJson = (JSONObject) item;
+                if (null == itemJson) {
+                    continue;
+                }
+                // 催收公司
+                if ("collection".equals(itemJson.getString(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.ANALYSIS_ITEM.getValue()))) {
+                    JSONObject analysis_point =  itemJson.getJSONObject(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.ANALYSIS_POINT.getValue());
+                    count = analysis_point.getInteger(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CALL_CNT_3M.getValue());
+                }
+            }
+        } catch (Exception e) {
+            log.error("模型：通话风险分析-与催收类号码联系情况次数，nid;{},error", request.getNid(), e);
+        }
+
+        return count;
+    }
+
+    /**
+     *  通话风险分析-与信用卡号码联系情况次数（3个月总次数）
+     */
+    public Integer robotCallRiskAnalysisCreditCard(DecisionHandleRequest request) {
+        Integer count = 0;
+        try {
+            JSONObject operatorReport = request.getRobotRequestDTO().getOperatorReport();
+            JSONArray call_risk_analysis = operatorReport.getJSONArray(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CALL_RISK_ANALYSIS.getValue());
+            if (null == call_risk_analysis || call_risk_analysis.size() == 0) {
+                return null;
+            }
+
+            for (Object item : call_risk_analysis) {
+                JSONObject itemJson = (JSONObject) item;
+
+                if (null == itemJson) {
+                    continue;
+                }
+                // 信用卡
+                if ("credit_card".equals(itemJson.getString(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.ANALYSIS_ITEM.getValue()))) {
+                    JSONObject analysis_point =  itemJson.getJSONObject(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.ANALYSIS_POINT.getValue());
+                    count = analysis_point.getInteger(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CALL_CNT_3M.getValue());
+                }
+            }
+        } catch (Exception e) {
+            log.error("模型：通话风险分析-与信用卡类号码联系情况次数，nid;{},error", request.getNid(), e);
+        }
+
+        return count;
+    }
+
+    /**
+     *  通话风险分析-与贷款类号码联系情况次数（3个月总次数）
+     */
+    public Integer robotCallRiskAnalysisLoan(DecisionHandleRequest request) {
+        Integer count = 0;
+        try {
+            JSONObject operatorReport = request.getRobotRequestDTO().getOperatorReport();
+            JSONArray call_risk_analysis = operatorReport.getJSONArray(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CALL_RISK_ANALYSIS.getValue());
+            if (null == call_risk_analysis || call_risk_analysis.size() == 0) {
+                return null;
+            }
+
+            for (Object item : call_risk_analysis) {
+                JSONObject itemJson = (JSONObject) item;
+                if (null == itemJson) {
+                    continue;
+                }
+                // loan
+                if ("loan".equals(itemJson.getString(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.ANALYSIS_ITEM.getValue()))) {
+                    JSONObject analysis_point =  itemJson.getJSONObject(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.ANALYSIS_POINT.getValue());
+                    count = analysis_point.getInteger(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CALL_CNT_3M.getValue());
+                }
+            }
+        } catch (Exception e) {
+            log.error("模型：通话风险分析-与贷款类号码联系情况次数，nid;{},error", request.getNid(), e);
+        }
+
+        return count;
+    }
+
+    /**
+     *  通话风险分析-110，120，律师、法院等通话次数（3个月总次数）
+     */
+    public Integer robotCallRiskAnalysisGov(DecisionHandleRequest request) {
+        Integer count = 0;
+        try {
+            JSONObject operatorReport = request.getRobotRequestDTO().getOperatorReport();
+            JSONArray call_risk_analysis = operatorReport.getJSONArray(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CALL_RISK_ANALYSIS.getValue());
+            if (null == call_risk_analysis || call_risk_analysis.size() == 0) {
+                return null;
+            }
+
+            for (Object item : call_risk_analysis) {
+                JSONObject itemJson = (JSONObject) item;
+                if (null == itemJson) {
+                    continue;
+                }
+                // 110
+                if ("110".equals(itemJson.getString(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.ANALYSIS_ITEM.getValue()))) {
+                    JSONObject analysis_point =  itemJson.getJSONObject(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.ANALYSIS_POINT.getValue());
+                    Integer call_cnt_3m = analysis_point.getInteger(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CALL_CNT_3M.getValue());
+                    call_cnt_3m = call_cnt_3m == null ? 0 : call_cnt_3m;
+                    count = count + call_cnt_3m;
+                }
+
+                // 120
+                if ("120".equals(itemJson.getString(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.ANALYSIS_ITEM.getValue()))) {
+                    JSONObject analysis_point =  itemJson.getJSONObject(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.ANALYSIS_POINT.getValue());
+                    Integer call_cnt_3m = analysis_point.getInteger(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CALL_CNT_3M.getValue());
+                    call_cnt_3m = call_cnt_3m == null ? 0 : call_cnt_3m;
+                    count = count + call_cnt_3m;
+                }
+
+                // lawyer
+                if ("lawyer".equals(itemJson.getString(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.ANALYSIS_ITEM.getValue()))) {
+                    JSONObject analysis_point =  itemJson.getJSONObject(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.ANALYSIS_POINT.getValue());
+                    Integer call_cnt_3m = analysis_point.getInteger(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CALL_CNT_3M.getValue());
+                    call_cnt_3m = call_cnt_3m == null ? 0 : call_cnt_3m;
+                    count = count + call_cnt_3m;
+                }
+
+                // court
+                if ("court".equals(itemJson.getString(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.ANALYSIS_ITEM.getValue()))) {
+                    JSONObject analysis_point =  itemJson.getJSONObject(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.ANALYSIS_POINT.getValue());
+                    Integer call_cnt_3m = analysis_point.getInteger(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CALL_CNT_3M.getValue());
+                    call_cnt_3m = call_cnt_3m == null ? 0 : call_cnt_3m;
+                    count = count + call_cnt_3m;
+                }
+            }
+        } catch (Exception e) {
+            log.error("模型：通话风险分析-与110，120，律师、法院等次数，nid;{},error", request.getNid(), e);
+        }
+
+        return count;
+    }
+
+    /**
+     *  通话风险分析-用户号码联系黑中介分数（分数范围0-100，参考分为10，分数越低关系越紧密
+     */
+    public Integer robotCallCheckBlackInfoScore(DecisionHandleRequest request) {
+        Integer count = 0;
+        try {
+            JSONObject operatorReport = request.getRobotRequestDTO().getOperatorReport();
+            JSONArray userInfoCheck = operatorReport.getJSONArray(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.USER_INFO_CHECK.getValue());
+            if (null == userInfoCheck || userInfoCheck.size() == 0) {
+                return null;
+            }
+
+            JSONObject itemJson = ((JSONObject) userInfoCheck.get(0)).getJSONObject(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CHECK_BLACK_INFO.getValue());
+            if (null == itemJson) {
+                return null;
+            }
+            count = itemJson.getInteger("phone_gray_score");
+        } catch (Exception e) {
+            log.error("模型：通话风险分析-联系黑中介分数，nid;{},error", request.getNid(), e);
+        }
+
+        return count;
+    }
+
+    /**
+     *  通话风险分析-引起间接黑名单人数
+     */
+    public Integer robotCallCheckBlackInfoRouter(DecisionHandleRequest request) {
+        Integer count = 0;
+        try {
+            JSONObject operatorReport = request.getRobotRequestDTO().getOperatorReport();
+            JSONArray userInfoCheck = operatorReport.getJSONArray(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.USER_INFO_CHECK.getValue());
+            if (null == userInfoCheck || userInfoCheck.size() == 0) {
+                return null;
+            }
+
+            JSONObject itemJson = ((JSONObject) userInfoCheck.get(0)).getJSONObject(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CHECK_BLACK_INFO.getValue());
+            if (null == itemJson) {
+                return null;
+            }
+            count = itemJson.getInteger("contacts_router_cnt");
+        } catch (Exception e) {
+            log.error("模型：通话风险分析-引起间接黑名单人数，nid;{},error", request.getNid(), e);
+        }
+
+        return count;
+    }
+
+    /**
+     *  通话风险分析-间接联系人中黑名单人数
+     */
+    public Integer robotCallCheckBlackInfoClass2Cnt(DecisionHandleRequest request) {
+        Integer count = 0;
+        try {
+            JSONObject operatorReport = request.getRobotRequestDTO().getOperatorReport();
+            JSONArray userInfoCheck = operatorReport.getJSONArray(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.USER_INFO_CHECK.getValue());
+            if (null == userInfoCheck || userInfoCheck.size() == 0) {
+                return null;
+            }
+
+            JSONObject itemJson = ((JSONObject) userInfoCheck.get(0)).getJSONObject(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CHECK_BLACK_INFO.getValue());
+            if (null == itemJson) {
+                return null;
+            }
+            count = itemJson.getInteger("contacts_class2_blacklist_cnt");
+        } catch (Exception e) {
+            log.error("模型：通话风险分析-间接联系人中黑名单人数，nid;{},error", request.getNid(), e);
+        }
+
+        return count;
+    }
+
+    /**
+     *  通话风险分析-查询过该用户的相关企业数量（姓名+身份证+电话号码）
+     */
+    public Integer robotCallSearchedOrgCnt(DecisionHandleRequest request) {
+        Integer count = 0;
+        try {
+            JSONObject operatorReport = request.getRobotRequestDTO().getOperatorReport();
+            JSONArray userInfoCheck = operatorReport.getJSONArray(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.USER_INFO_CHECK.getValue());
+            if (null == userInfoCheck || userInfoCheck.size() == 0) {
+                return null;
+            }
+
+            JSONObject itemJson = ((JSONObject) userInfoCheck.get(0)).getJSONObject(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CHECK_SEARCH_INFO.getValue());
+            if (null == itemJson) {
+                return null;
+            }
+            count = itemJson.getInteger("searched_org_cnt");
+        } catch (Exception e) {
+            log.error("模型：通话风险分析-查询过该用户的相关企业数量，nid;{},error", request.getNid(), e);
+        }
+
+        return count;
+    }
+
+    /**
+     *  通话风险分析-身份证组合过的其他姓名(返回了匹配数量)
+     */
+    public Integer robotCallIdcardWithOtherNames(DecisionHandleRequest request) {
+        Integer count = 0;
+        try {
+            JSONObject operatorReport = request.getRobotRequestDTO().getOperatorReport();
+            JSONArray userInfoCheck = operatorReport.getJSONArray(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.USER_INFO_CHECK.getValue());
+            if (null == userInfoCheck || userInfoCheck.size() == 0) {
+                return null;
+            }
+
+            JSONObject itemJson = ((JSONObject) userInfoCheck.get(0)).getJSONObject(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CHECK_SEARCH_INFO.getValue());
+            if (null == itemJson) {
+                return null;
+            }
+            JSONArray array = itemJson.getJSONArray("idcard_with_other_names");
+            if (null == array) {
+                return null;
+            }
+            count = array.size();
+        } catch (Exception e) {
+            log.error("模型：通话风险分析-身份证组合过的其他姓名，nid;{},error", request.getNid(), e);
+        }
+
+        return count;
+    }
+
+    /**
+     *  通话风险分析-身份证组合过其他电话(返回了匹配数量)
+     */
+    public Integer robotCallIdcardWithOtherPhones(DecisionHandleRequest request) {
+        Integer count = 0;
+        try {
+            JSONObject operatorReport = request.getRobotRequestDTO().getOperatorReport();
+            JSONArray userInfoCheck = operatorReport.getJSONArray(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.USER_INFO_CHECK.getValue());
+            if (null == userInfoCheck || userInfoCheck.size() == 0) {
+                return null;
+            }
+
+            JSONObject itemJson = ((JSONObject) userInfoCheck.get(0)).getJSONObject(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CHECK_SEARCH_INFO.getValue());
+            if (null == itemJson) {
+                return null;
+            }
+            JSONArray array = itemJson.getJSONArray("idcard_with_other_phones");
+            if (null == array) {
+                return null;
+            }
+            count = array.size();
+        } catch (Exception e) {
+            log.error("模型：通话风险分析-身份证组合过其他电话，nid;{},error", request.getNid(), e);
+        }
+
+        return count;
+    }
+
+    /**
+     *  通话风险分析-电话号码组合过其他姓名(返回了匹配数量)
+     */
+    public Integer robotCallPhoneWithOtherNames(DecisionHandleRequest request) {
+        Integer count = 0;
+        try {
+            JSONObject operatorReport = request.getRobotRequestDTO().getOperatorReport();
+            JSONArray userInfoCheck = operatorReport.getJSONArray(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.USER_INFO_CHECK.getValue());
+            if (null == userInfoCheck || userInfoCheck.size() == 0) {
+                return null;
+            }
+
+            JSONObject itemJson = ((JSONObject) userInfoCheck.get(0)).getJSONObject(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CHECK_SEARCH_INFO.getValue());
+            if (null == itemJson) {
+                return null;
+            }
+            JSONArray array = itemJson.getJSONArray("phone_with_other_names");
+            if (null == array) {
+                return null;
+            }
+            count = array.size();
+        } catch (Exception e) {
+            log.error("模型：通话风险分析-身份证组合过其他电话，nid;{},error", request.getNid(), e);
+        }
+
+        return count;
+    }
+
+    /**
+     *  通话风险分析-电话号码组合过其他身份证(返回了匹配数量)
+     */
+    public Integer robotCallPhoneWithOtherIdcards(DecisionHandleRequest request) {
+        Integer count = 0;
+        try {
+            JSONObject operatorReport = request.getRobotRequestDTO().getOperatorReport();
+            JSONArray userInfoCheck = operatorReport.getJSONArray(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.USER_INFO_CHECK.getValue());
+            if (null == userInfoCheck || userInfoCheck.size() == 0) {
+                return null;
+            }
+
+            JSONObject itemJson = ((JSONObject) userInfoCheck.get(0)).getJSONObject(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CHECK_SEARCH_INFO.getValue());
+            if (null == itemJson) {
+                return null;
+            }
+            JSONArray array = itemJson.getJSONArray("phone_with_other_idcards");
+            if (null == array) {
+                return null;
+            }
+            count = array.size();
+        } catch (Exception e) {
+            log.error("模型：通话风险分析-电话号码组合过其他身份证，nid;{},error", request.getNid(), e);
+        }
+
+        return count;
+    }
+
+    /**
+     *  出行分析-联系人所在区域个数汇总
+     */
+    public Integer robotCallContactRegion(DecisionHandleRequest request) {
+        Integer count = null;
+        try {
+            JSONObject operatorReport = request.getRobotRequestDTO().getOperatorReport();
+            JSONArray contactRegion = operatorReport.getJSONArray(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CONTACT_REGION.getValue());
+            if (null == contactRegion || contactRegion.size() == 0) {
+                return null;
+            }
+
+            for (Object item : contactRegion) {
+                JSONObject itemJson = (JSONObject) item;
+                String key = itemJson.getString("key");
+                if (null == key && key.equals("contact_region_6m")) {
+                    if (null == itemJson.getJSONArray("region_list")) {
+                        return null;
+                    }
+                    count = itemJson.getJSONArray("region_list").size();
+                }
+            }
+        } catch (Exception e) {
+            log.error("模型：出行分析-联系人所在区域个数汇总，nid;{},error", request.getNid(), e);
+        }
+
+        return count;
+    }
+
+    /**
+     *  出行分析（外出不同城市的个数，曾在那些城市打过电话）
+     */
+    public Integer robotCallTripInfo(DecisionHandleRequest request) {
+        Integer count = null;
+        try {
+            JSONObject operatorReport = request.getRobotRequestDTO().getOperatorReport();
+            JSONArray tripInfo = operatorReport.getJSONArray(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.TRIP_INFO.getValue());
+            if (null == tripInfo || tripInfo.size() == 0) {
+                return null;
+            }
+
+            Set<String> areas = new HashSet<>();
+
+            for (Object item : tripInfo) {
+                JSONObject itemJson = (JSONObject) item;
+
+                if (StringUtils.isNotEmpty(itemJson.getString("trip_dest"))
+                        && !itemJson.getString("trip_dest").equalsIgnoreCase("null")) {
+                    areas.add(itemJson.getString("trip_dest"));
+                }
+
+                if (StringUtils.isNotEmpty(itemJson.getString("trip_leave"))
+                        && !itemJson.getString("trip_leave").equalsIgnoreCase("null")) {
+                    areas.add(itemJson.getString("trip_leave"));
+                }
+            }
+
+            count = areas.size();
+        } catch (Exception e) {
+            log.error("模型：出行分析-外出不同城市的个数，曾在那些城市打过电话，nid;{},error", request.getNid(), e);
+        }
+
+        return count;
+    }
+
+    /**
+     *  深夜[1:30-5:30]通话总次数
+     */
+    public Integer robotCallDurationDetail(DecisionHandleRequest request) {
+        Integer count = null;
+        try {
+            JSONObject operatorReport = request.getRobotRequestDTO().getOperatorReport();
+            JSONArray tripInfo = operatorReport.getJSONArray(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CALL_DURATION_DETAIL.getValue());
+            if (null == tripInfo || tripInfo.size() == 0) {
+                return null;
+            }
+
+            for (Object item : tripInfo) {
+                JSONObject itemJson = (JSONObject) item;
+
+                if (StringUtils.isNotEmpty(itemJson.getString("time_step"))
+                        && !itemJson.getString("time_step").equalsIgnoreCase("time_step")) {
+                    JSONObject detail = itemJson.getJSONObject("item");
+                    count = detail.getInteger("total_cnt");
+                }
+            }
+        } catch (Exception e) {
+            log.error("模型：通话分析-深夜[1:30-5:30]通话总次数，nid;{},error", request.getNid(), e);
+        }
+
+        return count;
+    }
+
+    /**
+     *  深夜[1:30-5:30]通话数
+     */
+    public Integer robotCallMidnightTotalCnt(DecisionHandleRequest request) {
+        Integer count = null;
+        try {
+            JSONObject operatorReport = request.getRobotRequestDTO().getOperatorReport();
+            JSONArray tripInfo = operatorReport.getJSONArray(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CALL_DURATION_DETAIL.getValue());
+            if (null == tripInfo || tripInfo.size() == 0) {
+                return null;
+            }
+
+            for (Object item : tripInfo) {
+                JSONObject itemJson = (JSONObject) item;
+
+                if (StringUtils.isNotEmpty(itemJson.getString("time_step"))
+                        && !itemJson.getString("time_step").equalsIgnoreCase("midnight")) {
+                    JSONObject detail = itemJson.getJSONObject("item");
+                    count = detail.getInteger("total_cnt");
+                }
+            }
+        } catch (Exception e) {
+            log.error("模型：深夜通话分析-深夜[1:30-5:30]通话总次数，nid;{},error", request.getNid(), e);
+        }
+
+        return count;
+    }
+
+    /**
+     *  深夜[1:30-5:30]通话号码数
+     */
+    public Integer robotCallMidnightUniqNumCnt(DecisionHandleRequest request) {
+        Integer count = null;
+        try {
+            JSONObject operatorReport = request.getRobotRequestDTO().getOperatorReport();
+            JSONArray tripInfo = operatorReport.getJSONArray(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CALL_DURATION_DETAIL.getValue());
+            if (null == tripInfo || tripInfo.size() == 0) {
+                return null;
+            }
+
+            for (Object item : tripInfo) {
+                JSONObject itemJson = (JSONObject) item;
+
+                if (StringUtils.isNotEmpty(itemJson.getString("time_step"))
+                        && !itemJson.getString("time_step").equalsIgnoreCase("midnight")) {
+                    JSONObject detail = itemJson.getJSONObject("item");
+                    count = detail.getInteger("uniq_num_cnt");
+                }
+            }
+        } catch (Exception e) {
+            log.error("模型：深夜通话分析-深夜[1:30-5:30]通话号码数，nid;{},error", request.getNid(), e);
+        }
+
+        return count;
+    }
+
+    /**
+     *  深夜[1:30-5:30]主叫数
+     */
+    public Integer robotCallMidnightDialCnt(DecisionHandleRequest request) {
+        Integer count = null;
+        try {
+            JSONObject operatorReport = request.getRobotRequestDTO().getOperatorReport();
+            JSONArray tripInfo = operatorReport.getJSONArray(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CALL_DURATION_DETAIL.getValue());
+            if (null == tripInfo || tripInfo.size() == 0) {
+                return null;
+            }
+
+            for (Object item : tripInfo) {
+                JSONObject itemJson = (JSONObject) item;
+
+                if (StringUtils.isNotEmpty(itemJson.getString("time_step"))
+                        && !itemJson.getString("time_step").equalsIgnoreCase("midnight")) {
+                    JSONObject detail = itemJson.getJSONObject("item");
+                    count = detail.getInteger("dial_cnt");
+                }
+            }
+        } catch (Exception e) {
+            log.error("模型：深夜通话分析-深夜[1:30-5:30]主叫数，nid;{},error", request.getNid(), e);
+        }
+
+        return count;
+    }
+
+    /**
+     *  深夜[1:30-5:30]被叫数
+     */
+    public Integer robotCallMidnightDialedCnt(DecisionHandleRequest request) {
+        Integer count = null;
+        try {
+            JSONObject operatorReport = request.getRobotRequestDTO().getOperatorReport();
+            JSONArray tripInfo = operatorReport.getJSONArray(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CALL_DURATION_DETAIL.getValue());
+            if (null == tripInfo || tripInfo.size() == 0) {
+                return null;
+            }
+
+            for (Object item : tripInfo) {
+                JSONObject itemJson = (JSONObject) item;
+
+                if (StringUtils.isNotEmpty(itemJson.getString("time_step"))
+                        && !itemJson.getString("time_step").equalsIgnoreCase("midnight")) {
+                    JSONObject detail = itemJson.getJSONObject("item");
+                    count = detail.getInteger("dialed_cnt");
+                }
+            }
+        } catch (Exception e) {
+            log.error("模型：深夜通话分析-深夜[1:30-5:30]被叫数，nid;{},error", request.getNid(), e);
+        }
+
+        return count;
+    }
+
+    /**
+     *  运营商-平均话费
+     */
+    public Double robotCallUserOperatorAvgCharge(DecisionHandleRequest request) {
+        Double avgCharge = null;
+        try {
+            JSONObject operatorInfo = request.getRobotRequestDTO().getOperatorInfo();
+
+            JSONArray bills = operatorInfo.getJSONArray("bills");
+            List<Integer> arr = new ArrayList<>();
+            if (null != bills && !bills.isEmpty()) {
+                for (Object bill : bills) {
+                    JSONObject itemJson = (JSONObject) bill;
+                    arr.add(((JSONObject) bill).getIntValue("actual_fee"));
+                }
+                Collections.sort(arr);
+            }
+            String result = Average.getAverages(arr);
+            avgCharge = Double.valueOf(result);
+        } catch (Exception e) {
+            log.error("模型：运营商-平均话费，nid;{},error", request.getNid(), e);
+        }
+        return avgCharge;
+    }
+
+    /**
+     *  行为分析-手机静默情况
+     */
+    public Integer robotCallPhoneSilent(DecisionHandleRequest request) {
+        Integer count = null;
+        try {
+            JSONObject operatorReport = request.getRobotRequestDTO().getOperatorReport();
+            JSONArray behaviorCheck = operatorReport.getJSONArray(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.BEHAVIOR_CHECK.getValue());
+            if (null == behaviorCheck || behaviorCheck.size() == 0) {
+                return null;
+            }
+
+            Set<String> areas = new HashSet<>();
+
+            for (Object item : behaviorCheck) {
+                JSONObject itemJson = (JSONObject) item;
+
+                if (StringUtils.isNotEmpty(itemJson.getString("check_point"))
+                        && !itemJson.getString("check_point").equalsIgnoreCase("phone_silent")) {
+                    count = itemJson.getInteger("score");
+                }
+            }
+        } catch (Exception e) {
+            log.error("模型：行为分析-手机静默情况，nid;{},error", request.getNid(), e);
+        }
+
         return count;
     }
 
