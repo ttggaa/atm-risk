@@ -67,7 +67,7 @@ public class ModelDataServiceImpl implements ModelDataService {
      */
     @Override
     public void saveData(DecisionHandleRequest request) throws Exception {
-//        this.saveOperatorCalls(request);
+        this.saveOperatorCalls(request);
         // 运营商报告相关
         this.genBasicCheckItem(request);
         this.genCallFamilyDetail(request);
@@ -409,6 +409,7 @@ public class ModelDataServiceImpl implements ModelDataService {
      * @param request
      * @return
      */
+    @Override
     public JSONObject getOperatorReport(DecisionHandleRequest request) {
         JSONObject report = null;
 
