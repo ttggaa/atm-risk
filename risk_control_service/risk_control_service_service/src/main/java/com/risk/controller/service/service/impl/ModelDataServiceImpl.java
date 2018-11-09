@@ -54,6 +54,32 @@ public class ModelDataServiceImpl implements ModelDataService {
         this.saveOperatorCalls(request);
     }
 
+    @Override
+    public StaUserBaseinfo getUserBaseInfo(DecisionHandleRequest request) {
+        if (null == request || StringUtils.isBlank(request.getNid())) {
+            return null;
+        }
+        if (null != request.getRobotRequestDTO().getStaUserBaseinfo()) {
+            return request.getRobotRequestDTO().getStaUserBaseinfo();
+        }
+        StaUserBaseinfo baseinfo = staUserBaseinfoDao.getByNid(request.getNid());
+        request.getRobotRequestDTO().setStaUserBaseinfo(baseinfo);
+        return baseinfo;
+    }
+
+    @Override
+    public List<StaOperatorCalls> getOperatorCalls(DecisionHandleRequest request) {
+        if (null == request || StringUtils.isBlank(request.getNid())) {
+            return null;
+        }
+        if (null != request.getRobotRequestDTO().getListOperatorCalls() && request.getRobotRequestDTO().getListOperatorCalls().size() > 0) {
+            return request.getRobotRequestDTO().getListOperatorCalls();
+        }
+        List<StaOperatorCalls> list = staOperatorCallsDao.getByNid(request.getNid());
+        request.getRobotRequestDTO().setListOperatorCalls(list);
+        return list;
+    }
+
     /**
      * 保存运营商通话记录
      *

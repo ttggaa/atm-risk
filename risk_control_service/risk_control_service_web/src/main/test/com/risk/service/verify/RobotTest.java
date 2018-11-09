@@ -52,6 +52,26 @@ public class RobotTest {
     }
 
     @Test
+    public void robotAge() {
+        DecisionHandleRequest request = new DecisionHandleRequest();
+        request.setNid("218101913572114374");
+        Object count = robotHandler.robotAge(request);
+        System.out.println("===========================");
+        System.out.println(JSONObject.toJSONString(count));
+        System.out.println("===========================");
+    }
+
+    @Test
+    public void robotDeviceUsed() {
+        DecisionHandleRequest request = new DecisionHandleRequest();
+        request.setNid("218101913572114374");
+        Object count = robotHandler.robotDeviceUsed(request);
+        System.out.println("===========================");
+        System.out.println(JSONObject.toJSONString(count));
+        System.out.println("===========================");
+    }
+
+    @Test
     public void modelLearn() {
 //        modelService.modelLearn(23L);
         modelService.modelLearn(null);

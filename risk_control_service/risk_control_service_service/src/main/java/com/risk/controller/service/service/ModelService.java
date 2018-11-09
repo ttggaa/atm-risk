@@ -1,5 +1,8 @@
 package com.risk.controller.service.service;
 
+import com.risk.controller.service.entity.StaUserBaseinfo;
+import com.risk.controller.service.request.DecisionHandleRequest;
+
 import java.util.List;
 import java.util.Map;
 
@@ -47,4 +50,5 @@ public interface ModelService {
      * @return
      */
     List<Map<String, Object>> runModelBySql(String sql);
+
 }

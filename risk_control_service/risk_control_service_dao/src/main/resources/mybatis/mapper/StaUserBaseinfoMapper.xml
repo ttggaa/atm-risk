@@ -19,4 +19,8 @@
         cnt_register_num = VALUES(cnt_register_num), opt_calls_register_num = VALUES(opt_calls_register_num), opt_short_num = VALUES(opt_short_num), opt_avg_fee = VALUES(opt_avg_fee), user_device_num = VALUES(user_device_num),
         user_device_used_num = VALUES(user_device_used_num),update_time=SYSDATE()
     </insert>
+
+    <select id="getByNid" resultType="com.risk.controller.service.entity.StaUserBaseinfo" parameterType="string">
+        select * from sta_user_baseinfo where nid = #{nid}
+    </select>
 </mapper>
