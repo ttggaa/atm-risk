@@ -9,9 +9,11 @@ import com.risk.controller.service.common.utils.IdcardUtils;
 import com.risk.controller.service.common.utils.PhoneUtils;
 import com.risk.controller.service.dao.RiskModelOperatorReportDao;
 import com.risk.controller.service.dao.StaOperatorCallsDao;
+import com.risk.controller.service.dao.StaSmBorrowsDao;
 import com.risk.controller.service.dao.StaUserBaseinfoDao;
 import com.risk.controller.service.entity.DataOrderMapping;
 import com.risk.controller.service.entity.StaOperatorCalls;
+import com.risk.controller.service.entity.StaSmBorrows;
 import com.risk.controller.service.entity.StaUserBaseinfo;
 import com.risk.controller.service.enums.CacheCfgType;
 import com.risk.controller.service.enums.GetCacheModel;
@@ -55,6 +57,8 @@ public class ModelDataServiceImpl implements ModelDataService {
     private DataOrderMappingService dataOrderMappingService;
     @Autowired
     private PaixuService paixuService;
+    @Autowired
+    private StaSmBorrowsDao staSmBorrowsDao;
 
     /**
      * 入口方法
@@ -99,6 +103,19 @@ public class ModelDataServiceImpl implements ModelDataService {
         return list;
     }
 
+    @Override
+    public StaSmBorrows getStaSmBorrows(DecisionHandleRequest request) {
+        if (null == request || StringUtils.isBlank(request.getNid())) {
+            return null;
+        }
+        if (null != request.getRobotRequestDTO().getStaSmBorrows()) {
+            return request.getRobotRequestDTO().getStaSmBorrows();
+        }
+        StaSmBorrows staSmBorrows = staSmBorrowsDao.getByNid(request.getNid());
+        request.getRobotRequestDTO().setStaSmBorrows(staSmBorrows);
+        return staSmBorrows;
+    }
+
     /**
      * 保存运营商通话记录
      *
@@ -110,13 +127,13 @@ public class ModelDataServiceImpl implements ModelDataService {
         List<JSONObject> smsDetails = mongoHandler.getUserOperatorSms(request);
         List<JSONObject> contactDetails = mongoHandler.getUserDeviceContact(request);
         JSONObject operatorInfo = mongoHandler.getOperatorInfo(request);
-        if (null == operatorInfo ) {
+        if (null == operatorInfo) {
             throw new Exception("operatorInfo为空");
         }
-        if (null == callDetails  || callDetails.size()<=0) {
+        if (null == callDetails || callDetails.size() <= 0) {
             throw new Exception("callDetails为空");
         }
-        if (null == contactDetails  || contactDetails.size()<=0) {
+        if (null == contactDetails || contactDetails.size() <= 0) {
             throw new Exception("ocontactDetails为空");
         }
 
@@ -249,7 +266,7 @@ public class ModelDataServiceImpl implements ModelDataService {
                     if (eachCalledNum.containsKey(entry.getKey())) {
                         eachNum += (entry.getValue() + eachCalledNum.get(entry.getKey())) / 2;
                         eachTime += eachCallTime.get(entry.getKey());
-                        eachManNum ++;
+                        eachManNum++;
                     }
                 }
                 operatorCalls.setCntEachOtherNum(eachNum);
