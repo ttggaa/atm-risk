@@ -810,6 +810,7 @@ public class PaixuServiceImpl implements PaixuService {
 	 * @param collection
 	 * @return
 	 */
+	@Override
 	public List<JSONObject> getEqMongoData(Map<String, Object> queryMap, String collection) {
 		List<MongoQuery> queries = new ArrayList<>();
 

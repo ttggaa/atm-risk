@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.risk.controller.service.dao.DataOrderMappingDao">
+
+    <resultMap id="BaseResultMap" type="java.util.Map">
+    </resultMap>
+
+    <insert id="genCallRiskAnalysis" parameterType="map">
+        insert into `zx_risk`.`sta_call_risk_analysis`
+        (`phone`, `nid`, `analysis_item`, `analysis_desc`, `call_cnt_1m`, `call_cnt_3m`, `call_cnt_6m`, `call_time_1m`, `call_time_3m`, `call_time_6m`, `avg_call_cnt_3m`, `avg_call_cnt_6m`, `avg_call_time_3m`, `avg_call_time_6m`, `call_dial_cnt_1m`, `call_dial_cnt_3m`, `call_dial_cnt_6m`, `call_dial_time_1m`, `call_dial_time_3m`, `call_dial_time_6m`, `avg_call_dial_cnt_3m`, `avg_call_dial_cnt_6m`, `avg_call_dial_time_3m`, `avg_call_dial_time_6m`, `call_dialed_time_1m`, `call_dialed_time_3m`, `call_dialed_time_6m`, `call_dialed_cnt_1m`, `call_dialed_cnt_3m`, `call_dialed_cnt_6m`, `avg_call_dialed_cnt_3m`, `avg_call_dialed_cnt_6m`, `avg_call_dialed_time_3m`, `avg_call_dialed_time_6m`)
+        values (
+<!--
+        <foreach collection="list" item="item" index="index" separator=",">
+-->
+        #{phone},
+        #{nid},
+        #{analysis_item},
+        #{analysis_desc},
+        #{call_cnt_1m},
+        #{call_cnt_3m},
+        #{call_cnt_6m},
+        #{call_time_1m},
+        #{call_time_3m},
+        #{call_time_6m},
+        #{avg_call_cnt_3m},
+        #{avg_call_cnt_6m},
+        #{avg_call_time_3m},
+        #{avg_call_time_6m},
+        #{call_dial_cnt_1m},
+        #{call_dial_cnt_3m},
+        #{call_dial_cnt_6m},
+        #{call_dial_time_1m},
+        #{call_dial_time_3m},
+        #{call_dial_time_6m},
+        #{avg_call_dial_cnt_3m},
+        #{avg_call_dial_cnt_6m},
+        #{avg_call_dial_time_3m},
+        #{avg_call_dial_time_6m},
+        #{call_dialed_time_1m},
+        #{call_dialed_time_3m},
+        #{call_dialed_time_6m},
+        #{call_dialed_cnt_1m},
+        #{call_dialed_cnt_3m},
+        #{call_dialed_cnt_6m},
+        #{avg_call_dialed_cnt_3m},
+        #{avg_call_dialed_cnt_6m},
+        #{avg_call_dialed_time_3m},
+        #{avg_call_dialed_time_6m}
+        )
+<!--
+     </foreach>
+-->
+    </insert>
+
+    <insert id="genSmBorrow" >
+        insert into `sta_sm_borrows` (
+        `nid`,
+        `applications_180d`,
+        `applications_90d`,
+        `applications_60d`,
+        `applications_30d`,
+        `applications_7d`,
+        `applications`,
+        `approvals_180d`,
+        `approvals_90d`,
+        `approvals_60d`,
+        `approvals_30d`,
+        `approvals_7d`,
+        `approvals`,
+        `queries_180d`,
+        `queries_90d`,
+        `queries_60d`,
+        `queries_30d`,
+        `queries_7d`,
+        `queries`,
+        `refuses_180d`,
+        `refuses_90d`,
+        `refuses_60d`,
+        `refuses_30d`,
+        `refuses_7d`,
+        `refuses`,
+        `registers_180d`,
+        `registers_90d`,
+        `registers_60d`,
+        `registers_30d`,
+        `registers_7d`,
+        `registers`
+        )
+        values
+        (
+        #{nid},
+        #{applications_180d},
+        #{applications_90d},
+        #{applications_60d},
+        #{applications_30d},
+        #{applications_7d},
+        #{applications},
+        #{approvals_180d},
+        #{approvals_90d},
+        #{approvals_60d},
+        #{approvals_30d},
+        #{approvals_7d},
+        #{approvals},
+        #{queries_180d},
+        #{queries_90d},
+        #{queries_60d},
+        #{queries_30d},
+        #{queries_7d},
+        #{queries},
+        #{refuses_180d},
+        #{refuses_90d},
+        #{refuses_60d},
+        #{refuses_30d},
+        #{refuses_7d},
+        #{refuses},
+        #{registers_180d},
+        #{registers_90d},
+        #{registers_60d},
+        #{registers_30d},
+        #{registers_7d},
+        #{registers}
+        )
+    </insert>
+
+    <insert id="genRwTime">
+        insert into `sta_rw` (`nid`, `in_time`, `duration`)
+        values(#{nid},#{in_time},#{duration})
+
+    </insert>
+
+    <insert id="genBasicCheckItem" >
+        insert into `sta_basic_check_items` (`nid`, `phone`, `idcard_check`, `idcard_check_comment`, `email_check`, `email_check_comment`, `address_check`, `address_check_comment`, `call_data_check`, `call_data_check_comment`, `idcard_match`, `idcard_match_comment`, `name_match`, `name_match_comment`, `is_name_and_idcard_in_court_black`, `is_name_and_idcard_in_court_black_comment`, `is_name_and_idcard_in_finance_black`, `is_name_and_idcard_in_finance_black_comment`, `is_name_and_mobile_in_finance_black`, `is_name_and_mobile_in_finance_black_comment`, `mobile_silence_3m`, `mobile_silence_3m_comment`, `mobile_silence_6m`, `mobile_silence_6m_comment`, `arrearage_risk_3m`, `arrearage_risk_3m_comment`, `arrearage_risk_6m`, `arrearage_risk_6m_comment`, `binding_risk`, `binding_risk_comment`)
+        values (
+        #{nid}, #{ phone}, #{ idcard_check}, #{ idcard_check_comment}, #{ email_check}, #{ email_check_comment}, #{ address_check}, #{ address_check_comment}, #{ call_data_check}, #{ call_data_check_comment}, #{ idcard_match}, #{ idcard_match_comment}, #{ name_match}, #{ name_match_comment}, #{ is_name_and_idcard_in_court_black}, #{ is_name_and_idcard_in_court_black_comment}, #{ is_name_and_idcard_in_finance_black}, #{ is_name_and_idcard_in_finance_black_comment}, #{ is_name_and_mobile_in_finance_black}, #{ is_name_and_mobile_in_finance_black_comment}, #{ mobile_silence_3m}, #{ mobile_silence_3m_comment}, #{ mobile_silence_6m}, #{ mobile_silence_6m_comment}, #{ arrearage_risk_3m}, #{ arrearage_risk_3m_comment}, #{ arrearage_risk_6m}, #{ arrearage_risk_6m_comment}, #{ binding_risk}, #{ binding_risk_comment}
+        )
+    </insert>
+
+    <insert id="genCheckBlackInfo" parameterType="com.alibaba.fastjson.JSONObject" >
+        insert into `sta_check_black_info` (`nid`, `phone`, `contacts_class1_cnt`, `contacts_class1_blacklist_cnt`, `contacts_router_cnt`, `contacts_class2_blacklist_cnt`, `contacts_router_ratio`, `phone_gray_score`)
+        values(#{nid}, #{phone}, #{contacts_class1_cnt}, #{contacts_class1_blacklist_cnt}, #{contacts_router_cnt}, #{contacts_class2_blacklist_cnt}, #{contacts_router_ratio}, #{phone_gray_score}
+        )
+    </insert>
+
+    <insert id="genCallFamilyDetail" parameterType="com.alibaba.fastjson.JSONObject" >
+        insert into `sta_call_family_detail` (`nid`, `phone`, `app_point`, `app_point_zh`, `item_1m`, `item_3m`, `item_6m`, `avg_item_3m`, `avg_item_6m`)
+        values(#{nid}, #{phone}, #{app_point}, #{app_point_zh}, #{item_1m}, #{item_3m}, #{item_6m}, #{avg_item_3m}, #{avg_item_6m}
+        )
+    </insert>
+
+    <insert id="genCallMidnight" parameterType="com.alibaba.fastjson.JSONObject" >
+        insert into `sta_call_duration_detail` (`nid`, `phone`, `time_step`, `time_step_zh`, `dialed_time`, `dialed_cnt`, `total_time`, `total_cnt`, `dial_time`, `dial_cnt`, `latest_call_time`, `farthest_call_time`, `uniq_num_cnt`, `add_time`, `update_time`)
+        values(
+        #{nid}, #{phone}, #{time_step}, #{time_step_zh}, #{dialed_time}, #{dialed_cnt}, #{total_time}, #{total_cnt}, #{dial_time}, #{dial_cnt}, #{latest_call_time}, #{farthest_call_time}, #{uniq_num_cnt}, #{add_time}, #{update_time}
+        )
+    </insert>
+
+    <insert id="genCallSilentAreasBill" parameterType="com.alibaba.fastjson.JSONObject" >
+        insert into `sta_silent_areas_bill` (`nid`, `phone`, `region_cnt`, `trip_cnt`, `avg_charge`, `phone_silent`)
+        values(
+        #{nid}, #{phone}, #{region_cnt}, #{trip_cnt}, #{avg_charge}, #{phone_silent}
+        )
+    </insert>
+
+    <select id="getAllReqNid" parameterType="String" resultType="String">
+        SELECT DISTINCT r.nid FROM risk_decision_req_log r
+    </select>
+
+    <select id="getSmBorrow" parameterType="String" resultType="String">
+        SELECT DISTINCT r.order_no AS nid FROM zx_atm.zx_repay_order r
+        WHERE NOT EXISTS (SELECT 1 FROM zx_risk.`sta_sm_borrows` WHERE r.order_no = nid)
+    </select>
+
+    <select id="getRiskAnaLysisNid" parameterType="String" resultType="String">
+        SELECT DISTINCT r.order_no AS nid FROM zx_atm.zx_repay_order r
+        WHERE NOT EXISTS (SELECT 1 FROM zx_risk.`sta_call_risk_analysis` WHERE r.order_no = nid)
+    </select>
+
+    <select id="getBasicCheckItem" parameterType="String" resultType="String">
+        SELECT DISTINCT r.order_no AS nid FROM zx_atm.zx_repay_order r
+        WHERE NOT EXISTS (SELECT 1 FROM zx_risk.`sta_basic_check_items` WHERE r.order_no = nid)
+    </select>
+
+    <select id="getCheckBlackInfo" parameterType="String" resultType="String">
+        SELECT DISTINCT r.order_no AS nid FROM zx_atm.zx_repay_order r
+        WHERE NOT EXISTS (SELECT 1 FROM zx_risk.`sta_check_black_info` WHERE r.order_no = nid)
+    </select>
+
+    <select id="getCallFamilyDetail" parameterType="String" resultType="String">
+        SELECT DISTINCT r.order_no AS nid FROM zx_atm.zx_repay_order r
+        WHERE NOT EXISTS (SELECT 1 FROM zx_risk.`sta_call_family_detail` WHERE r.order_no = nid)
+    </select>
+
+</mapper>

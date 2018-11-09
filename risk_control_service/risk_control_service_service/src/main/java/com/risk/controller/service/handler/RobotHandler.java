@@ -1584,7 +1584,7 @@ public class RobotHandler implements AdmissionHandler {
     }
 
     /**
-     *  深夜[1:30-5:30]通话总次数
+     *  深夜[1:30-5:30]通话总次数,近三个月
      */
     public Integer robotCallDurationDetail(DecisionHandleRequest request) {
         Integer count = null;
@@ -1599,7 +1599,8 @@ public class RobotHandler implements AdmissionHandler {
                 JSONObject itemJson = (JSONObject) item;
 
                 if (StringUtils.isNotEmpty(itemJson.getString("time_step"))
-                        && !itemJson.getString("time_step").equalsIgnoreCase("time_step")) {
+                        && !itemJson.getString("time_step").equalsIgnoreCase("time_step")
+                        && itemJson.getString("key").equalsIgnoreCase("call_duration_detail_3m")) {
                     JSONObject detail = itemJson.getJSONObject("item");
                     count = detail.getInteger("total_cnt");
                 }
@@ -1612,7 +1613,7 @@ public class RobotHandler implements AdmissionHandler {
     }
 
     /**
-     *  深夜[1:30-5:30]通话数
+     *  深夜[1:30-5:30]通话数，近三个月
      */
     public Integer robotCallMidnightTotalCnt(DecisionHandleRequest request) {
         Integer count = null;
@@ -1627,7 +1628,8 @@ public class RobotHandler implements AdmissionHandler {
                 JSONObject itemJson = (JSONObject) item;
 
                 if (StringUtils.isNotEmpty(itemJson.getString("time_step"))
-                        && !itemJson.getString("time_step").equalsIgnoreCase("midnight")) {
+                        && !itemJson.getString("time_step").equalsIgnoreCase("midnight")
+                        && itemJson.getString("key").equalsIgnoreCase("call_duration_detail_3m")) {
                     JSONObject detail = itemJson.getJSONObject("item");
                     count = detail.getInteger("total_cnt");
                 }
@@ -1640,7 +1642,7 @@ public class RobotHandler implements AdmissionHandler {
     }
 
     /**
-     *  深夜[1:30-5:30]通话号码数
+     *  深夜[1:30-5:30]通话号码数，近三个月
      */
     public Integer robotCallMidnightUniqNumCnt(DecisionHandleRequest request) {
         Integer count = null;
@@ -1655,7 +1657,8 @@ public class RobotHandler implements AdmissionHandler {
                 JSONObject itemJson = (JSONObject) item;
 
                 if (StringUtils.isNotEmpty(itemJson.getString("time_step"))
-                        && !itemJson.getString("time_step").equalsIgnoreCase("midnight")) {
+                        && !itemJson.getString("time_step").equalsIgnoreCase("midnight")
+                        && itemJson.getString("key").equalsIgnoreCase("call_duration_detail_3m")) {
                     JSONObject detail = itemJson.getJSONObject("item");
                     count = detail.getInteger("uniq_num_cnt");
                 }
@@ -1668,7 +1671,7 @@ public class RobotHandler implements AdmissionHandler {
     }
 
     /**
-     *  深夜[1:30-5:30]主叫数
+     *  深夜[1:30-5:30]主叫数，近三个月
      */
     public Integer robotCallMidnightDialCnt(DecisionHandleRequest request) {
         Integer count = null;
@@ -1683,7 +1686,8 @@ public class RobotHandler implements AdmissionHandler {
                 JSONObject itemJson = (JSONObject) item;
 
                 if (StringUtils.isNotEmpty(itemJson.getString("time_step"))
-                        && !itemJson.getString("time_step").equalsIgnoreCase("midnight")) {
+                        && !itemJson.getString("time_step").equalsIgnoreCase("midnight")
+                        && itemJson.getString("key").equalsIgnoreCase("call_duration_detail_3m")) {
                     JSONObject detail = itemJson.getJSONObject("item");
                     count = detail.getInteger("dial_cnt");
                 }
@@ -1696,7 +1700,7 @@ public class RobotHandler implements AdmissionHandler {
     }
 
     /**
-     *  深夜[1:30-5:30]被叫数
+     *  深夜[1:30-5:30]被叫数，近三个月
      */
     public Integer robotCallMidnightDialedCnt(DecisionHandleRequest request) {
         Integer count = null;
@@ -1709,9 +1713,9 @@ public class RobotHandler implements AdmissionHandler {
 
             for (Object item : tripInfo) {
                 JSONObject itemJson = (JSONObject) item;
-
                 if (StringUtils.isNotEmpty(itemJson.getString("time_step"))
-                        && !itemJson.getString("time_step").equalsIgnoreCase("midnight")) {
+                        && !itemJson.getString("time_step").equalsIgnoreCase("midnight")
+                        && itemJson.getString("key").equalsIgnoreCase("call_duration_detail_3m")) {
                     JSONObject detail = itemJson.getJSONObject("item");
                     count = detail.getInteger("dialed_cnt");
                 }
@@ -1759,8 +1763,6 @@ public class RobotHandler implements AdmissionHandler {
             if (null == behaviorCheck || behaviorCheck.size() == 0) {
                 return null;
             }
-
-            Set<String> areas = new HashSet<>();
 
             for (Object item : behaviorCheck) {
                 JSONObject itemJson = (JSONObject) item;
