@@ -10,6 +10,17 @@ import java.util.List;
 
 public interface ModelDataService {
 
+    /**
+     * 通过sql保存订单基础信息
+     * @param sql
+     */
+    void saveDataBySql(String sql);
+
+    /**
+     * 保存订单基础信息
+     * @param request
+     * @throws Exception
+     */
     void saveData(DecisionHandleRequest request) throws Exception;
 
     /**

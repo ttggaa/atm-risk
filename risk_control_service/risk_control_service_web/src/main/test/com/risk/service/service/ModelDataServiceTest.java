@@ -50,7 +50,7 @@ public class ModelDataServiceTest {
     @Test
     public void saveData2() throws Exception {
         String nid = "31806021379960164";
-//        nid = "31806050084165325";
+        nid = "31806050084165325";
 //        nid = "218101913572114374";
         DecisionReqLog reqLog = decisionReqLogDao.getbyNid(nid);
         if (null != reqLog) {

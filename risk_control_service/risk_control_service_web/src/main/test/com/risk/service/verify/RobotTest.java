@@ -556,7 +556,7 @@ public class RobotTest {
         DecisionHandleRequest request = new DecisionHandleRequest();
         request.setUserName("17317600807");
         request.setNid("218110715285014286");
-        modelService.saveData(request);
+//        modelService.saveData(request);
     }
 
     @Test

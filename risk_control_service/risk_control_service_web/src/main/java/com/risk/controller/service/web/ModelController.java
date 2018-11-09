@@ -7,6 +7,7 @@ import com.risk.controller.service.dto.RobotResultRequest;
 import com.risk.controller.service.handler.RobotHandler;
 import com.risk.controller.service.handler.VerifyHandler;
 import com.risk.controller.service.request.DecisionHandleRequest;
+import com.risk.controller.service.service.ModelDataService;
 import com.risk.controller.service.service.ModelService;
 import com.risk.controller.service.service.OperatorService;
 import com.risk.controller.service.service.impl.PaixuServiceImpl;
@@ -31,6 +32,8 @@ public class ModelController {
     private RobotHandler robotHandler;
     @Autowired
     private OperatorService operatorService;
+    @Autowired
+    private ModelDataService modelDataService;
 
     /**
      * 计算用户运营商数据
@@ -73,6 +76,13 @@ public class ModelController {
     @RequestMapping(value = "/runModelBySql", method = RequestMethod.POST)
     public ResponseEntity runModelBySql(String sql) {
         robotHandler.runModelBySql(sql);
+        return new ResponseEntity(ResponseEntity.STATUS_OK);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/saveDataBySql", method = RequestMethod.POST)
+    public ResponseEntity saveDataBySql(String sql) {
+        modelDataService.saveDataBySql(sql);
         return new ResponseEntity(ResponseEntity.STATUS_OK);
     }
 }

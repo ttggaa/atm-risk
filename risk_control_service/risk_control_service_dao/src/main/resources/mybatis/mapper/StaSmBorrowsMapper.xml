@@ -4,6 +4,29 @@
     <resultMap id="getMap" type="com.risk.controller.service.entity.StaSmBorrows">
     </resultMap>
 
+    <insert id="saveOrUpdate" parameterType="com.risk.controller.service.entity.StaSmBorrows">
+        INSERT INTO `zx_risk`.`sta_sm_borrows` (
+        `nid`, `applications_180d`, `applications_90d`, `applications_60d`, `applications_30d`, `applications_7d`, `applications`,
+        `approvals_180d`, `approvals_90d`, `approvals_60d`, `approvals_30d`, `approvals_7d`,  `approvals`,
+        `queries_180d`, `queries_90d`, `queries_60d`, `queries_30d`, `queries_7d`, `queries`,
+        `refuses_180d`, `refuses_90d`, `refuses_60d`, `refuses_30d`, `refuses_7d`,  `refuses`,
+        `registers_180d`, `registers_90d`, `registers_60d`, `registers_30d`, `registers_7d`, `registers`,
+        `add_time`, `update_time`) VALUES (
+        #{nid}, #{applications180d}, #{applications90d}, #{applications60d}, #{applications30d}, #{applications7d}, #{applications},
+        #{approvals180d}, #{approvals90d}, #{approvals60d}, #{approvals30d}, #{approvals7d},#{approvals},
+        #{queries180d}, #{queries90d}, #{queries60d}, #{queries30d}, #{queries7d},#{queries},
+        #{refuses180d}, #{refuses90d}, #{refuses60d}, #{refuses30d}, #{refuses7d},#{refuses},
+        #{registers180d}, #{registers90d}, #{registers60d}, #{registers30d}, #{registers7d},#{registers},
+        SYSDATE(), SYSDATE())
+        on duplicate key update
+        applications_180d = VALUES(applications_180d), applications_90d= VALUES(applications_90d), applications_60d = VALUES(applications_60d), applications_30d= VALUES(applications_30d), applications_7d= VALUES(applications_7d), applications= VALUES(applications),
+        approvals_180d= VALUES(approvals_180d), approvals_90d= VALUES(approvals_90d),approvals_60d = VALUES(approvals_60d), approvals_30d= VALUES(approvals_30d), approvals_7d= VALUES(approvals_7d), approvals= VALUES(approvals),
+        queries_180d= VALUES(queries_180d),queries_90d = VALUES(queries_90d), queries_60d= VALUES(queries_60d),queries_30d = VALUES(queries_30d),queries_7d = VALUES(queries_7d), queries= VALUES(queries),
+        refuses_180d= VALUES(refuses_180d), refuses_90d= VALUES(refuses_90d), refuses_60d= VALUES(refuses_60d), refuses_30d= VALUES(refuses_30d),refuses_7d = VALUES(refuses_7d), refuses= VALUES(refuses),
+        registers_180d= VALUES(registers_180d), registers_90d= VALUES(registers_90d), registers_60d= VALUES(registers_60d), registers_30d= VALUES(registers_30d), registers_7d= VALUES(registers_7d), registers= VALUES(registers),
+        update_time= SYSDATE()
+    </insert>
+
     <select id="getByNid" parameterType="string" resultType="com.risk.controller.service.entity.StaSmBorrows">
         select * from sta_sm_borrows where nid = #{nid}
     </select>
