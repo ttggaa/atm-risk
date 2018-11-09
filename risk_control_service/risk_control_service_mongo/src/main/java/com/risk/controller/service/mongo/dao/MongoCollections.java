@@ -26,21 +26,13 @@ public class MongoCollections {
         ANALYSIS_POINT("analysis_point"),
         ANALYSIS_ITEM("analysis_item"),
         CALL_CNT_3M("call_cnt_3m"),
-
         USER_INFO_CHECK("user_info_check"),
         CHECK_BLACK_INFO("check_black_info"),
-
         CHECK_SEARCH_INFO("check_search_info"),
-
         CONTACT_REGION("contact_region"),
-
         TRIP_INFO("trip_info"),
-
         CALL_DURATION_DETAIL("call_duration_detail"),
-
         BEHAVIOR_CHECK("behavior_check"),
-
-
         ;
 
         private String value;
@@ -53,6 +45,4 @@ public class MongoCollections {
             return value;
         }
     }
-
-
 }

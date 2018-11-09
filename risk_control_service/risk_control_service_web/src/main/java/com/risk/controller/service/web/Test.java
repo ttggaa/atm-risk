@@ -1,6 +1,7 @@
 package com.risk.controller.service.web;
 
 import com.risk.controller.service.common.utils.ResponseEntity;
+import com.risk.controller.service.handler.RobotHandler;
 import com.risk.controller.service.request.DecisionHandleRequest;
 import com.risk.controller.service.service.ModelDataService;
 import com.risk.controller.service.service.ModelService;
@@ -18,6 +19,8 @@ public class Test {
 
     @Autowired
     private ModelDataService modelDataService;
+    @Autowired
+    private RobotHandler robotHandler;
 
     @RequestMapping(value = "/test")
     @ResponseBody
@@ -25,7 +28,7 @@ public class Test {
         DecisionHandleRequest request = new DecisionHandleRequest();
         request.setUserName("17317600807");
         request.setNid("218110715285014286");
-        modelDataService.saveData(request);
+
         return null;
     }
 

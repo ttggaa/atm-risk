@@ -2300,7 +2300,7 @@ public class RobotHandler implements AdmissionHandler {
     public Integer robotCallRiskAnalysisCollection(DecisionHandleRequest request) {
         Integer count = 0;
         try {
-            JSONObject operatorReport = request.getRobotRequestDTO().getOperatorReport();
+            JSONObject operatorReport = modelDataService.getOperatorReport(request);
             JSONArray call_risk_analysis = operatorReport.getJSONArray(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CALL_RISK_ANALYSIS.getValue());
             if (null == call_risk_analysis || call_risk_analysis.size() == 0) {
                 return null;
@@ -2330,7 +2330,7 @@ public class RobotHandler implements AdmissionHandler {
     public Integer robotCallRiskAnalysisCreditCard(DecisionHandleRequest request) {
         Integer count = 0;
         try {
-            JSONObject operatorReport = request.getRobotRequestDTO().getOperatorReport();
+            JSONObject operatorReport = modelDataService.getOperatorReport(request);
             JSONArray call_risk_analysis = operatorReport.getJSONArray(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CALL_RISK_ANALYSIS.getValue());
             if (null == call_risk_analysis || call_risk_analysis.size() == 0) {
                 return null;
@@ -2361,7 +2361,7 @@ public class RobotHandler implements AdmissionHandler {
     public Integer robotCallRiskAnalysisLoan(DecisionHandleRequest request) {
         Integer count = 0;
         try {
-            JSONObject operatorReport = request.getRobotRequestDTO().getOperatorReport();
+            JSONObject operatorReport = modelDataService.getOperatorReport(request);
             JSONArray call_risk_analysis = operatorReport.getJSONArray(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CALL_RISK_ANALYSIS.getValue());
             if (null == call_risk_analysis || call_risk_analysis.size() == 0) {
                 return null;
@@ -2391,7 +2391,7 @@ public class RobotHandler implements AdmissionHandler {
     public Integer robotCallRiskAnalysisGov(DecisionHandleRequest request) {
         Integer count = 0;
         try {
-            JSONObject operatorReport = request.getRobotRequestDTO().getOperatorReport();
+            JSONObject operatorReport = modelDataService.getOperatorReport(request);
             JSONArray call_risk_analysis = operatorReport.getJSONArray(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CALL_RISK_ANALYSIS.getValue());
             if (null == call_risk_analysis || call_risk_analysis.size() == 0) {
                 return null;
@@ -2447,15 +2447,15 @@ public class RobotHandler implements AdmissionHandler {
     public Integer robotCallCheckBlackInfoScore(DecisionHandleRequest request) {
         Integer count = 0;
         try {
-            JSONObject operatorReport = request.getRobotRequestDTO().getOperatorReport();
+            JSONObject operatorReport = modelDataService.getOperatorReport(request);
             JSONArray userInfoCheck = operatorReport.getJSONArray(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.USER_INFO_CHECK.getValue());
             if (null == userInfoCheck || userInfoCheck.size() == 0) {
-                return null;
+                return count;
             }
 
             JSONObject itemJson = ((JSONObject) userInfoCheck.get(0)).getJSONObject(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CHECK_BLACK_INFO.getValue());
             if (null == itemJson) {
-                return null;
+                return count;
             }
             count = itemJson.getInteger("phone_gray_score");
         } catch (Exception e) {
@@ -2471,15 +2471,15 @@ public class RobotHandler implements AdmissionHandler {
     public Integer robotCallCheckBlackInfoRouter(DecisionHandleRequest request) {
         Integer count = 0;
         try {
-            JSONObject operatorReport = request.getRobotRequestDTO().getOperatorReport();
+            JSONObject operatorReport = modelDataService.getOperatorReport(request);
             JSONArray userInfoCheck = operatorReport.getJSONArray(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.USER_INFO_CHECK.getValue());
             if (null == userInfoCheck || userInfoCheck.size() == 0) {
-                return null;
+                return count;
             }
 
             JSONObject itemJson = ((JSONObject) userInfoCheck.get(0)).getJSONObject(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CHECK_BLACK_INFO.getValue());
             if (null == itemJson) {
-                return null;
+                return count;
             }
             count = itemJson.getInteger("contacts_router_cnt");
         } catch (Exception e) {
@@ -2495,15 +2495,15 @@ public class RobotHandler implements AdmissionHandler {
     public Integer robotCallCheckBlackInfoClass2Cnt(DecisionHandleRequest request) {
         Integer count = 0;
         try {
-            JSONObject operatorReport = request.getRobotRequestDTO().getOperatorReport();
+            JSONObject operatorReport = modelDataService.getOperatorReport(request);
             JSONArray userInfoCheck = operatorReport.getJSONArray(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.USER_INFO_CHECK.getValue());
             if (null == userInfoCheck || userInfoCheck.size() == 0) {
-                return null;
+                return count;
             }
 
             JSONObject itemJson = ((JSONObject) userInfoCheck.get(0)).getJSONObject(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CHECK_BLACK_INFO.getValue());
             if (null == itemJson) {
-                return null;
+                return count;
             }
             count = itemJson.getInteger("contacts_class2_blacklist_cnt");
         } catch (Exception e) {
@@ -2519,15 +2519,15 @@ public class RobotHandler implements AdmissionHandler {
     public Integer robotCallSearchedOrgCnt(DecisionHandleRequest request) {
         Integer count = 0;
         try {
-            JSONObject operatorReport = request.getRobotRequestDTO().getOperatorReport();
+            JSONObject operatorReport = modelDataService.getOperatorReport(request);
             JSONArray userInfoCheck = operatorReport.getJSONArray(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.USER_INFO_CHECK.getValue());
             if (null == userInfoCheck || userInfoCheck.size() == 0) {
-                return null;
+                return count;
             }
 
             JSONObject itemJson = ((JSONObject) userInfoCheck.get(0)).getJSONObject(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CHECK_SEARCH_INFO.getValue());
             if (null == itemJson) {
-                return null;
+                return count;
             }
             count = itemJson.getInteger("searched_org_cnt");
         } catch (Exception e) {
@@ -2543,19 +2543,19 @@ public class RobotHandler implements AdmissionHandler {
     public Integer robotCallIdcardWithOtherNames(DecisionHandleRequest request) {
         Integer count = 0;
         try {
-            JSONObject operatorReport = request.getRobotRequestDTO().getOperatorReport();
+            JSONObject operatorReport = modelDataService.getOperatorReport(request);
             JSONArray userInfoCheck = operatorReport.getJSONArray(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.USER_INFO_CHECK.getValue());
             if (null == userInfoCheck || userInfoCheck.size() == 0) {
-                return null;
+                return count;
             }
 
             JSONObject itemJson = ((JSONObject) userInfoCheck.get(0)).getJSONObject(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CHECK_SEARCH_INFO.getValue());
             if (null == itemJson) {
-                return null;
+                return count;
             }
             JSONArray array = itemJson.getJSONArray("idcard_with_other_names");
             if (null == array) {
-                return null;
+                return count;
             }
             count = array.size();
         } catch (Exception e) {
@@ -2571,19 +2571,19 @@ public class RobotHandler implements AdmissionHandler {
     public Integer robotCallIdcardWithOtherPhones(DecisionHandleRequest request) {
         Integer count = 0;
         try {
-            JSONObject operatorReport = request.getRobotRequestDTO().getOperatorReport();
+            JSONObject operatorReport = modelDataService.getOperatorReport(request);
             JSONArray userInfoCheck = operatorReport.getJSONArray(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.USER_INFO_CHECK.getValue());
             if (null == userInfoCheck || userInfoCheck.size() == 0) {
-                return null;
+                return count;
             }
 
             JSONObject itemJson = ((JSONObject) userInfoCheck.get(0)).getJSONObject(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CHECK_SEARCH_INFO.getValue());
             if (null == itemJson) {
-                return null;
+                return count;
             }
             JSONArray array = itemJson.getJSONArray("idcard_with_other_phones");
             if (null == array) {
-                return null;
+                return count;
             }
             count = array.size();
         } catch (Exception e) {
@@ -2599,19 +2599,19 @@ public class RobotHandler implements AdmissionHandler {
     public Integer robotCallPhoneWithOtherNames(DecisionHandleRequest request) {
         Integer count = 0;
         try {
-            JSONObject operatorReport = request.getRobotRequestDTO().getOperatorReport();
+            JSONObject operatorReport = modelDataService.getOperatorReport(request);
             JSONArray userInfoCheck = operatorReport.getJSONArray(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.USER_INFO_CHECK.getValue());
             if (null == userInfoCheck || userInfoCheck.size() == 0) {
-                return null;
+                return count;
             }
 
             JSONObject itemJson = ((JSONObject) userInfoCheck.get(0)).getJSONObject(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CHECK_SEARCH_INFO.getValue());
             if (null == itemJson) {
-                return null;
+                return count;
             }
             JSONArray array = itemJson.getJSONArray("phone_with_other_names");
             if (null == array) {
-                return null;
+                return count;
             }
             count = array.size();
         } catch (Exception e) {
@@ -2627,19 +2627,19 @@ public class RobotHandler implements AdmissionHandler {
     public Integer robotCallPhoneWithOtherIdcards(DecisionHandleRequest request) {
         Integer count = 0;
         try {
-            JSONObject operatorReport = request.getRobotRequestDTO().getOperatorReport();
+            JSONObject operatorReport = modelDataService.getOperatorReport(request);
             JSONArray userInfoCheck = operatorReport.getJSONArray(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.USER_INFO_CHECK.getValue());
             if (null == userInfoCheck || userInfoCheck.size() == 0) {
-                return null;
+                return count;
             }
 
             JSONObject itemJson = ((JSONObject) userInfoCheck.get(0)).getJSONObject(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CHECK_SEARCH_INFO.getValue());
             if (null == itemJson) {
-                return null;
+                return count;
             }
             JSONArray array = itemJson.getJSONArray("phone_with_other_idcards");
             if (null == array) {
-                return null;
+                return count;
             }
             count = array.size();
         } catch (Exception e) {
@@ -2653,12 +2653,12 @@ public class RobotHandler implements AdmissionHandler {
      *  出行分析-联系人所在区域个数汇总
      */
     public Integer robotCallContactRegion(DecisionHandleRequest request) {
-        Integer count = null;
+        Integer count = 0;
         try {
-            JSONObject operatorReport = request.getRobotRequestDTO().getOperatorReport();
+            JSONObject operatorReport = modelDataService.getOperatorReport(request);
             JSONArray contactRegion = operatorReport.getJSONArray(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CONTACT_REGION.getValue());
             if (null == contactRegion || contactRegion.size() == 0) {
-                return null;
+                return count;
             }
 
             for (Object item : contactRegion) {
@@ -2666,7 +2666,7 @@ public class RobotHandler implements AdmissionHandler {
                 String key = itemJson.getString("key");
                 if (null == key && key.equals("contact_region_6m")) {
                     if (null == itemJson.getJSONArray("region_list")) {
-                        return null;
+                        return count;
                     }
                     count = itemJson.getJSONArray("region_list").size();
                 }
@@ -2682,12 +2682,12 @@ public class RobotHandler implements AdmissionHandler {
      *  出行分析（外出不同城市的个数，曾在那些城市打过电话）
      */
     public Integer robotCallTripInfo(DecisionHandleRequest request) {
-        Integer count = null;
+        Integer count = 0;
         try {
-            JSONObject operatorReport = request.getRobotRequestDTO().getOperatorReport();
+            JSONObject operatorReport = modelDataService.getOperatorReport(request);
             JSONArray tripInfo = operatorReport.getJSONArray(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.TRIP_INFO.getValue());
             if (null == tripInfo || tripInfo.size() == 0) {
-                return null;
+                return count;
             }
 
             Set<String> areas = new HashSet<>();
@@ -2718,12 +2718,12 @@ public class RobotHandler implements AdmissionHandler {
      *  深夜[1:30-5:30]通话总次数,近三个月
      */
     public Integer robotCallDurationDetail(DecisionHandleRequest request) {
-        Integer count = null;
+        Integer count = 0;
         try {
-            JSONObject operatorReport = request.getRobotRequestDTO().getOperatorReport();
+            JSONObject operatorReport = modelDataService.getOperatorReport(request);
             JSONArray tripInfo = operatorReport.getJSONArray(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CALL_DURATION_DETAIL.getValue());
             if (null == tripInfo || tripInfo.size() == 0) {
-                return null;
+                return count;
             }
 
             for (Object item : tripInfo) {
@@ -2747,12 +2747,12 @@ public class RobotHandler implements AdmissionHandler {
      *  深夜[1:30-5:30]通话数，近三个月
      */
     public Integer robotCallMidnightTotalCnt(DecisionHandleRequest request) {
-        Integer count = null;
+        Integer count = 0;
         try {
-            JSONObject operatorReport = request.getRobotRequestDTO().getOperatorReport();
+            JSONObject operatorReport = modelDataService.getOperatorReport(request);
             JSONArray tripInfo = operatorReport.getJSONArray(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CALL_DURATION_DETAIL.getValue());
             if (null == tripInfo || tripInfo.size() == 0) {
-                return null;
+                return count;
             }
 
             for (Object item : tripInfo) {
@@ -2776,12 +2776,12 @@ public class RobotHandler implements AdmissionHandler {
      *  深夜[1:30-5:30]通话号码数，近三个月
      */
     public Integer robotCallMidnightUniqNumCnt(DecisionHandleRequest request) {
-        Integer count = null;
+        Integer count = 0;
         try {
-            JSONObject operatorReport = request.getRobotRequestDTO().getOperatorReport();
+            JSONObject operatorReport = modelDataService.getOperatorReport(request);
             JSONArray tripInfo = operatorReport.getJSONArray(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CALL_DURATION_DETAIL.getValue());
             if (null == tripInfo || tripInfo.size() == 0) {
-                return null;
+                return count;
             }
 
             for (Object item : tripInfo) {
@@ -2805,12 +2805,12 @@ public class RobotHandler implements AdmissionHandler {
      *  深夜[1:30-5:30]主叫数，近三个月
      */
     public Integer robotCallMidnightDialCnt(DecisionHandleRequest request) {
-        Integer count = null;
+        Integer count = 0;
         try {
-            JSONObject operatorReport = request.getRobotRequestDTO().getOperatorReport();
+            JSONObject operatorReport = modelDataService.getOperatorReport(request);
             JSONArray tripInfo = operatorReport.getJSONArray(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CALL_DURATION_DETAIL.getValue());
             if (null == tripInfo || tripInfo.size() == 0) {
-                return null;
+                return count;
             }
 
             for (Object item : tripInfo) {
@@ -2834,12 +2834,12 @@ public class RobotHandler implements AdmissionHandler {
      *  深夜[1:30-5:30]被叫数，近三个月
      */
     public Integer robotCallMidnightDialedCnt(DecisionHandleRequest request) {
-        Integer count = null;
+        Integer count = 0;
         try {
-            JSONObject operatorReport = request.getRobotRequestDTO().getOperatorReport();
+            JSONObject operatorReport = modelDataService.getOperatorReport(request);
             JSONArray tripInfo = operatorReport.getJSONArray(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CALL_DURATION_DETAIL.getValue());
             if (null == tripInfo || tripInfo.size() == 0) {
-                return null;
+                return count;
             }
 
             for (Object item : tripInfo) {
@@ -2859,40 +2859,15 @@ public class RobotHandler implements AdmissionHandler {
     }
 
     /**
-     *  运营商-平均话费
-     */
-    public Double robotCallUserOperatorAvgCharge(DecisionHandleRequest request) {
-        Double avgCharge = null;
-        try {
-            JSONObject operatorInfo = request.getRobotRequestDTO().getOperatorInfo();
-
-            JSONArray bills = operatorInfo.getJSONArray("bills");
-            List<Integer> arr = new ArrayList<>();
-            if (null != bills && !bills.isEmpty()) {
-                for (Object bill : bills) {
-                    JSONObject itemJson = (JSONObject) bill;
-                    arr.add(((JSONObject) bill).getIntValue("actual_fee"));
-                }
-                Collections.sort(arr);
-            }
-            String result = Average.getAverages(arr);
-            avgCharge = Double.valueOf(result);
-        } catch (Exception e) {
-            log.error("模型：运营商-平均话费，nid;{},error", request.getNid(), e);
-        }
-        return avgCharge;
-    }
-
-    /**
      *  行为分析-手机静默情况
      */
     public Integer robotCallPhoneSilent(DecisionHandleRequest request) {
-        Integer count = null;
+        Integer count = 0;
         try {
-            JSONObject operatorReport = request.getRobotRequestDTO().getOperatorReport();
+            JSONObject operatorReport = modelDataService.getOperatorReport(request);
             JSONArray behaviorCheck = operatorReport.getJSONArray(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.BEHAVIOR_CHECK.getValue());
             if (null == behaviorCheck || behaviorCheck.size() == 0) {
-                return null;
+                return count;
             }
 
             for (Object item : behaviorCheck) {
