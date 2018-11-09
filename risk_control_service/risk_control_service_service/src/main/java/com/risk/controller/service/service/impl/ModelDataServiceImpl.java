@@ -7,14 +7,10 @@ import com.risk.controller.service.common.utils.DateConvert;
 import com.risk.controller.service.common.utils.DateTools;
 import com.risk.controller.service.common.utils.IdcardUtils;
 import com.risk.controller.service.common.utils.PhoneUtils;
-import com.risk.controller.service.dao.RiskModelOperatorReportDao;
-import com.risk.controller.service.dao.StaOperatorCallsDao;
-import com.risk.controller.service.dao.StaSmBorrowsDao;
-import com.risk.controller.service.dao.StaUserBaseinfoDao;
-import com.risk.controller.service.entity.DataOrderMapping;
-import com.risk.controller.service.entity.StaOperatorCalls;
-import com.risk.controller.service.entity.StaSmBorrows;
-import com.risk.controller.service.entity.StaUserBaseinfo;
+import com.risk.controller.service.dao.*;
+import com.risk.controller.service.dto.AdmissionResultDTO;
+import com.risk.controller.service.dto.AdmissionRuleDTO;
+import com.risk.controller.service.entity.*;
 import com.risk.controller.service.enums.CacheCfgType;
 import com.risk.controller.service.enums.GetCacheModel;
 import com.risk.controller.service.handler.MongoHandler;
@@ -28,10 +24,12 @@ import com.risk.controller.service.utils.Average;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.concurrent.Callable;
 
 
 /**
@@ -59,6 +57,36 @@ public class ModelDataServiceImpl implements ModelDataService {
     private PaixuService paixuService;
     @Autowired
     private StaSmBorrowsDao staSmBorrowsDao;
+    @Autowired
+    private RobotResultDetailDao robotResultDetailDao;
+    @Autowired
+    private DecisionReqLogDao decisionReqLogDao;
+
+    @Override
+    @Async
+    public void saveDataBySql(String sql) {
+        if (StringUtils.isBlank(sql)) {
+            return;
+        }
+        List<Map<String, Object>> list = robotResultDetailDao.runModelBySql(sql);
+        if (null != list && list.size() > 0) {
+            for (Map<String, Object> map : list) {
+                Object nidObject = map.get("nid");
+                try {
+                    if (null != nidObject) {
+                        String nid = (String) nidObject;
+                        DecisionReqLog reqLog = decisionReqLogDao.getbyNid(nid);
+                        if (null != reqLog) {
+                            DecisionHandleRequest request = JSONObject.parseObject(reqLog.getReqData(), DecisionHandleRequest.class);
+                            this.saveData(request);
+                        }
+                    }
+                } catch (Exception e) {
+                    log.error("批量跑数据异常：nid:{},error:{}", nidObject, e);
+                }
+            }
+        }
+    }
 
     /**
      * 入口方法
@@ -68,13 +96,14 @@ public class ModelDataServiceImpl implements ModelDataService {
     @Override
     public void saveData(DecisionHandleRequest request) throws Exception {
 //        this.saveOperatorCalls(request);
+        this.saveSmBorrow(request);
         // 运营商报告相关
-        this.genBasicCheckItem(request);
-        this.genCallFamilyDetail(request);
-        this.genCallMidnight(request);
-        this.genCallRiskAnalysis(request);
-        this.genCallSilentAreas(request);
-        this.genUserInfoCheck(request);
+//        this.genBasicCheckItem(request);
+//        this.genCallFamilyDetail(request);
+//        this.genCallMidnight(request);
+//        this.genCallRiskAnalysis(request);
+//        this.genCallSilentAreas(request);
+//        this.genUserInfoCheck(request);
     }
 
     @Override
@@ -434,56 +463,57 @@ public class ModelDataServiceImpl implements ModelDataService {
 
     /**
      * 风险通话分析保存
+     *
      * @param request
      */
-    public void genCallRiskAnalysis (DecisionHandleRequest request) {
+    public void genCallRiskAnalysis(DecisionHandleRequest request) {
         JSONObject operatorReport = this.getOperatorReport(request);
         JSONArray riskCalls = operatorReport.getJSONArray("call_risk_analysis");
 
-        riskCalls.forEach( call -> {
+        riskCalls.forEach(call -> {
             JSONObject call_risk_analysis = (JSONObject) call;
-            JSONObject analysis_point =  ((JSONObject) call).getJSONObject("analysis_point");
-            JSONObject call_analysis_dial_point =  analysis_point.getJSONObject("call_analysis_dial_point");
-            JSONObject call_analysis_dialed_point =  analysis_point.getJSONObject("call_analysis_dialed_point");
+            JSONObject analysis_point = ((JSONObject) call).getJSONObject("analysis_point");
+            JSONObject call_analysis_dial_point = analysis_point.getJSONObject("call_analysis_dial_point");
+            JSONObject call_analysis_dialed_point = analysis_point.getJSONObject("call_analysis_dialed_point");
 
             Map params = new HashMap();
             params.put("nid", request.getNid());
             params.put("phone", request.getUserName());
-            params.put("analysis_item",call_risk_analysis.getString("analysis_item"));
-            params.put("analysis_desc",call_risk_analysis.getString("analysis_desc"));
+            params.put("analysis_item", call_risk_analysis.getString("analysis_item"));
+            params.put("analysis_desc", call_risk_analysis.getString("analysis_desc"));
 
-            params.put("avg_call_time_6m",analysis_point.getString("avg_call_time_6m"));
-            params.put("call_cnt_1m",analysis_point.getString("call_cnt_1m"));
-            params.put("call_cnt_3m",analysis_point.getString("call_cnt_3m"));
-            params.put("call_cnt_6m",analysis_point.getString("call_cnt_6m"));
-            params.put("call_time_3m",analysis_point.getString("call_time_3m"));
-            params.put("avg_call_cnt_6m",analysis_point.getString("avg_call_cnt_6m"));
-            params.put("call_time_6m",analysis_point.getString("call_time_6m"));
-            params.put("avg_call_cnt_3m",analysis_point.getString("avg_call_cnt_3m"));
-            params.put("call_time_1m",analysis_point.getString("call_time_1m"));
-            params.put("avg_call_time_3m",analysis_point.getString("avg_call_time_3m"));
+            params.put("avg_call_time_6m", analysis_point.getString("avg_call_time_6m"));
+            params.put("call_cnt_1m", analysis_point.getString("call_cnt_1m"));
+            params.put("call_cnt_3m", analysis_point.getString("call_cnt_3m"));
+            params.put("call_cnt_6m", analysis_point.getString("call_cnt_6m"));
+            params.put("call_time_3m", analysis_point.getString("call_time_3m"));
+            params.put("avg_call_cnt_6m", analysis_point.getString("avg_call_cnt_6m"));
+            params.put("call_time_6m", analysis_point.getString("call_time_6m"));
+            params.put("avg_call_cnt_3m", analysis_point.getString("avg_call_cnt_3m"));
+            params.put("call_time_1m", analysis_point.getString("call_time_1m"));
+            params.put("avg_call_time_3m", analysis_point.getString("avg_call_time_3m"));
 
-            params.put("call_dial_time_6m",call_analysis_dial_point.getString("call_dial_time_6m"));
-            params.put("call_dial_time_3m",call_analysis_dial_point.getString("call_dial_time_3m"));
-            params.put("avg_call_dial_cnt_6m",call_analysis_dial_point.getString("avg_call_dial_cnt_6m"));
-            params.put("call_dial_cnt_1m",call_analysis_dial_point.getString("call_dial_cnt_1m"));
-            params.put("avg_call_dial_cnt_3m",call_analysis_dial_point.getString("avg_call_dial_cnt_3m"));
-            params.put("avg_call_dial_time_6m",call_analysis_dial_point.getString("avg_call_dial_time_6m"));
-            params.put("call_dial_cnt_3m",call_analysis_dial_point.getString("call_dial_cnt_3m"));
-            params.put("avg_call_dial_time_3m",call_analysis_dial_point.getString("avg_call_dial_time_3m"));
-            params.put("call_dial_time_1m",call_analysis_dial_point.getString("call_dial_time_1m"));
-            params.put("call_dial_cnt_6m",call_analysis_dial_point.getString("call_dial_cnt_6m"));
+            params.put("call_dial_time_6m", call_analysis_dial_point.getString("call_dial_time_6m"));
+            params.put("call_dial_time_3m", call_analysis_dial_point.getString("call_dial_time_3m"));
+            params.put("avg_call_dial_cnt_6m", call_analysis_dial_point.getString("avg_call_dial_cnt_6m"));
+            params.put("call_dial_cnt_1m", call_analysis_dial_point.getString("call_dial_cnt_1m"));
+            params.put("avg_call_dial_cnt_3m", call_analysis_dial_point.getString("avg_call_dial_cnt_3m"));
+            params.put("avg_call_dial_time_6m", call_analysis_dial_point.getString("avg_call_dial_time_6m"));
+            params.put("call_dial_cnt_3m", call_analysis_dial_point.getString("call_dial_cnt_3m"));
+            params.put("avg_call_dial_time_3m", call_analysis_dial_point.getString("avg_call_dial_time_3m"));
+            params.put("call_dial_time_1m", call_analysis_dial_point.getString("call_dial_time_1m"));
+            params.put("call_dial_cnt_6m", call_analysis_dial_point.getString("call_dial_cnt_6m"));
 
-            params.put("call_dialed_time_6m",call_analysis_dialed_point.getString("call_dialed_time_6m"));
-            params.put("call_dialed_time_3m",call_analysis_dialed_point.getString("call_dialed_time_3m"));
-            params.put("avg_call_dialed_cnt_6m",call_analysis_dialed_point.getString("avg_call_dialed_cnt_6m"));
-            params.put("call_dialed_cnt_1m",call_analysis_dialed_point.getString("call_dialed_cnt_1m"));
-            params.put("avg_call_dialed_cnt_3m",call_analysis_dialed_point.getString("avg_call_dialed_cnt_3m"));
-            params.put("avg_call_dialed_time_6m",call_analysis_dialed_point.getString("avg_call_dialed_time_6m"));
-            params.put("call_dialed_cnt_3m",call_analysis_dialed_point.getString("call_dialed_cnt_3m"));
-            params.put("avg_call_dialed_time_3m",call_analysis_dialed_point.getString("avg_call_dialed_time_3m"));
-            params.put("call_dialed_time_1m",call_analysis_dialed_point.getString("call_dialed_time_1m"));
-            params.put("call_dialed_cnt_6m",call_analysis_dialed_point.getString("call_dialed_cnt_6m"));
+            params.put("call_dialed_time_6m", call_analysis_dialed_point.getString("call_dialed_time_6m"));
+            params.put("call_dialed_time_3m", call_analysis_dialed_point.getString("call_dialed_time_3m"));
+            params.put("avg_call_dialed_cnt_6m", call_analysis_dialed_point.getString("avg_call_dialed_cnt_6m"));
+            params.put("call_dialed_cnt_1m", call_analysis_dialed_point.getString("call_dialed_cnt_1m"));
+            params.put("avg_call_dialed_cnt_3m", call_analysis_dialed_point.getString("avg_call_dialed_cnt_3m"));
+            params.put("avg_call_dialed_time_6m", call_analysis_dialed_point.getString("avg_call_dialed_time_6m"));
+            params.put("call_dialed_cnt_3m", call_analysis_dialed_point.getString("call_dialed_cnt_3m"));
+            params.put("avg_call_dialed_time_3m", call_analysis_dialed_point.getString("avg_call_dialed_time_3m"));
+            params.put("call_dialed_time_1m", call_analysis_dialed_point.getString("call_dialed_time_1m"));
+            params.put("call_dialed_cnt_6m", call_analysis_dialed_point.getString("call_dialed_cnt_6m"));
 
             Date date = new Date();
             params.put("add_time", date);
@@ -494,9 +524,10 @@ public class ModelDataServiceImpl implements ModelDataService {
 
     /**
      * 信息校验数据保存
+     *
      * @param request
      */
-    public void genBasicCheckItem (DecisionHandleRequest request) {
+    public void genBasicCheckItem(DecisionHandleRequest request) {
         JSONObject operatorReport = this.getOperatorReport(request);
 
         JSONArray basic_check_items = operatorReport.getJSONArray("basic_check_items");
@@ -507,7 +538,7 @@ public class ModelDataServiceImpl implements ModelDataService {
         params.put("add_time", date);
         params.put("update_time", date);
 
-        basic_check_items.forEach( call -> {
+        basic_check_items.forEach(call -> {
             JSONObject item = (JSONObject) call;
 
             String check_item = item.getString("check_item") == null ? "" : item.getString("check_item").equalsIgnoreCase("null") ? "" : item.getString("check_item");
@@ -517,59 +548,59 @@ public class ModelDataServiceImpl implements ModelDataService {
 
             String comment = item.getString("comment") == null ? "" : item.getString("comment").equalsIgnoreCase("null") ? "" : item.getString("comment");
             switch (check_item) {
-                case "idcard_check" :
+                case "idcard_check":
                     params.put("idcard_check", item.getString("result"));
                     params.put("idcard_check_comment", comment);
                     break;
-                case "email_check" :
+                case "email_check":
                     params.put("email_check", item.getString("result"));
                     params.put("email_check_comment", comment);
                     break;
-                case "address_check" :
+                case "address_check":
                     params.put("address_check", item.getString("result"));
                     params.put("address_check_comment", comment);
                     break;
-                case "call_data_check" :
+                case "call_data_check":
                     params.put("call_data_check", item.getString("result"));
                     params.put("call_data_check_comment", comment);
                     break;
-                case "idcard_match" :
+                case "idcard_match":
                     params.put("idcard_match", item.getString("result"));
                     params.put("idcard_match_comment", comment);
                     break;
-                case "name_match" :
+                case "name_match":
                     params.put("name_match", item.getString("result"));
                     params.put("name_match_comment", comment);
                     break;
-                case "is_name_and_idcard_in_court_black" :
+                case "is_name_and_idcard_in_court_black":
                     params.put("is_name_and_idcard_in_court_black", item.getString("result"));
                     params.put("is_name_and_idcard_in_court_black_comment", comment);
                     break;
-                case "is_name_and_idcard_in_finance_black" :
+                case "is_name_and_idcard_in_finance_black":
                     params.put("is_name_and_idcard_in_finance_black", item.getString("result"));
                     params.put("is_name_and_idcard_in_finance_black_comment", comment);
                     break;
-                case "is_name_and_mobile_in_finance_black" :
+                case "is_name_and_mobile_in_finance_black":
                     params.put("is_name_and_mobile_in_finance_black", item.getString("result"));
                     params.put("is_name_and_mobile_in_finance_black_comment", comment);
                     break;
-                case "mobile_silence_3m" :
+                case "mobile_silence_3m":
                     params.put("mobile_silence_3m", item.getString("result"));
                     params.put("mobile_silence_3m_comment", comment);
                     break;
-                case "mobile_silence_6m" :
+                case "mobile_silence_6m":
                     params.put("mobile_silence_6m", item.getString("result"));
                     params.put("mobile_silence_6m_comment", comment);
                     break;
-                case "arrearage_risk_3m" :
+                case "arrearage_risk_3m":
                     params.put("arrearage_risk_3m", item.getString("result"));
                     params.put("arrearage_risk_3m_comment", comment);
                     break;
-                case "arrearage_risk_6m" :
+                case "arrearage_risk_6m":
                     params.put("arrearage_risk_6m", item.getString("result"));
                     params.put("arrearage_risk_6m_comment", comment);
                     break;
-                case "binding_risk" :
+                case "binding_risk":
                     params.put("binding_risk", item.getString("result"));
                     params.put("binding_risk_comment", comment);
                     break;
@@ -581,14 +612,15 @@ public class ModelDataServiceImpl implements ModelDataService {
     }
 
     /**
-     *  用户信息监测
+     * 用户信息监测
+     *
      * @param request
      */
-    public void genUserInfoCheck (DecisionHandleRequest request) {
+    public void genUserInfoCheck(DecisionHandleRequest request) {
         JSONObject operatorReport = this.getOperatorReport(request);
 
         JSONArray user_info_check = operatorReport.getJSONArray("user_info_check");
-        user_info_check.forEach( call -> {
+        user_info_check.forEach(call -> {
             JSONObject item = (JSONObject) call;
             if (null == item || null == item.getJSONObject("check_black_info")) {
                 return;
@@ -628,13 +660,14 @@ public class ModelDataServiceImpl implements ModelDataService {
 
     /**
      * 亲情网相关
+     *
      * @param request
      */
-    public void genCallFamilyDetail (DecisionHandleRequest request) {
+    public void genCallFamilyDetail(DecisionHandleRequest request) {
         JSONObject operatorReport = this.getOperatorReport(request);
 
         JSONArray call_family_detail = operatorReport.getJSONArray("call_family_detail");
-        call_family_detail.forEach( call -> {
+        call_family_detail.forEach(call -> {
             JSONObject detail = (JSONObject) call;
             JSONObject item = detail.getJSONObject("item");
             item.put("nid", request.getNid());
@@ -650,12 +683,13 @@ public class ModelDataServiceImpl implements ModelDataService {
 
     /**
      * 通话时段分析-深夜通话
+     *
      * @param request
      */
-    public void genCallMidnight (DecisionHandleRequest request) {
+    public void genCallMidnight(DecisionHandleRequest request) {
         JSONObject operatorReport = this.getOperatorReport(request);
         JSONArray call_duration_detail = operatorReport.getJSONArray("call_duration_detail");
-        call_duration_detail.forEach( call -> {
+        call_duration_detail.forEach(call -> {
             JSONObject detail = (JSONObject) call;
             if (detail.getString("key").equalsIgnoreCase("call_duration_detail_3m")) {
                 JSONArray duration_list = detail.getJSONArray("duration_list");
@@ -679,9 +713,10 @@ public class ModelDataServiceImpl implements ModelDataService {
 
     /**
      * 手机静默-联系人-出行
+     *
      * @param request
      */
-    public void genCallSilentAreas (DecisionHandleRequest request) {
+    public void genCallSilentAreas(DecisionHandleRequest request) {
         JSONObject operatorReport = this.getOperatorReport(request);
 
         JSONObject params = new JSONObject();
@@ -726,4 +761,52 @@ public class ModelDataServiceImpl implements ModelDataService {
         riskModelOperatorReportDao.genCallSilentAreas(params);
     }
 
+    /**
+     * 保存树美多头借贷信息
+     *
+     * @param request
+     * @throws Exception
+     */
+    private void saveSmBorrow(DecisionHandleRequest request) throws Exception {
+        JSONObject operatorInfo = mongoHandler.getShumeiMultipoint(request);
+        if (null == operatorInfo || !operatorInfo.containsKey("detail")) {
+            throw new Exception("树美多头借贷为空");
+        }
+
+        JSONObject detail = operatorInfo.getJSONObject("detail");
+        StaSmBorrows smBorrows = new StaSmBorrows();
+
+        smBorrows.setApplications(detail.getInteger("itfin_loan_applications"));
+        smBorrows.setApplications180d(detail.getInteger("itfin_loan_applications_180d"));
+        smBorrows.setApplications30d(detail.getInteger("itfin_loan_applications_30d"));
+        smBorrows.setApplications60d(detail.getInteger("itfin_loan_applications_60d"));
+        smBorrows.setApplications7d(detail.getInteger("itfin_loan_applications_7d"));
+        smBorrows.setApplications90d(detail.getInteger("itfin_loan_applications_90d"));
+        smBorrows.setApprovals(detail.getInteger("itfin_loan_approvals"));
+        smBorrows.setApprovals180d(detail.getInteger("itfin_loan_approvals_180d"));
+        smBorrows.setApprovals30d(detail.getInteger("itfin_loan_approvals_30d"));
+        smBorrows.setApprovals60d(detail.getInteger("itfin_loan_approvals_60d"));
+        smBorrows.setApprovals7d(detail.getInteger("itfin_loan_approvals_7d"));
+        smBorrows.setApprovals90d(detail.getInteger("itfin_loan_approvals_90d"));
+        smBorrows.setQueries(detail.getInteger("itfin_loan_queries"));
+        smBorrows.setQueries180d(detail.getInteger("itfin_loan_queries_180d"));
+        smBorrows.setQueries30d(detail.getInteger("itfin_loan_queries_30d"));
+        smBorrows.setQueries60d(detail.getInteger("itfin_loan_queries_60d"));
+        smBorrows.setQueries7d(detail.getInteger("itfin_loan_queries_7d"));
+        smBorrows.setQueries90d(detail.getInteger("itfin_loan_queries_90d"));
+        smBorrows.setRefuses(detail.getInteger("itfin_loan_refuses"));
+        smBorrows.setRefuses180d(detail.getInteger("itfin_loan_refuses_180d"));
+        smBorrows.setRefuses30d(detail.getInteger("itfin_loan_refuses_30d"));
+        smBorrows.setRefuses60d(detail.getInteger("itfin_loan_refuses_60d"));
+        smBorrows.setRefuses7d(detail.getInteger("itfin_loan_refuses_7d"));
+        smBorrows.setRefuses90d(detail.getInteger("itfin_loan_refuses_90d"));
+        smBorrows.setRegisters(detail.getInteger("itfin_registers"));
+        smBorrows.setRegisters180d(detail.getInteger("itfin_registers_180d"));
+        smBorrows.setRegisters30d(detail.getInteger("itfin_registers_30d"));
+        smBorrows.setRegisters60d(detail.getInteger("itfin_registers_60d"));
+        smBorrows.setRegisters7d(detail.getInteger("itfin_registers_7d"));
+        smBorrows.setRegisters90d(detail.getInteger("itfin_registers_90d"));
+        smBorrows.setNid(request.getNid());
+        staSmBorrowsDao.saveOrUpdate(smBorrows);
+    }
 }
