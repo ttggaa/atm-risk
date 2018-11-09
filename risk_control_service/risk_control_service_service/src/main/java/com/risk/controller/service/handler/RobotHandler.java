@@ -102,18 +102,15 @@ public class RobotHandler implements AdmissionHandler {
 
         AdmissionResultDTO result = new AdmissionResultDTO();
         // 验证模型
-        if (null == rule
-                || !rule.getSetting().containsKey("passPercent")
-                || !rule.getSetting().containsKey("passCount")) {
+        if (null == rule || !rule.getSetting().containsKey("passScore")) {
 
             result.setResult(AdmissionResultDTO.RESULT_SKIP);
             result.setData("规则为空，跳过");
             return result;
         }
 
-        BigDecimal rulePercent = new BigDecimal(rule.getSetting().get("passPercent"));
-        Integer rulePassCount = Integer.valueOf(rule.getSetting().get("passCount"));
-        Integer userPassCount = 0;
+        BigDecimal rulePassScore = new BigDecimal(rule.getSetting().get("passScore"));
+        BigDecimal userScore = BigDecimal.ZERO;
         try {
             List<RobotResultDetail> listRobot = new ArrayList<>();
 
@@ -142,6 +139,9 @@ public class RobotHandler implements AdmissionHandler {
 
                 // 执行对象方法（返回对应的值）
                 Object count = methodObj.invoke(handlerObj, request);
+                if (null == count) {
+                    continue;
+                }
 
                 // 查询方法返回值对应的规则明细
                 RobotRuleDetail detail = robotRuleDetailDao.getDetailByCondition(robotRule.getId(), count);
@@ -149,28 +149,27 @@ public class RobotHandler implements AdmissionHandler {
                 if (null == detail) {
                     continue;
                 }
-                int ruleResult = 0;
-                if (null != detail
-                        && detail.getOverduePercent().compareTo(rulePercent) <= 0
-                        && detail.getOverduePercent().compareTo(BigDecimal.ZERO) > 0) {
 
-                    userPassCount++;
-                    ruleResult = 1;
+                BigDecimal ruleResult = BigDecimal.ZERO;
+                if (null != robotRule && robotRule.getPercent().compareTo(BigDecimal.ZERO) > 0 &&
+                        null != detail && detail.getOverduePercent().compareTo(BigDecimal.ZERO) > 0) {
+
+                    ruleResult = robotRule.getPercent().multiply(detail.getOverduePercent());
+                    userScore = userScore.add(ruleResult);
                 }
 
                 RobotResultDetail robotResultDetail = new RobotResultDetail(detail.getId(), count, ruleResult);
                 listRobot.add(robotResultDetail);
             }
 
-
-            result.setData(userPassCount);
-            if (userPassCount >= rulePassCount) {
-                result.setResult(AdmissionResultDTO.RESULT_APPROVED);
-            } else {
+            result.setData(userScore);
+            if (userScore.compareTo(rulePassScore) >= 0) {
                 result.setResult(AdmissionResultDTO.RESULT_REJECTED);
+            } else {
+                result.setResult(AdmissionResultDTO.RESULT_APPROVED);
             }
 
-            RobotResult robotResult = new RobotResult(request.getNid(), userPassCount, result.getResult(), request.getRobotRequestDTO().getSource());
+            RobotResult robotResult = new RobotResult(request.getNid(), userScore, result.getResult(), request.getRobotRequestDTO().getSource());
             robotResultDao.insert(robotResult);
             if (listRobot.size() > 0) {
                 listRobot.forEach(robot -> robot.setResultId(robotResult.getId()));

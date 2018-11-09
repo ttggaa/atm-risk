@@ -147,6 +147,10 @@ public class RobotLearnHandler implements AdmissionHandler {
 
                             Object count = methodObj.invoke(handlerObj, request);
 
+                            if (null == count) {
+                                continue;
+                            }
+
                             // 3.查询方法返回值对应的规则明细
                             this.setRobotDetailData(ruleDetailsList, robotRule.getId(), count, status, overdueDays);
                         }
