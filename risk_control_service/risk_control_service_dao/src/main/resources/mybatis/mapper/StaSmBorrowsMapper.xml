@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.risk.controller.service.dao.StaSmBorrowsDao">
+    <resultMap id="getMap" type="com.risk.controller.service.entity.StaSmBorrows">
+    </resultMap>
+
+    <select id="getByNid" parameterType="string" resultType="com.risk.controller.service.entity.StaSmBorrows">
+        select * from sta_sm_borrows where nid = #{nid}
+    </select>
+</mapper>

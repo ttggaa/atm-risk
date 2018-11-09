@@ -2,6 +2,7 @@ package com.risk.controller.service.dto;
 
 import com.alibaba.fastjson.JSONObject;
 import com.risk.controller.service.entity.StaOperatorCalls;
+import com.risk.controller.service.entity.StaSmBorrows;
 import com.risk.controller.service.entity.StaUserBaseinfo;
 import lombok.Data;
 
@@ -33,8 +34,8 @@ public class RobotRequestDTO {
     private Integer userShumeiCount;//树美多头借贷个数
     private Integer robotKhYmdCount;//用户、紧急联系人手机号码空号、羊毛党验证
 
-    private Integer userCallNum10;					//10天内主叫次数-手机
-    private Integer userCallTime10;					//10天内主叫时长-手机
+//    private Integer userCallNum10;					//10天内主叫次数-手机
+//    private Integer userCallTime10;					//10天内主叫时长-手机
     private Integer userCalledNum10;				//10天内被叫次数-手机
     private Integer userCalledTime10;				//10天内被叫时长-手机
     private Integer userCallAndCalledNum10;			//10天内互通次数-手机
@@ -62,6 +63,7 @@ public class RobotRequestDTO {
     private Integer source;//1生产数据，2训练数据
 
     private StaUserBaseinfo staUserBaseinfo; //用户基础信息
+    private StaSmBorrows staSmBorrows; //树美多头信息
     private List<StaOperatorCalls> listOperatorCalls; //用户运营商通话信息
 
 }
