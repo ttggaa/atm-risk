@@ -8,21 +8,21 @@ import java.util.Map;
 
 public interface RiskModelOperatorReportDao {
 
-    int genRwTime(Map<?, ?> param);
+    int saveRwTime(Map<?, ?> param);
 
-    int genSmBorrow(Map<?, ?> param);
+    int saveSmBorrow(Map<?, ?> param);
 
-    int genCallRiskAnalysis(Map<?, ?> param);
+    int saveCallRiskAnalysis(Map<?, ?> param);
 
-    int genBasicCheckItem(Map<?, ?> param);
+    int saveBasicCheckItem(Map<?, ?> param);
 
-    int genCheckBlackInfo (JSONObject params);
+    int saveCheckBlackInfo (JSONObject params);
 
-    int genCallFamilyDetail (JSONObject params);
+    int saveCallFamilyDetail (JSONObject params);
 
-    int genCallMidnight (JSONObject params);
+    int saveCallMidnight (JSONObject params);
 
-    int genCallSilentAreas (JSONObject params);
+    int saveCallSilentAreas (JSONObject params);
 
     List<String> getAllReqNid();
 

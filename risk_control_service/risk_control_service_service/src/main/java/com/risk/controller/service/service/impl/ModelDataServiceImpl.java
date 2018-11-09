@@ -488,7 +488,12 @@ public class ModelDataServiceImpl implements ModelDataService {
             Date date = new Date();
             params.put("add_time", date);
             params.put("update_time", date);
-            riskModelOperatorReportDao.genCallRiskAnalysis(params);
+            try {
+                riskModelOperatorReportDao.saveCallRiskAnalysis(params);
+            } catch (Exception e) {
+                log.error("[模型数据-生成]：genCallRiskAnalysis插入数据出错,nid:{}", request.getNid());
+                e.printStackTrace();
+            }
         });
     }
 
@@ -577,7 +582,12 @@ public class ModelDataServiceImpl implements ModelDataService {
                     return;
             }
         });
-        riskModelOperatorReportDao.genBasicCheckItem(params);
+        try {
+            riskModelOperatorReportDao.saveBasicCheckItem(params);
+        } catch (Exception e) {
+            log.error("[模型数据-生成]：genBasicCheckItem插入数据出错,nid:{}", request.getNid());
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -621,8 +631,12 @@ public class ModelDataServiceImpl implements ModelDataService {
             Date currDate = new Date();
             check_black_info.put("add_time", currDate);
             check_black_info.put("update_time", currDate);
-
-            riskModelOperatorReportDao.genCheckBlackInfo(check_black_info);
+            try {
+                riskModelOperatorReportDao.saveCheckBlackInfo(check_black_info);
+            } catch (Exception e) {
+                log.error("[模型数据-生成]：genCheckBlackInfo插入数据出错,nid:{}", request.getNid());
+                e.printStackTrace();
+            }
         });
     }
 
@@ -644,7 +658,12 @@ public class ModelDataServiceImpl implements ModelDataService {
             Date date = new Date();
             item.put("add_time", date);
             item.put("update_time", date);
-            riskModelOperatorReportDao.genCallFamilyDetail(item);
+            try {
+                riskModelOperatorReportDao.saveCallFamilyDetail(item);
+            } catch (Exception e) {
+                log.error("[模型数据-生成]：genCallFamilyDetail插入数据出错,nid:{}", request.getNid());
+                e.printStackTrace();
+            }
         });
     }
 
@@ -670,7 +689,12 @@ public class ModelDataServiceImpl implements ModelDataService {
                         Date date = new Date();
                         itemJson.put("add_time", date);
                         itemJson.put("update_time", date);
-                        riskModelOperatorReportDao.genCallMidnight(itemJson);
+                        try {
+                            riskModelOperatorReportDao.saveCallMidnight(itemJson);
+                        } catch (Exception e) {
+                            log.error("[模型数据-生成]：genCallMidnight插入数据出错,nid:{}", request.getNid());
+                            e.printStackTrace();
+                        }
                     }
                 });
             }
@@ -723,7 +747,12 @@ public class ModelDataServiceImpl implements ModelDataService {
                 params.put("region_cnt", itemJson.getJSONArray("region_list").size());
             }
         }
-        riskModelOperatorReportDao.genCallSilentAreas(params);
+        try {
+            riskModelOperatorReportDao.saveCallSilentAreas(params);
+        } catch (Exception e) {
+            log.error("[模型数据-生成]：genCallSilentAreas插入数据出错,nid:{}", request.getNid());
+            e.printStackTrace();
+        }
     }
 
 }
