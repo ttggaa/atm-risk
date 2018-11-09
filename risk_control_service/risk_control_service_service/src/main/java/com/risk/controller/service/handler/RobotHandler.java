@@ -13,6 +13,7 @@ import com.risk.controller.service.enums.CacheCfgType;
 import com.risk.controller.service.enums.GetCacheModel;
 import com.risk.controller.service.mongo.dao.MongoCollections;
 import com.risk.controller.service.request.DecisionHandleRequest;
+import com.risk.controller.service.service.ModelDataService;
 import com.risk.controller.service.service.ModelService;
 import com.risk.controller.service.service.OperatorService;
 import com.risk.controller.service.service.WanshuService;
@@ -65,6 +66,8 @@ public class RobotHandler implements AdmissionHandler {
     private ModelService modelService;
     @Autowired
     private OperatorService operatorService;
+    @Autowired
+    private ModelDataService modelDataService;
 
     /**
      * 1057 模型
@@ -244,7 +247,10 @@ public class RobotHandler implements AdmissionHandler {
     public Integer robotAge(DecisionHandleRequest request) {
         Integer count = 0;
         try {
-            count = IdcardUtils.getAgeByIdCard(request.getCardId());
+            StaUserBaseinfo baseinfo = modelDataService.getUserBaseInfo(request);
+            if (null != baseinfo) {
+                count = baseinfo.getAge();
+            }
         } catch (Exception e) {
             log.error("模型：用户手机连号验证异常，nid;{},error", request.getNid(), e);
         }
@@ -263,9 +269,9 @@ public class RobotHandler implements AdmissionHandler {
             if (null != request.getRobotRequestDTO().getDeviceUsedCount()) {
                 count = request.getRobotRequestDTO().getDeviceUsedCount();
             } else {
-                JSONObject rs = this.getDeviceUsageCount(request.getUserId());
-                if (null != rs && null != rs.get("data") && "0".equals(rs.getString("code"))) {
-                    count = rs.getInteger("data");
+                StaUserBaseinfo baseinfo = modelDataService.getUserBaseInfo(request);
+                if (null != baseinfo) {
+                    count = baseinfo.getUserDeviceUsedNum();
                 }
             }
         } catch (Exception e) {

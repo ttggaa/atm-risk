@@ -4,4 +4,23 @@
     <resultMap id="getMap" type="com.risk.controller.service.entity.StaUserBaseinfo">
     </resultMap>
 
+    <insert id="saveOrUpdate" parameterType="com.risk.controller.service.entity.StaUserBaseinfo">
+        INSERT INTO `zx_risk`.`sta_user_baseinfo`
+        ( `nid`, `age`, `in_time`, `duration`, `cnt_num`,
+        `cnt_register_num`, `opt_calls_register_num`, `opt_short_num`, `opt_avg_fee`, `user_device_num`,
+        `user_device_used_num`, `add_time`, `update_time`
+        ) VALUES (
+        #{nid}, #{age},#{inTime}, #{duration}, #{cntNum},
+        #{cntRegisterNum}, #{optCallsRegisterNum},#{optShortNum}, #{optAvgFee}, #{userDeviceNum},
+        #{userDeviceUsedNum}, SYSDATE(), SYSDATE())
+
+        on duplicate key update
+        age = VALUES(age), in_time = VALUES(in_time), duration = VALUES(duration), cnt_num = VALUES(cnt_num),
+        cnt_register_num = VALUES(cnt_register_num), opt_calls_register_num = VALUES(opt_calls_register_num), opt_short_num = VALUES(opt_short_num), opt_avg_fee = VALUES(opt_avg_fee), user_device_num = VALUES(user_device_num),
+        user_device_used_num = VALUES(user_device_used_num),update_time=SYSDATE()
+    </insert>
+
+    <select id="getByNid" resultType="com.risk.controller.service.entity.StaUserBaseinfo" parameterType="string">
+        select * from sta_user_baseinfo where nid = #{nid}
+    </select>
 </mapper>

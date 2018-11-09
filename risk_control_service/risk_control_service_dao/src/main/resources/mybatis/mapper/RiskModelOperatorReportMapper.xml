@@ -1,51 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.risk.controller.service.dao.DataOrderMappingDao">
+<mapper namespace="com.risk.controller.service.dao.RiskModelOperatorReportDao">
 
     <resultMap id="BaseResultMap" type="java.util.Map">
     </resultMap>
 
     <insert id="genCallRiskAnalysis" parameterType="map">
         insert into `zx_risk`.`sta_call_risk_analysis`
-        (`phone`, `nid`, `analysis_item`, `analysis_desc`, `call_cnt_1m`, `call_cnt_3m`, `call_cnt_6m`, `call_time_1m`, `call_time_3m`, `call_time_6m`, `avg_call_cnt_3m`, `avg_call_cnt_6m`, `avg_call_time_3m`, `avg_call_time_6m`, `call_dial_cnt_1m`, `call_dial_cnt_3m`, `call_dial_cnt_6m`, `call_dial_time_1m`, `call_dial_time_3m`, `call_dial_time_6m`, `avg_call_dial_cnt_3m`, `avg_call_dial_cnt_6m`, `avg_call_dial_time_3m`, `avg_call_dial_time_6m`, `call_dialed_time_1m`, `call_dialed_time_3m`, `call_dialed_time_6m`, `call_dialed_cnt_1m`, `call_dialed_cnt_3m`, `call_dialed_cnt_6m`, `avg_call_dialed_cnt_3m`, `avg_call_dialed_cnt_6m`, `avg_call_dialed_time_3m`, `avg_call_dialed_time_6m`)
+        (`phone`, `nid`, `analysis_item`, `analysis_desc`, `call_cnt_1m`, `call_cnt_3m`, `call_cnt_6m`, `call_time_1m`, `call_time_3m`,
+        `call_time_6m`, `avg_call_cnt_3m`, `avg_call_cnt_6m`, `avg_call_time_3m`, `avg_call_time_6m`, `call_dial_cnt_1m`, `call_dial_cnt_3m`,
+        `call_dial_cnt_6m`, `call_dial_time_1m`, `call_dial_time_3m`, `call_dial_time_6m`, `avg_call_dial_cnt_3m`, `avg_call_dial_cnt_6m`,
+        `avg_call_dial_time_3m`, `avg_call_dial_time_6m`, `call_dialed_time_1m`, `call_dialed_time_3m`, `call_dialed_time_6m`, `call_dialed_cnt_1m`,
+        `call_dialed_cnt_3m`, `call_dialed_cnt_6m`, `avg_call_dialed_cnt_3m`, `avg_call_dialed_cnt_6m`, `avg_call_dialed_time_3m`,
+        `avg_call_dialed_time_6m`, add_time, update_time)
         values (
 <!--
         <foreach collection="list" item="item" index="index" separator=",">
 -->
-        #{phone},
-        #{nid},
-        #{analysis_item},
-        #{analysis_desc},
-        #{call_cnt_1m},
-        #{call_cnt_3m},
-        #{call_cnt_6m},
-        #{call_time_1m},
-        #{call_time_3m},
-        #{call_time_6m},
-        #{avg_call_cnt_3m},
-        #{avg_call_cnt_6m},
-        #{avg_call_time_3m},
-        #{avg_call_time_6m},
-        #{call_dial_cnt_1m},
-        #{call_dial_cnt_3m},
-        #{call_dial_cnt_6m},
-        #{call_dial_time_1m},
-        #{call_dial_time_3m},
-        #{call_dial_time_6m},
-        #{avg_call_dial_cnt_3m},
-        #{avg_call_dial_cnt_6m},
-        #{avg_call_dial_time_3m},
-        #{avg_call_dial_time_6m},
-        #{call_dialed_time_1m},
-        #{call_dialed_time_3m},
-        #{call_dialed_time_6m},
-        #{call_dialed_cnt_1m},
-        #{call_dialed_cnt_3m},
-        #{call_dialed_cnt_6m},
-        #{avg_call_dialed_cnt_3m},
-        #{avg_call_dialed_cnt_6m},
-        #{avg_call_dialed_time_3m},
-        #{avg_call_dialed_time_6m}
+        #{phone},        #{nid},        #{analysis_item},        #{analysis_desc},        #{call_cnt_1m},        #{call_cnt_3m},        #{call_cnt_6m},
+        #{call_time_1m},        #{call_time_3m},        #{call_time_6m},        #{avg_call_cnt_3m},        #{avg_call_cnt_6m},        #{avg_call_time_3m},
+        #{avg_call_time_6m},        #{call_dial_cnt_1m},        #{call_dial_cnt_3m},        #{call_dial_cnt_6m},        #{call_dial_time_1m},        #{call_dial_time_3m},
+        #{call_dial_time_6m},        #{avg_call_dial_cnt_3m},        #{avg_call_dial_cnt_6m},        #{avg_call_dial_time_3m},        #{avg_call_dial_time_6m},
+        #{call_dialed_time_1m},        #{call_dialed_time_3m},        #{call_dialed_time_6m},        #{call_dialed_cnt_1m},        #{call_dialed_cnt_3m},
+        #{call_dialed_cnt_6m},        #{avg_call_dialed_cnt_3m},        #{avg_call_dialed_cnt_6m},        #{avg_call_dialed_time_3m},        #{avg_call_dialed_time_6m},
+        #{add_time}, #{update_time}
         )
 <!--
      </foreach>
@@ -54,71 +32,22 @@
 
     <insert id="genSmBorrow" >
         insert into `sta_sm_borrows` (
-        `nid`,
-        `applications_180d`,
-        `applications_90d`,
-        `applications_60d`,
-        `applications_30d`,
-        `applications_7d`,
-        `applications`,
-        `approvals_180d`,
-        `approvals_90d`,
-        `approvals_60d`,
-        `approvals_30d`,
-        `approvals_7d`,
-        `approvals`,
-        `queries_180d`,
-        `queries_90d`,
-        `queries_60d`,
-        `queries_30d`,
-        `queries_7d`,
-        `queries`,
-        `refuses_180d`,
-        `refuses_90d`,
-        `refuses_60d`,
-        `refuses_30d`,
-        `refuses_7d`,
-        `refuses`,
-        `registers_180d`,
-        `registers_90d`,
-        `registers_60d`,
-        `registers_30d`,
-        `registers_7d`,
-        `registers`
+        `nid`,        `applications_180d`,        `applications_90d`,        `applications_60d`,        `applications_30d`,        `applications_7d`,
+        `applications`,        `approvals_180d`,        `approvals_90d`,        `approvals_60d`,        `approvals_30d`,        `approvals_7d`,
+        `approvals`,        `queries_180d`,        `queries_90d`,        `queries_60d`,        `queries_30d`,        `queries_7d`,        `queries`,
+        `refuses_180d`,        `refuses_90d`,        `refuses_60d`,        `refuses_30d`,        `refuses_7d`,        `refuses`,        `registers_180d`,
+        `registers_90d`,        `registers_60d`,        `registers_30d`,        `registers_7d`,        `registers`, add_time, update_time
         )
         values
         (
         #{nid},
-        #{applications_180d},
-        #{applications_90d},
-        #{applications_60d},
-        #{applications_30d},
-        #{applications_7d},
-        #{applications},
-        #{approvals_180d},
-        #{approvals_90d},
-        #{approvals_60d},
-        #{approvals_30d},
-        #{approvals_7d},
-        #{approvals},
-        #{queries_180d},
-        #{queries_90d},
-        #{queries_60d},
-        #{queries_30d},
-        #{queries_7d},
-        #{queries},
-        #{refuses_180d},
-        #{refuses_90d},
-        #{refuses_60d},
-        #{refuses_30d},
-        #{refuses_7d},
-        #{refuses},
-        #{registers_180d},
-        #{registers_90d},
-        #{registers_60d},
-        #{registers_30d},
-        #{registers_7d},
-        #{registers}
+        #{applications_180d},        #{applications_90d},        #{applications_60d},        #{applications_30d},
+        #{applications_7d},        #{applications},        #{approvals_180d},        #{approvals_90d},
+        #{approvals_60d},        #{approvals_30d},        #{approvals_7d},        #{approvals},        #{queries_180d},
+        #{queries_90d},        #{queries_60d},        #{queries_30d},        #{queries_7d},        #{queries},
+        #{refuses_180d},        #{refuses_90d},        #{refuses_60d},        #{refuses_30d},        #{refuses_7d},
+        #{refuses},        #{registers_180d},        #{registers_90d},        #{registers_60d},        #{registers_30d},
+        #{registers_7d},        #{registers}, #{add_time}, #{update_time}
         )
     </insert>
 
@@ -129,21 +58,33 @@
     </insert>
 
     <insert id="genBasicCheckItem" >
-        insert into `sta_basic_check_items` (`nid`, `phone`, `idcard_check`, `idcard_check_comment`, `email_check`, `email_check_comment`, `address_check`, `address_check_comment`, `call_data_check`, `call_data_check_comment`, `idcard_match`, `idcard_match_comment`, `name_match`, `name_match_comment`, `is_name_and_idcard_in_court_black`, `is_name_and_idcard_in_court_black_comment`, `is_name_and_idcard_in_finance_black`, `is_name_and_idcard_in_finance_black_comment`, `is_name_and_mobile_in_finance_black`, `is_name_and_mobile_in_finance_black_comment`, `mobile_silence_3m`, `mobile_silence_3m_comment`, `mobile_silence_6m`, `mobile_silence_6m_comment`, `arrearage_risk_3m`, `arrearage_risk_3m_comment`, `arrearage_risk_6m`, `arrearage_risk_6m_comment`, `binding_risk`, `binding_risk_comment`)
+        insert into `sta_basic_check_items` (`nid`, `phone`, `idcard_check`, `idcard_check_comment`, `email_check`, `email_check_comment`,
+        `address_check`, `address_check_comment`, `call_data_check`, `call_data_check_comment`, `idcard_match`, `idcard_match_comment`,
+        `name_match`, `name_match_comment`, `is_name_and_idcard_in_court_black`, `is_name_and_idcard_in_court_black_comment`,
+        `is_name_and_idcard_in_finance_black`, `is_name_and_idcard_in_finance_black_comment`, `is_name_and_mobile_in_finance_black`,
+        `is_name_and_mobile_in_finance_black_comment`, `mobile_silence_3m`, `mobile_silence_3m_comment`, `mobile_silence_6m`,
+        `mobile_silence_6m_comment`, `arrearage_risk_3m`, `arrearage_risk_3m_comment`, `arrearage_risk_6m`, `arrearage_risk_6m_comment`,
+        `binding_risk`, `binding_risk_comment`, add_time, update_time)
         values (
-        #{nid}, #{ phone}, #{ idcard_check}, #{ idcard_check_comment}, #{ email_check}, #{ email_check_comment}, #{ address_check}, #{ address_check_comment}, #{ call_data_check}, #{ call_data_check_comment}, #{ idcard_match}, #{ idcard_match_comment}, #{ name_match}, #{ name_match_comment}, #{ is_name_and_idcard_in_court_black}, #{ is_name_and_idcard_in_court_black_comment}, #{ is_name_and_idcard_in_finance_black}, #{ is_name_and_idcard_in_finance_black_comment}, #{ is_name_and_mobile_in_finance_black}, #{ is_name_and_mobile_in_finance_black_comment}, #{ mobile_silence_3m}, #{ mobile_silence_3m_comment}, #{ mobile_silence_6m}, #{ mobile_silence_6m_comment}, #{ arrearage_risk_3m}, #{ arrearage_risk_3m_comment}, #{ arrearage_risk_6m}, #{ arrearage_risk_6m_comment}, #{ binding_risk}, #{ binding_risk_comment}
+        #{nid}, #{ phone}, #{ idcard_check}, #{ idcard_check_comment}, #{ email_check}, #{ email_check_comment},
+        #{ address_check}, #{ address_check_comment}, #{ call_data_check}, #{ call_data_check_comment}, #{ idcard_match},
+        #{ idcard_match_comment}, #{ name_match}, #{ name_match_comment}, #{ is_name_and_idcard_in_court_black},
+        #{ is_name_and_idcard_in_court_black_comment}, #{ is_name_and_idcard_in_finance_black}, #{ is_name_and_idcard_in_finance_black_comment},
+        #{ is_name_and_mobile_in_finance_black}, #{ is_name_and_mobile_in_finance_black_comment}, #{ mobile_silence_3m}, #{ mobile_silence_3m_comment},
+        #{ mobile_silence_6m}, #{ mobile_silence_6m_comment}, #{ arrearage_risk_3m}, #{ arrearage_risk_3m_comment}, #{ arrearage_risk_6m},
+        #{ arrearage_risk_6m_comment}, #{ binding_risk}, #{ binding_risk_comment}, #{add_time}, #{update_time}
         )
     </insert>
 
     <insert id="genCheckBlackInfo" parameterType="com.alibaba.fastjson.JSONObject" >
-        insert into `sta_check_black_info` (`nid`, `phone`, `contacts_class1_cnt`, `contacts_class1_blacklist_cnt`, `contacts_router_cnt`, `contacts_class2_blacklist_cnt`, `contacts_router_ratio`, `phone_gray_score`)
-        values(#{nid}, #{phone}, #{contacts_class1_cnt}, #{contacts_class1_blacklist_cnt}, #{contacts_router_cnt}, #{contacts_class2_blacklist_cnt}, #{contacts_router_ratio}, #{phone_gray_score}
+        insert into `sta_check_black_info` (`nid`, `phone`, `contacts_class1_cnt`, `contacts_class1_blacklist_cnt`, `contacts_router_cnt`, `contacts_class2_blacklist_cnt`, `contacts_router_ratio`, `phone_gray_score`, add_time, update_time)
+        values(#{nid}, #{phone}, #{contacts_class1_cnt}, #{contacts_class1_blacklist_cnt}, #{contacts_router_cnt}, #{contacts_class2_blacklist_cnt}, #{contacts_router_ratio}, #{phone_gray_score}, #{add_time}, #{update_time}
         )
     </insert>
 
     <insert id="genCallFamilyDetail" parameterType="com.alibaba.fastjson.JSONObject" >
-        insert into `sta_call_family_detail` (`nid`, `phone`, `app_point`, `app_point_zh`, `item_1m`, `item_3m`, `item_6m`, `avg_item_3m`, `avg_item_6m`)
-        values(#{nid}, #{phone}, #{app_point}, #{app_point_zh}, #{item_1m}, #{item_3m}, #{item_6m}, #{avg_item_3m}, #{avg_item_6m}
+        insert into `sta_call_family_detail` (`nid`, `phone`, `app_point`, `app_point_zh`, `item_1m`, `item_3m`, `item_6m`, `avg_item_3m`, `avg_item_6m`, add_time, update_time)
+        values(#{nid}, #{phone}, #{app_point}, #{app_point_zh}, #{item_1m}, #{item_3m}, #{item_6m}, #{avg_item_3m}, #{avg_item_6m}, #{add_time}, #{update_time}
         )
     </insert>
 
@@ -154,10 +95,10 @@
         )
     </insert>
 
-    <insert id="genCallSilentAreasBill" parameterType="com.alibaba.fastjson.JSONObject" >
-        insert into `sta_silent_areas_bill` (`nid`, `phone`, `region_cnt`, `trip_cnt`, `avg_charge`, `phone_silent`)
+    <insert id="genCallSilentAreas" parameterType="com.alibaba.fastjson.JSONObject" >
+        insert into `sta_silent_areas` (`nid`, `phone`, `region_cnt`, `trip_cnt`, `phone_silent`, add_time, update_time)
         values(
-        #{nid}, #{phone}, #{region_cnt}, #{trip_cnt}, #{avg_charge}, #{phone_silent}
+        #{nid}, #{phone}, #{region_cnt}, #{trip_cnt}, #{phone_silent}, #{add_time}, #{update_time}
         )
     </insert>
 

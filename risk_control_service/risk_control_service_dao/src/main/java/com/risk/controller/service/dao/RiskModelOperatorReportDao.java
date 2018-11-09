@@ -22,7 +22,7 @@ public interface RiskModelOperatorReportDao {
 
     int genCallMidnight (JSONObject params);
 
-    int genCallSilentAreasBill (JSONObject params);
+    int genCallSilentAreas (JSONObject params);
 
     List<String> getAllReqNid();
 

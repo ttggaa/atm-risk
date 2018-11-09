@@ -1,6 +1,8 @@
 package com.risk.controller.service.dto;
 
 import com.alibaba.fastjson.JSONObject;
+import com.risk.controller.service.entity.StaOperatorCalls;
+import com.risk.controller.service.entity.StaUserBaseinfo;
 import lombok.Data;
 
 import java.util.List;
@@ -58,5 +60,8 @@ public class RobotRequestDTO {
 
     private Integer modelNum;//1排序模型（），2:本地模型
     private Integer source;//1生产数据，2训练数据
+
+    private StaUserBaseinfo staUserBaseinfo; //用户基础信息
+    private List<StaOperatorCalls> listOperatorCalls; //用户运营商通话信息
 
 }

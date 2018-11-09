@@ -52,6 +52,26 @@ public class RobotTest {
     }
 
     @Test
+    public void robotAge() {
+        DecisionHandleRequest request = new DecisionHandleRequest();
+        request.setNid("218101913572114374");
+        Object count = robotHandler.robotAge(request);
+        System.out.println("===========================");
+        System.out.println(JSONObject.toJSONString(count));
+        System.out.println("===========================");
+    }
+
+    @Test
+    public void robotDeviceUsed() {
+        DecisionHandleRequest request = new DecisionHandleRequest();
+        request.setNid("218101913572114374");
+        Object count = robotHandler.robotDeviceUsed(request);
+        System.out.println("===========================");
+        System.out.println(JSONObject.toJSONString(count));
+        System.out.println("===========================");
+    }
+
+    @Test
     public void modelLearn() {
 //        modelService.modelLearn(23L);
         modelService.modelLearn(null);
@@ -60,6 +80,14 @@ public class RobotTest {
     public void runModelBySql() {
         String sql = "select nid from risk_decision_req_log ";
         robotHandler.runModelBySql(sql);
+    }
+
+    @Test
+    public void saveDate () {
+        DecisionHandleRequest request = new DecisionHandleRequest();
+        request.setUserName("17317600807");
+        request.setNid("218110715285014286");
+        modelService.saveData(request);
     }
 
 }

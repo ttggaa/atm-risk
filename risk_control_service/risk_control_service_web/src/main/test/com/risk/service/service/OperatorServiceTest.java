@@ -25,7 +25,7 @@ public class OperatorServiceTest {
     private OperatorService operatorService;
     @Test
     public void verifyPaixuDecision() throws Exception {
-        operatorService.saveAllOperator("218102917281013107");
+        operatorService.saveAllOperator("31806021379960164");
     }
 
 

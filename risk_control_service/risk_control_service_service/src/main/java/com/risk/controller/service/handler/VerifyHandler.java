@@ -65,6 +65,8 @@ public class VerifyHandler implements AdmissionHandler {
     private MongoHandler mongoHandler;
     @Autowired
     private OperatorService operatorService;
+    @Autowired
+    private ThirdService thirdService;
 
     public AdmissionResultDTO handUp(DecisionHandleRequest request, AdmissionRuleDTO rule) {
         AdmissionResultDTO result = new AdmissionResultDTO();
@@ -108,7 +110,7 @@ public class VerifyHandler implements AdmissionHandler {
             return result;
         }
 
-        JSONObject rs = this.getDeviceUsageCount(request.getUserId());
+        JSONObject rs = this.thirdService.getDeviceUsedCount(request.getUserId());
         if (null == rs || null == rs.get("data") || !"0".equals(rs.getString("code"))) {
             result.setResult(AdmissionResultDTO.RESULT_EXCEPTIONAL);
             result.setData("数据返回异常" + rs);
@@ -127,28 +129,6 @@ public class VerifyHandler implements AdmissionHandler {
             result.setData(count);
             return result;
         }
-    }
-
-    /**
-     * 查询用户的设备被多少个用户使用
-     *
-     * @param userId
-     * @return
-     */
-    private JSONObject getDeviceUsageCount(Long userId) {
-        if (null != userId && 0L != userId) {
-            String url = localCache.getLocalCache(GetCacheModel.NO_FLUSH, CacheCfgType.THIRDSERVICECFG, "atm.deviceUsage.url");
-            Map<String, String> params = new HashMap<>();
-            params.put("userId", String.valueOf(userId));
-            try {
-                String resultStr = HttpClientUtils.doPost(url, JSONObject.toJSONString(params), "application/json");
-                JSONObject json = JSONObject.parseObject(resultStr);
-                return json;
-            } catch (Throwable e) {
-                log.error("查询用户的设备被多少个用户使用异常，userId:{},e:{}", userId, e);
-            }
-        }
-        return null;
     }
 
     /**
@@ -483,7 +463,7 @@ public class VerifyHandler implements AdmissionHandler {
 
             int maxDevices = Integer.valueOf(rule.getSetting().get("maxDevices"));
 
-            JSONObject rs = this.getDeviceCount(request.getUserId());
+            JSONObject rs = this.thirdService.getDeviceCount(request.getUserId());
             if (null == rs || null == rs.get("data") || !"0".equals(rs.getString("code"))) {
                 result.setResult(AdmissionResultDTO.RESULT_EXCEPTIONAL);
                 result.setData("数据返回异常" + rs);
@@ -506,28 +486,6 @@ public class VerifyHandler implements AdmissionHandler {
             return result;
         }
 
-    }
-
-    /**
-     * 查询用户设备个数
-     *
-     * @param userId
-     * @return
-     */
-    private JSONObject getDeviceCount(Long userId) {
-        if (null != userId && 0L != userId) {
-            String url = localCache.getLocalCache(GetCacheModel.NO_FLUSH, CacheCfgType.THIRDSERVICECFG, "atm.userDeviceUsage.url");
-            Map<String, String> params = new HashMap<>();
-            params.put("userId", String.valueOf(userId));
-            try {
-                String resultStr = HttpClientUtils.doPost(url, JSONObject.toJSONString(params), "application/json");
-                JSONObject json = JSONObject.parseObject(resultStr);
-                return json;
-            } catch (Throwable e) {
-                log.error("查询设备个数异常，userId:{},e:{}", userId, e);
-            }
-        }
-        return null;
     }
 
     /**
@@ -867,7 +825,7 @@ public class VerifyHandler implements AdmissionHandler {
                     set.add(phone);
                 }
             }
-            JSONObject rs = this.getRegisterCount(set);
+            JSONObject rs = this.thirdService.getRegisterCount(set);
             if (null == rs || null == rs.get("data") || !"0".equals(rs.getString("code"))) {
                 result.setResult(AdmissionResultDTO.RESULT_EXCEPTIONAL);
                 result.setData("数据返回异常" + rs);
@@ -896,26 +854,6 @@ public class VerifyHandler implements AdmissionHandler {
             result.setResult(AdmissionResultDTO.RESULT_EXCEPTIONAL);
             return result;
         }
-    }
-
-    /**
-     * 查询注册个数
-     *
-     * @param set 手机号码列表
-     * @return
-     */
-    private JSONObject getRegisterCount(Set<String> set) {
-        if (null == set || set.size() > 0) {
-            String url = localCache.getLocalCache(GetCacheModel.NO_FLUSH, CacheCfgType.THIRDSERVICECFG, "atm.registerCount.url");
-            try {
-                String resultStr = HttpClientUtils.doPost(url, JSONObject.toJSONString(set), "application/json");
-                JSONObject json = JSONObject.parseObject(resultStr);
-                return json;
-            } catch (Throwable e) {
-                log.error("查询用户的设备被多少个用户使用异常，set:{},e:{}", set, e);
-            }
-        }
-        return null;
     }
 
     /**
