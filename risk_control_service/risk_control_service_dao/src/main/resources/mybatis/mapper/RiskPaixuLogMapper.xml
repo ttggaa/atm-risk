@@ -8,13 +8,12 @@
         select * from risk_paixu_req_log WHERE id_no=#{0} AND code=#{1} AND status=1 ORDER BY id DESC limit 1;
     </select>
 
-    <select id="getPaixu" parameterType="String" resultType="java.util.Map">
+    <select id="getPaixu" parameterType="String" resultType="com.risk.controller.service.entity.RiskPaixuLog">
         SELECT
-        `phone`, `id_no`, `id_name` ,`nid` , `result`, `score`,rep_param
+        `phone`, `id_no`, `id_name` ,`nid` , `result`, `score`,rep_param,rsp_code
         FROM risk_paixu_req_log
-        <where>
-            <if test="_parameter != null">AND nid = #{nid}</if>
-        </where>
+        where rsp_code='000000'
+        <if test="_parameter != null and ''!=_parameter ">AND nid = #{nid}</if>
         order by id desc limit 1
     </select>
 

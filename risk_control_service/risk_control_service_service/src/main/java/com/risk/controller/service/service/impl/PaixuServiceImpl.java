@@ -76,6 +76,12 @@ public class PaixuServiceImpl implements PaixuService {
 	public ResponseEntity requestPaixu(DecisionHandleRequest request) {
 		log.info("[排序请求方法开始，方法入参]：{}", JSON.toJSONString(request));
 
+		RiskPaixuLog paixuLog = riskPaixuLogDao.getPaixu(request.getNid());
+		if (null != paixuLog && StringUtils.isNotBlank(paixuLog.getRepParam()) && "000000".equals(paixuLog.getRspCode())) {
+			log.info("[排序响应结果-查询本地]：nid:{}", request.getNid());
+			return new ResponseEntity(ResponseEntity.STATUS_OK, null, null, JSONObject.parseObject(paixuLog.getRepParam()));
+		}
+
 		if (StringUtils.isEmpty(request.getCardId()) || StringUtils.isEmpty(request.getUserName())
 				|| StringUtils.isEmpty(request.getNid()) || StringUtils.isEmpty(request.getName())
 				|| null == request.getUserId() || null == request.getApplyTime()
@@ -94,12 +100,7 @@ public class PaixuServiceImpl implements PaixuService {
 					ERROR.ErrorMsg.PARAMS_LACK, null);
 		}
 
-		Map<?, ?> paixu  = riskPaixuLogDao.getPaixu(request.getNid());
-		if (paixu != null && StringUtils.isNotEmpty((String) paixu.get("result"))) {
-			ResponseEntity responseEntity = new ResponseEntity(ResponseEntity.STATUS_OK, (String) paixu.get("rep_param"));
-			log.info("[排序响应结果-查询本地]：{}", responseEntity);
-			return responseEntity;
-		}
+
 
 		String merchantId = localCache.getLocalCache(GetCacheModel.NO_FLUSH, CacheCfgType.SYSTEMCFG,
 				"atm.paixu.assign.merchantId");

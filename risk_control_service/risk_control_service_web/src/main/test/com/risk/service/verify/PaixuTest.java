@@ -38,7 +38,7 @@ public class PaixuTest {
         DecisionReqLog result = new DecisionReqLog();
         request.setUserName("18883315455");
         request.setCardId("500200198910100111");
-        request.setNid("218091810415578876");
+        request.setNid("2180928162210493591");
 
         AdmissionRuleDTO rule = new AdmissionRuleDTO();
         Map<String,String> set = new HashMap<>();

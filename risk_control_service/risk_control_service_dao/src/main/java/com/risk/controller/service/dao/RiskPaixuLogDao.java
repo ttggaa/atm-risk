@@ -8,5 +8,5 @@ public interface RiskPaixuLogDao {
 
     void insert(RiskPaixuLog reqLog);
 
-    Map<String, Object> getPaixu (String nid);
+    RiskPaixuLog getPaixu (String nid);
 }
