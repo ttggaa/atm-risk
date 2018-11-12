@@ -28,7 +28,26 @@ public class Test {
         DecisionHandleRequest request = new DecisionHandleRequest();
         request.setUserName("17317600807");
         request.setNid("218110715285014286");
-
+        System.out.println(robotHandler.robotCallRiskAnalysisCollection(request));
+        System.out.println(robotHandler.robotCallRiskAnalysisCreditCard(request));
+        System.out.println(robotHandler.robotCallRiskAnalysisLoan(request));
+        System.out.println(robotHandler.robotCallRiskAnalysisGov(request));
+        System.out.println(robotHandler.robotCallCheckBlackInfoScore(request));
+        System.out.println(robotHandler.robotCallCheckBlackInfoRouter(request));
+        System.out.println(robotHandler.robotCallCheckBlackInfoClass2Cnt(request));
+        System.out.println(robotHandler.robotCallSearchedOrgCnt(request));
+        System.out.println(robotHandler.robotCallIdcardWithOtherNames(request));
+        System.out.println(robotHandler.robotCallIdcardWithOtherPhones(request));
+        System.out.println(robotHandler.robotCallPhoneWithOtherNames(request));
+        System.out.println(robotHandler.robotCallPhoneWithOtherIdcards(request));
+        System.out.println(robotHandler.robotCallContactRegion(request));
+        System.out.println(robotHandler.robotCallTripInfo(request));
+        System.out.println(robotHandler.robotCallDurationDetail(request));
+        System.out.println(robotHandler.robotCallMidnightTotalCnt(request));
+        System.out.println(robotHandler.robotCallMidnightUniqNumCnt(request));
+        System.out.println(robotHandler.robotCallMidnightDialCnt(request));
+        System.out.println(robotHandler.robotCallMidnightDialedCnt(request));
+        System.out.println(robotHandler.robotCallPhoneSilent(request));
         return null;
     }
 

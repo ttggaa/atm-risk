@@ -470,7 +470,7 @@ public class ModelDataServiceImpl implements ModelDataService {
     public void genCallRiskAnalysis(DecisionHandleRequest request) {
         JSONObject operatorReport = this.getOperatorReport(request);
         JSONArray riskCalls = operatorReport.getJSONArray("call_risk_analysis");
-
+        List<Map> listParams = new ArrayList();
         riskCalls.forEach(call -> {
             JSONObject call_risk_analysis = (JSONObject) call;
             JSONObject analysis_point = ((JSONObject) call).getJSONObject("analysis_point");
@@ -515,17 +515,19 @@ public class ModelDataServiceImpl implements ModelDataService {
             params.put("avg_call_dialed_time_3m", call_analysis_dialed_point.getString("avg_call_dialed_time_3m"));
             params.put("call_dialed_time_1m", call_analysis_dialed_point.getString("call_dialed_time_1m"));
             params.put("call_dialed_cnt_6m", call_analysis_dialed_point.getString("call_dialed_cnt_6m"));
-
             Date date = new Date();
             params.put("add_time", date);
             params.put("update_time", date);
-            try {
-                riskModelOperatorReportDao.saveCallRiskAnalysis(params);
-            } catch (Exception e) {
-                log.error("[模型数据-生成]：genCallRiskAnalysis插入数据出错,nid:{}", request.getNid());
-                e.printStackTrace();
-            }
+
+            listParams.add(params);
         });
+
+        try {
+            riskModelOperatorReportDao.saveCallRiskAnalysis(listParams);
+        } catch (Exception e) {
+            log.error("[模型数据-生成]：genCallRiskAnalysis插入数据出错,nid:{}", request.getNid());
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -680,6 +682,7 @@ public class ModelDataServiceImpl implements ModelDataService {
      */
     public void genCallFamilyDetail(DecisionHandleRequest request) {
         JSONObject operatorReport = this.getOperatorReport(request);
+        List<JSONObject> listParams = new ArrayList();
 
         JSONArray call_family_detail = operatorReport.getJSONArray("call_family_detail");
         call_family_detail.forEach(call -> {
@@ -692,13 +695,16 @@ public class ModelDataServiceImpl implements ModelDataService {
             Date date = new Date();
             item.put("add_time", date);
             item.put("update_time", date);
-            try {
-                riskModelOperatorReportDao.saveCallFamilyDetail(item);
-            } catch (Exception e) {
-                log.error("[模型数据-生成]：genCallFamilyDetail插入数据出错,nid:{}", request.getNid());
-                e.printStackTrace();
-            }
+
+            listParams.add(item);
         });
+
+        try {
+            riskModelOperatorReportDao.saveCallFamilyDetail(listParams);
+        } catch (Exception e) {
+            log.error("[模型数据-生成]：genCallFamilyDetail插入数据出错,nid:{}", request.getNid());
+            e.printStackTrace();
+        }
     }
 
     /**
