@@ -12,13 +12,15 @@ public interface RiskModelOperatorReportDao {
 
     int saveSmBorrow(Map<?, ?> param);
 
-    int saveCallRiskAnalysis(Map<?, ?> param);
+    int saveCallRiskAnalysis(List<?> param);
 
     int saveBasicCheckItem(Map<?, ?> param);
 
     int saveCheckBlackInfo (JSONObject params);
 
     int saveCallFamilyDetail (JSONObject params);
+
+    int saveCallFamilyDetail(List<?> param);
 
     int saveCallMidnight (JSONObject params);
 
