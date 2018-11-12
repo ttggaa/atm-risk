@@ -94,6 +94,13 @@ public class PaixuServiceImpl implements PaixuService {
 					ERROR.ErrorMsg.PARAMS_LACK, null);
 		}
 
+		Map<?, ?> paixu  = riskPaixuLogDao.getPaixu(request.getNid());
+		if (paixu != null && StringUtils.isNotEmpty((String) paixu.get("result"))) {
+			ResponseEntity responseEntity = new ResponseEntity(ResponseEntity.STATUS_OK, (String) paixu.get("rep_param"));
+			log.info("[排序响应结果-查询本地]：{}", responseEntity);
+			return responseEntity;
+		}
+
 		String merchantId = localCache.getLocalCache(GetCacheModel.NO_FLUSH, CacheCfgType.SYSTEMCFG,
 				"atm.paixu.assign.merchantId");
 		String productId = localCache.getLocalCache(GetCacheModel.NO_FLUSH, CacheCfgType.SYSTEMCFG,
@@ -155,7 +162,6 @@ public class PaixuServiceImpl implements PaixuService {
 			}
 
 			log.info("[排序响应结果]：{}", result);
-
 		} catch (Exception e) {
 			reqLog.setStatus(2);
 			reqLog.setRspCode("");
@@ -177,7 +183,6 @@ public class PaixuServiceImpl implements PaixuService {
 		}
 
 		log.info("[排序请求方法返回]：{}", JSON.toJSONString(responseEntity));
-
 		return responseEntity;
 	}
 

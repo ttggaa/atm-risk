@@ -7,6 +7,17 @@
     <select id="getLastOne" resultMap="getMap">
         select * from risk_paixu_req_log WHERE id_no=#{0} AND code=#{1} AND status=1 ORDER BY id DESC limit 1;
     </select>
+
+    <select id="getPaixu" parameterType="String" resultType="java.util.Map">
+        SELECT
+        `phone`, `id_no`, `id_name` ,`nid` , `result`, `score`,rep_param
+        FROM risk_paixu_req_log
+        <where>
+            <if test="_parameter != null">AND nid = #{nid}</if>
+        </where>
+        order by id desc limit 1
+    </select>
+
     <insert id="insert" parameterType="com.risk.controller.service.entity.RiskPaixuLog">
         INSERT INTO `risk_paixu_req_log`
         (`result`, `score`, `phone`, `id_no`, `id_name`, `req_param`, `req_time`, `req_cnt`, `nid`, `rsp_code`, `rep_param`, `status`, `add_time`, `add_user`, `update_time`, `update_user`) VALUES
