@@ -418,6 +418,7 @@ public class DecisionServiceImpl implements DecisionService {
      */
     public ResponseEntity noticeBorrowResultHandle(String nid, AdmissionResultDTO admResult) {
 
+        log.info("回调通知入参：nid:{},result:{},RejectReasion:{}", nid, admResult.getResult(), admResult.getRejectReason());
         String url = localCache.getLocalCache(GetCacheModel.NO_FLUSH, CacheCfgType.THIRDSERVICECFG, "credit.decision.callback.url");
         Map<String, Object> params = new HashMap<>();
         params.put("nid", nid);
