@@ -2733,7 +2733,7 @@ public class RobotHandler implements AdmissionHandler {
                         && !itemJson.getString("time_step").equalsIgnoreCase("time_step")
                         && itemJson.getString("key").equalsIgnoreCase("call_duration_detail_3m")) {
                     JSONObject detail = itemJson.getJSONObject("item");
-                    count = detail.getInteger("total_cnt");
+                    count = detail.getInteger("total_time");
                 }
             }
         } catch (Exception e) {
