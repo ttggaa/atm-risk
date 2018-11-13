@@ -158,6 +158,7 @@ public class RobotLearnHandler implements AdmissionHandler {
                     }
                 } catch (Exception e) {
                     log.error("训练模型异常", e);
+                    e.printStackTrace();
                     continue;
                 }
             }

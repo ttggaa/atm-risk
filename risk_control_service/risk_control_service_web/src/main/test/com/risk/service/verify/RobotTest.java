@@ -561,26 +561,26 @@ public class RobotTest {
         DecisionHandleRequest request = new DecisionHandleRequest();
         request.setUserName("17317600807");
         request.setNid("218110715285014286");
-        robotHandler.robotCallRiskAnalysisCollection(request);
-        robotHandler.robotCallRiskAnalysisCreditCard(request);
-        robotHandler.robotCallRiskAnalysisLoan(request);
-        robotHandler.robotCallRiskAnalysisGov(request);
-        robotHandler.robotCallCheckBlackInfoScore(request);
-        robotHandler.robotCallCheckBlackInfoRouter(request);
-        robotHandler.robotCallCheckBlackInfoClass2Cnt(request);
-        robotHandler.robotCallSearchedOrgCnt(request);
-        robotHandler.robotCallIdcardWithOtherNames(request);
-        robotHandler.robotCallIdcardWithOtherPhones(request);
-        robotHandler.robotCallPhoneWithOtherNames(request);
-        robotHandler.robotCallPhoneWithOtherIdcards(request);
+//        robotHandler.robotCallRiskAnalysisCollection(request);
+//        robotHandler.robotCallRiskAnalysisCreditCard(request);
+//        robotHandler.robotCallRiskAnalysisLoan(request);
+//        robotHandler.robotCallRiskAnalysisGov(request);
+//        robotHandler.robotCallCheckBlackInfoScore(request);
+//        robotHandler.robotCallCheckBlackInfoRouter(request);
+//        robotHandler.robotCallCheckBlackInfoClass2Cnt(request);
+//        robotHandler.robotCallSearchedOrgCnt(request);
+//        robotHandler.robotCallIdcardWithOtherNames(request);
+//        robotHandler.robotCallIdcardWithOtherPhones(request);
+//        robotHandler.robotCallPhoneWithOtherNames(request);
+//        robotHandler.robotCallPhoneWithOtherIdcards(request);
         robotHandler.robotCallContactRegion(request);
-        robotHandler.robotCallTripInfo(request);
-        robotHandler.robotCallDurationDetail(request);
-        robotHandler.robotCallMidnightTotalCnt(request);
-        robotHandler.robotCallMidnightUniqNumCnt(request);
-        robotHandler.robotCallMidnightDialCnt(request);
-        robotHandler.robotCallMidnightDialedCnt(request);
-        robotHandler.robotCallPhoneSilent(request);
+//        robotHandler.robotCallTripInfo(request);
+//        robotHandler.robotCallDurationDetail(request);
+//        robotHandler.robotCallMidnightTotalCnt(request);
+//        robotHandler.robotCallMidnightUniqNumCnt(request);
+//        robotHandler.robotCallMidnightDialCnt(request);
+//        robotHandler.robotCallMidnightDialedCnt(request);
+//        robotHandler.robotCallPhoneSilent(request);
     }
 
 }
