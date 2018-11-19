@@ -120,14 +120,14 @@ public class ModelHandler implements AdmissionHandler {
         AdmissionResultDTO result = new AdmissionResultDTO();
 
         if (null == rule || rule.getSetting() == null
-                || !rule.getSetting().containsKey("minPercent")
+                || !rule.getSetting().containsKey("allCallNum30")
+                || !rule.getSetting().containsKey("cntCallNum30")
+                /*|| !rule.getSetting().containsKey("minPercent")
                 || !rule.getSetting().containsKey("maxPercent")
                 || !rule.getSetting().containsKey("minTimePercent")
                 || !rule.getSetting().containsKey("maxTimePercent")
-                || !rule.getSetting().containsKey("allCallNum30")
-                || !rule.getSetting().containsKey("cntCallNum30")
                 || !rule.getSetting().containsKey("num30Compare180")
-                || !rule.getSetting().containsKey("time30Compare180")) {
+                || !rule.getSetting().containsKey("time30Compare180")*/) {
 
             result.setResult(AdmissionResultDTO.RESULT_SKIP);
             return result;
@@ -140,8 +140,8 @@ public class ModelHandler implements AdmissionHandler {
             Double allCallNum = 0D; // 所有通话总次数
             Double allCallNum30 = 0D; // 最近30天所有通话次数
             Double cntCallNum30 = 0D; // 最近30天联系人通话次数
-            Double allCallTime30 = 0D; // 最近30天所有通话时长
-            Double cntCallTime30 = 0D; // 最近30天联系人通话时长
+//            Double allCallTime30 = 0D; // 最近30天所有通话时长
+//            Double cntCallTime30 = 0D; // 最近30天联系人通话时长
 
             String data30 = DateTools.addDay(new Date(request.getApplyTime()), -30);
             for (ModelOperatorReport operatorReport : listResult) {
@@ -153,8 +153,8 @@ public class ModelHandler implements AdmissionHandler {
                 if (DateTools.getDayDiff(DateTools.convert(data30), DateTools.convert(operatorReport.getDate())) >= 0) {
                     allCallNum30 += operatorReport.getAllCallNumIn() + operatorReport.getAllCallNumOut() + operatorReport.getAllCallNumUn();
                     cntCallNum30 += operatorReport.getCntCallNumIn() + operatorReport.getCntCallNumOut() + operatorReport.getCntCallNumUn();
-                    allCallTime30 += operatorReport.getAllCallTimeIn() + operatorReport.getAllCallTimeOut() + operatorReport.getAllCallTimeUn();
-                    cntCallTime30 += operatorReport.getCntCallTimeIn() + operatorReport.getCntCallTimeOut() + operatorReport.getCntCallTimeUn();
+//                    allCallTime30 += operatorReport.getAllCallTimeIn() + operatorReport.getAllCallTimeOut() + operatorReport.getAllCallTimeUn();
+//                    cntCallTime30 += operatorReport.getCntCallTimeIn() + operatorReport.getCntCallTimeOut() + operatorReport.getCntCallTimeUn();
                 }
             }
 
@@ -176,59 +176,61 @@ public class ModelHandler implements AdmissionHandler {
                 result.setResult(AdmissionResultDTO.RESULT_REJECTED);
                 return result;
             }
+            result.setData(cntCallNum30 + "," + allCallNum30);
+            result.setResult(AdmissionResultDTO.RESULT_APPROVED);
 
-            Double callTimePercent = cntCallTime / allCallTime;//通话时长比率
-            Double callNumPercent = cntCallNum / allCallNum;//通话次数比率
-            Double timeAndNumPercent = callTimePercent / callNumPercent;// 通话时长比率/通话次数比率
-
-            Double ruleMinPercent = Double.valueOf(rule.getSetting().get("minPercent"));
-            Double ruleMaxPercent = Double.valueOf(rule.getSetting().get("maxPercent"));
-            Double ruleMinTimePercent = Double.valueOf(rule.getSetting().get("minTimePercent"));
-            Double ruleMaxTimePercent = Double.valueOf(rule.getSetting().get("maxTimePercent"));
-            Double ruleNum30Compare180 = Double.valueOf(rule.getSetting().get("num30Compare180"));//30天通话次数比值与180天通话次数比值差值
-            Double ruleTime30Compare180 = Double.valueOf(rule.getSetting().get("time30Compare180"));//30天通话时长比值与180天通话时长比值差值
-
-            // 1、计算比值<=1.15 拒绝，比值在1.15至1.6（时长比值>=0.65过，0.5至0.65挂起，<=0.6拒绝）电核， 比值 >=1.6电核
-            // 大约最大比值，人工审核
-            result.setData(new BigDecimal(timeAndNumPercent).setScale(5, BigDecimal.ROUND_HALF_UP));
-            if (timeAndNumPercent.compareTo(ruleMaxPercent) >= 0) {
-                result.setResult(AdmissionResultDTO.RESULT_MANUAL);
-            }
-            // >=最小值，小于最大值，验证通话次数
-            else if (timeAndNumPercent.compareTo(ruleMinPercent) >= 0 && timeAndNumPercent.compareTo(ruleMaxPercent) < 0) {
-
-                result.setData(new BigDecimal(callTimePercent).setScale(5, BigDecimal.ROUND_HALF_UP));
-                if (callTimePercent.compareTo(ruleMaxTimePercent) >= 0) {
-                    result.setResult(AdmissionResultDTO.RESULT_APPROVED);
-                }
-                // 通话次数>=最小值，<最大值
-                else if (callTimePercent.compareTo(ruleMinTimePercent) >= 0 && callTimePercent.compareTo(ruleMaxTimePercent) < 0) {
-                    result.setResult(AdmissionResultDTO.RESULT_APPROVED);
-                }
-                // callTimePercent < 最小值
-                else {
-                    result.setResult(AdmissionResultDTO.RESULT_MANUAL);
-                }
-            }
-            // timeAndNumPercent < 最小值
-            else {
-                result.setResult(AdmissionResultDTO.RESULT_MANUAL);
-            }
-
-            // 2、30天比值 与180天比值 在+-0.1之间过
-            if (result.getResult() != AdmissionResultDTO.RESULT_MANUAL
-                    && allCallTime30 > 0 && allCallNum30 > 0 && cntCallTime30 > 0 && cntCallNum30 > 0) {
-
-                Double callTimePercent30 = cntCallTime30 / allCallTime30; //30天通话时长比率
-                Double callNumPercent30 = cntCallNum30 / allCallNum30; //30天通话次数比率
-
-                if (Math.abs(callTimePercent30 - callTimePercent) <= ruleTime30Compare180
-                        && Math.abs(callNumPercent30 - callNumPercent) <= ruleNum30Compare180) {
-
-                    result.setData("±");
-                    result.setResult(AdmissionResultDTO.RESULT_APPROVED);
-                }
-            }
+//            Double callTimePercent = cntCallTime / allCallTime;//通话时长比率
+//            Double callNumPercent = cntCallNum / allCallNum;//通话次数比率
+//            Double timeAndNumPercent = callTimePercent / callNumPercent;// 通话时长比率/通话次数比率
+//
+//            Double ruleMinPercent = Double.valueOf(rule.getSetting().get("minPercent"));
+//            Double ruleMaxPercent = Double.valueOf(rule.getSetting().get("maxPercent"));
+//            Double ruleMinTimePercent = Double.valueOf(rule.getSetting().get("minTimePercent"));
+//            Double ruleMaxTimePercent = Double.valueOf(rule.getSetting().get("maxTimePercent"));
+//            Double ruleNum30Compare180 = Double.valueOf(rule.getSetting().get("num30Compare180"));//30天通话次数比值与180天通话次数比值差值
+//            Double ruleTime30Compare180 = Double.valueOf(rule.getSetting().get("time30Compare180"));//30天通话时长比值与180天通话时长比值差值
+//
+//            // 1、计算比值<=1.15 拒绝，比值在1.15至1.6（时长比值>=0.65过，0.5至0.65挂起，<=0.6拒绝）电核， 比值 >=1.6电核
+//            // 大约最大比值，人工审核
+//            result.setData(new BigDecimal(timeAndNumPercent).setScale(5, BigDecimal.ROUND_HALF_UP));
+//            if (timeAndNumPercent.compareTo(ruleMaxPercent) >= 0) {
+//                result.setResult(AdmissionResultDTO.RESULT_MANUAL);
+//            }
+//            // >=最小值，小于最大值，验证通话次数
+//            else if (timeAndNumPercent.compareTo(ruleMinPercent) >= 0 && timeAndNumPercent.compareTo(ruleMaxPercent) < 0) {
+//
+//                result.setData(new BigDecimal(callTimePercent).setScale(5, BigDecimal.ROUND_HALF_UP));
+//                if (callTimePercent.compareTo(ruleMaxTimePercent) >= 0) {
+//                    result.setResult(AdmissionResultDTO.RESULT_APPROVED);
+//                }
+//                // 通话次数>=最小值，<最大值
+//                else if (callTimePercent.compareTo(ruleMinTimePercent) >= 0 && callTimePercent.compareTo(ruleMaxTimePercent) < 0) {
+//                    result.setResult(AdmissionResultDTO.RESULT_APPROVED);
+//                }
+//                // callTimePercent < 最小值
+//                else {
+//                    result.setResult(AdmissionResultDTO.RESULT_MANUAL);
+//                }
+//            }
+//            // timeAndNumPercent < 最小值
+//            else {
+//                result.setResult(AdmissionResultDTO.RESULT_MANUAL);
+//            }
+//
+//            // 2、30天比值 与180天比值 在+-0.1之间过
+//            if (result.getResult() != AdmissionResultDTO.RESULT_MANUAL
+//                    && allCallTime30 > 0 && allCallNum30 > 0 && cntCallTime30 > 0 && cntCallNum30 > 0) {
+//
+//                Double callTimePercent30 = cntCallTime30 / allCallTime30; //30天通话时长比率
+//                Double callNumPercent30 = cntCallNum30 / allCallNum30; //30天通话次数比率
+//
+//                if (Math.abs(callTimePercent30 - callTimePercent) <= ruleTime30Compare180
+//                        && Math.abs(callNumPercent30 - callNumPercent) <= ruleNum30Compare180) {
+//
+//                    result.setData("±");
+//                    result.setResult(AdmissionResultDTO.RESULT_APPROVED);
+//                }
+//            }
             return result;
         } catch (Exception e) {
             log.error("计算用户运营商数据异常,request:{}", request, e);

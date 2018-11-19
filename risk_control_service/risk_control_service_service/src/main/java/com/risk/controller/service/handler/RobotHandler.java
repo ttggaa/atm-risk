@@ -1,16 +1,12 @@
 package com.risk.controller.service.handler;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.risk.controller.service.common.httpclient.HttpClientUtils;
-import com.risk.controller.service.common.utils.*;
+import com.risk.controller.service.common.utils.ContextUtils;
 import com.risk.controller.service.dao.*;
 import com.risk.controller.service.dto.AdmissionResultDTO;
 import com.risk.controller.service.dto.AdmissionRuleDTO;
 import com.risk.controller.service.entity.*;
-import com.risk.controller.service.enums.CacheCfgType;
-import com.risk.controller.service.enums.GetCacheModel;
 import com.risk.controller.service.mongo.dao.MongoCollections;
 import com.risk.controller.service.request.DecisionHandleRequest;
 import com.risk.controller.service.service.ModelDataService;
@@ -19,7 +15,6 @@ import com.risk.controller.service.service.OperatorService;
 import com.risk.controller.service.service.WanshuService;
 import com.risk.controller.service.service.impl.LocalCache;
 import com.risk.controller.service.util.AdmissionHandler;
-import com.risk.controller.service.utils.Average;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,19 +93,32 @@ public class RobotHandler implements AdmissionHandler {
     }
 
 
+    /**
+     * {"randomNum":"0","minScore":"450","maxScore":"560","totalScore":"110.8"}
+     * @param request
+     * @param rule
+     * @return
+     */
     public AdmissionResultDTO verifyRobotV2(DecisionHandleRequest request, AdmissionRuleDTO rule) {
 
         AdmissionResultDTO result = new AdmissionResultDTO();
         // 验证模型
-        if (null == rule || !rule.getSetting().containsKey("passScore")) {
+        if (null == rule || !rule.getSetting().containsKey("minScore")
+                || !rule.getSetting().containsKey("maxScore")
+                || !rule.getSetting().containsKey("totalScore")) {
 
             result.setResult(AdmissionResultDTO.RESULT_SKIP);
             result.setData("规则为空，跳过");
             return result;
         }
 
-        BigDecimal rulePassScore = new BigDecimal(rule.getSetting().get("passScore"));
-        BigDecimal userScore = BigDecimal.ZERO;
+        BigDecimal ruleMinScore = new BigDecimal(rule.getSetting().get("minScore"));
+        BigDecimal ruleMaxScore = new BigDecimal(rule.getSetting().get("maxScore"));
+        BigDecimal ruleTotalScore = new BigDecimal(rule.getSetting().get("totalScore"));
+
+        BigDecimal divideScore = BigDecimal.ZERO; // 应该减去的分值
+        BigDecimal finalScore = BigDecimal.ZERO; // 最终得分
+
         try {
             List<RobotResultDetail> listRobot = new ArrayList<>();
 
@@ -155,21 +163,24 @@ public class RobotHandler implements AdmissionHandler {
                         null != detail && detail.getOverduePercent().compareTo(BigDecimal.ZERO) > 0) {
 
                     ruleResult = robotRule.getPercent().multiply(detail.getOverduePercent());
-                    userScore = userScore.add(ruleResult);
+                    divideScore = divideScore.add(ruleResult);
                 }
 
                 RobotResultDetail robotResultDetail = new RobotResultDetail(detail.getId(), count, ruleResult);
                 listRobot.add(robotResultDetail);
             }
-
-            result.setData(userScore);
-            if (userScore.compareTo(rulePassScore) >= 0) {
-                result.setResult(AdmissionResultDTO.RESULT_REJECTED);
-            } else {
+            // finalScore = ((总分-扣分)/总分) *10000 -6000
+            finalScore = ruleTotalScore.subtract(divideScore).divide(ruleTotalScore).multiply(new BigDecimal(10000)).subtract(new BigDecimal(6000)).setScale(2);
+            result.setData(finalScore);
+            if (finalScore.compareTo(ruleMaxScore) >= 0) {
                 result.setResult(AdmissionResultDTO.RESULT_APPROVED);
+            } else if (finalScore.compareTo(ruleMinScore) >= 0 && finalScore.compareTo(ruleMaxScore) < 0) {
+                result.setResult(AdmissionResultDTO.RESULT_MANUAL);
+            } else {
+                result.setResult(AdmissionResultDTO.RESULT_REJECTED);
             }
 
-            RobotResult robotResult = new RobotResult(request.getNid(), userScore, result.getResult(), request.getRobotRequestDTO().getSource());
+            RobotResult robotResult = new RobotResult(request.getNid(), divideScore, result.getResult(), request.getRobotRequestDTO().getSource());
             robotResultDao.insert(robotResult);
             if (listRobot.size() > 0) {
                 listRobot.forEach(robot -> robot.setResultId(robotResult.getId()));
