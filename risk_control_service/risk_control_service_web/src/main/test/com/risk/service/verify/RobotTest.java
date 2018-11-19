@@ -37,8 +37,10 @@ public class RobotTest {
         request.setApplyTime(1537200000000L);
         AdmissionRuleDTO rule = new AdmissionRuleDTO();
         Map<String,String> set = new HashMap<>();
-        set.put("passScore","0.31");
         set.put("randomNum","100");
+        set.put("minScore","450");
+        set.put("maxScore","560");
+        set.put("totalScore","110.8");
         rule.setSetting(set);
 
         AdmissionResultDTO record = robotHandler.verifyRobot(request, rule);

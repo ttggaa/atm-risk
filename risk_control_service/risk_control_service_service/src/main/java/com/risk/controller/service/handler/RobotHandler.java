@@ -170,7 +170,7 @@ public class RobotHandler implements AdmissionHandler {
                 listRobot.add(robotResultDetail);
             }
             // finalScore = ((总分-扣分)/总分) *10000 -6000
-            finalScore = ruleTotalScore.subtract(divideScore).divide(ruleTotalScore).multiply(new BigDecimal(10000)).subtract(new BigDecimal(6000)).setScale(2);
+            finalScore = ruleTotalScore.subtract(divideScore).divide(ruleTotalScore,4,BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(10000)).subtract(new BigDecimal(6000)).setScale(2);
             result.setData(finalScore);
             if (finalScore.compareTo(ruleMaxScore) >= 0) {
                 result.setResult(AdmissionResultDTO.RESULT_APPROVED);
@@ -188,7 +188,8 @@ public class RobotHandler implements AdmissionHandler {
             }
             return result;
         } catch (Exception e) {
-            log.error("模型异常，request;{},error", request);
+            e.printStackTrace();
+            log.error("模型异常，nid;{},error", request.getNid(),e);
             result.setResult(AdmissionResultDTO.RESULT_EXCEPTIONAL);
             result.setData("模型异常");
             return result;
