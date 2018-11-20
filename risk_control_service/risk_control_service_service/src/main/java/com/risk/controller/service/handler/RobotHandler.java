@@ -73,7 +73,15 @@ public class RobotHandler implements AdmissionHandler {
      * @return
      */
     public AdmissionResultDTO verifyRobot(DecisionHandleRequest request, AdmissionRuleDTO rule) {
-
+        AdmissionResultDTO result = new AdmissionResultDTO();
+        try {
+            modelDataService.saveData(request);
+        } catch (Exception e) {
+            log.error("保存模型数据异常，nid:{}", request.getNid(), e);
+            result.setResult(AdmissionResultDTO.RESULT_EXCEPTIONAL);
+            result.setData("模型保存数据异常");
+            return result;
+        }
         // 随机数内，执行本地模型
         if (rule != null && rule.getSetting() != null && rule.getSetting().containsKey("randomNum")) {
             request.getRobotRequestDTO().setModelNum(2);
@@ -85,7 +93,6 @@ public class RobotHandler implements AdmissionHandler {
         }
         // 其他跳过，执行
         request.getRobotRequestDTO().setModelNum(1);
-        AdmissionResultDTO result = new AdmissionResultDTO();
         result.setResult(AdmissionResultDTO.RESULT_SKIP);
         result.setData(request.getRobotRequestDTO().getModelNum());
         return result;
