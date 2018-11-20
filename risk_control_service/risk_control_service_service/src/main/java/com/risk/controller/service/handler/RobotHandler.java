@@ -124,7 +124,6 @@ public class RobotHandler implements AdmissionHandler {
         BigDecimal ruleTotalScore = new BigDecimal(rule.getSetting().get("totalScore"));
 
         BigDecimal divideScore = BigDecimal.ZERO; // 应该减去的分值
-        BigDecimal finalScore = BigDecimal.ZERO; // 最终得分
 
         try {
             List<RobotResultDetail> listRobot = new ArrayList<>();
@@ -176,9 +175,14 @@ public class RobotHandler implements AdmissionHandler {
                 RobotResultDetail robotResultDetail = new RobotResultDetail(detail.getId(), count, ruleResult);
                 listRobot.add(robotResultDetail);
             }
-            // finalScore = ((总分-扣分)/总分) *10000 -6000
-            finalScore = ruleTotalScore.subtract(divideScore).divide(ruleTotalScore,4,BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(10000)).subtract(new BigDecimal(6000)).setScale(2);
+            // finalScore = ((总分-扣分)/总分) *10000 -6000,最终得分向下取整
+            BigDecimal finalScore = ruleTotalScore.subtract(divideScore)
+                    .divide(ruleTotalScore, 8, BigDecimal.ROUND_HALF_UP)
+                    .multiply(new BigDecimal(10000))
+                    .subtract(new BigDecimal(6000)).setScale(0, BigDecimal.ROUND_DOWN);
+
             result.setData(finalScore);
+
             if (finalScore.compareTo(ruleMaxScore) >= 0) {
                 result.setResult(AdmissionResultDTO.RESULT_APPROVED);
             } else if (finalScore.compareTo(ruleMinScore) >= 0 && finalScore.compareTo(ruleMaxScore) < 0) {
