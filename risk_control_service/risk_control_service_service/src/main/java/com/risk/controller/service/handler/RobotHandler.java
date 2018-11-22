@@ -73,7 +73,15 @@ public class RobotHandler implements AdmissionHandler {
      * @return
      */
     public AdmissionResultDTO verifyRobot(DecisionHandleRequest request, AdmissionRuleDTO rule) {
-
+        AdmissionResultDTO result = new AdmissionResultDTO();
+        try {
+            modelDataService.saveData(request);
+        } catch (Exception e) {
+            log.error("保存模型数据异常，nid:{}", request.getNid(), e);
+            result.setResult(AdmissionResultDTO.RESULT_EXCEPTIONAL);
+            result.setData("模型保存数据异常");
+            return result;
+        }
         // 随机数内，执行本地模型
         if (rule != null && rule.getSetting() != null && rule.getSetting().containsKey("randomNum")) {
             request.getRobotRequestDTO().setModelNum(2);
@@ -85,7 +93,6 @@ public class RobotHandler implements AdmissionHandler {
         }
         // 其他跳过，执行
         request.getRobotRequestDTO().setModelNum(1);
-        AdmissionResultDTO result = new AdmissionResultDTO();
         result.setResult(AdmissionResultDTO.RESULT_SKIP);
         result.setData(request.getRobotRequestDTO().getModelNum());
         return result;
@@ -117,7 +124,6 @@ public class RobotHandler implements AdmissionHandler {
         BigDecimal ruleTotalScore = new BigDecimal(rule.getSetting().get("totalScore"));
 
         BigDecimal divideScore = BigDecimal.ZERO; // 应该减去的分值
-        BigDecimal finalScore = BigDecimal.ZERO; // 最终得分
 
         try {
             List<RobotResultDetail> listRobot = new ArrayList<>();
@@ -169,9 +175,14 @@ public class RobotHandler implements AdmissionHandler {
                 RobotResultDetail robotResultDetail = new RobotResultDetail(detail.getId(), count, ruleResult);
                 listRobot.add(robotResultDetail);
             }
-            // finalScore = ((总分-扣分)/总分) *10000 -6000
-            finalScore = ruleTotalScore.subtract(divideScore).divide(ruleTotalScore,4,BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(10000)).subtract(new BigDecimal(6000)).setScale(2);
+            // finalScore = ((总分-扣分)/总分) *10000 -6000,最终得分向下取整
+            BigDecimal finalScore = ruleTotalScore.subtract(divideScore)
+                    .divide(ruleTotalScore, 8, BigDecimal.ROUND_HALF_UP)
+                    .multiply(new BigDecimal(10000))
+                    .subtract(new BigDecimal(6000)).setScale(0, BigDecimal.ROUND_DOWN);
+
             result.setData(finalScore);
+
             if (finalScore.compareTo(ruleMaxScore) >= 0) {
                 result.setResult(AdmissionResultDTO.RESULT_APPROVED);
             } else if (finalScore.compareTo(ruleMinScore) >= 0 && finalScore.compareTo(ruleMaxScore) < 0) {

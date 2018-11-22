@@ -157,13 +157,13 @@ public class ModelDataServiceImpl implements ModelDataService {
         List<JSONObject> contactDetails = mongoHandler.getUserDeviceContact(request);
         JSONObject operatorInfo = mongoHandler.getOperatorInfo(request);
         if (null == operatorInfo) {
-            throw new Exception("operatorInfo为空");
+            throw new Exception(request.getNid() + ":operatorInfo为空");
         }
         if (null == callDetails || callDetails.size() <= 0) {
-            throw new Exception("callDetails为空");
+            throw new Exception(request.getNid() + ":callDetails为空");
         }
         if (null == contactDetails || contactDetails.size() <= 0) {
-            throw new Exception("ocontactDetails为空");
+            throw new Exception(request.getNid() + ":ocontactDetails为空");
         }
 
         StaUserBaseinfo userBaseinfo = this.getStaUserBaseInfo(request, callDetails, contactDetails, operatorInfo);
