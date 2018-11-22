@@ -2180,6 +2180,7 @@ public class VerifyHandler implements AdmissionHandler {
      * 新户-验证30天内通讯录在运营商有效通话次数
      * 老户-验证30天内运营商互相通话次数
      * {"oldDays": "7","oldPassNum":"1","newDays": "30","newCntPassNum": "10","newAllPassNum":"100"}
+     *
      * @param request
      * @param rule
      * @return
@@ -2263,6 +2264,7 @@ public class VerifyHandler implements AdmissionHandler {
 
     /**
      * 1061验证最大逾期天数
+     *
      * @param request
      * @param rule
      * @return
@@ -2294,6 +2296,106 @@ public class VerifyHandler implements AdmissionHandler {
             log.error("[决策1060异常]：单号：{}", request.getNid(), e);
             result.setResult(AdmissionResultDTO.RESULT_EXCEPTIONAL);
             result.setData("决策1060异常");
+            return result;
+        }
+    }
+
+    /**
+     * 1062：1062通讯录运营商逾期用户个数校验
+     * {"successRepayNum":"3","callDetailDays":"90","overdueDays":"1","rejectNum":"1"}
+     * 成功借款次数，查询最近90天运营商通讯录的手机号码，逾期天数,拒绝个数
+     * @param request
+     * @param rule
+     * @return
+     */
+    public AdmissionResultDTO verifyCntOverdueNum(DecisionHandleRequest request, AdmissionRuleDTO rule) {
+        AdmissionResultDTO result = new AdmissionResultDTO();
+        if (null == rule
+                || !rule.getSetting().containsKey("successRepayNum")
+                || !rule.getSetting().containsKey("callDetailDays")
+                || !rule.getSetting().containsKey("overdueDays")
+                || !rule.getSetting().containsKey("rejectNum")) {
+
+            result.setResult(AdmissionResultDTO.RESULT_SKIP);
+            result.setData("规则为空，跳过");
+            return result;
+        }
+
+        try {
+            Integer ruleSuccessRepayNum = Integer.valueOf(rule.getSetting().get("successRepayNum")); //规则历史成功还款次数
+            Integer ruleCallDetailDays = Integer.valueOf(rule.getSetting().get("callDetailDays"));   //规则历史查询运营商通话有效手机
+            Integer ruleOverdueDays = Integer.valueOf(rule.getSetting().get("overdueDays"));         //规则逾期天数
+            Integer ruleRejectNum = Integer.valueOf(rule.getSetting().get("rejectNum"));             //逾期天数的手机号码个数，>=rejectNum拒绝
+
+            // 历史成功还款次数>=规则次数，通过
+            if (request.getSuccessRepayNum() != null && request.getSuccessRepayNum() >= ruleSuccessRepayNum) {
+                result.setResult(AdmissionResultDTO.RESULT_APPROVED);
+                result.setData(request.getSuccessRepayNum());
+                return result;
+            }
+
+
+            List<JSONObject> operatorCallDetail = this.mongoHandler.getUserOperatorCallDetail(request);
+            if (null == operatorCallDetail || operatorCallDetail.size() <= 0) {
+                result.setResult(AdmissionResultDTO.RESULT_SUSPEND);
+                result.setData("未查询到运营商通话记录");
+                return result;
+            }
+
+            List<JSONObject> contacts = this.mongoHandler.getUserDeviceContact(request);
+            if (null == contacts || contacts.size() <= 0) {
+                result.setResult(AdmissionResultDTO.RESULT_SUSPEND);
+                result.setData("未查询到手机通讯录");
+                return result;
+            }
+
+            Set<String> phones = new HashSet<>(); // 存放所有号码
+            contacts.forEach(json -> {
+                String phone = json.getString("contactsPhone");
+                phone = PhoneUtils.cleanTel(phone);
+                if (PhoneUtils.isMobile(phone)) {
+                    phones.add(phone);
+                }
+            });
+            operatorCallDetail.forEach(json -> {
+                String phone = json.getString("peer_number");
+                String strTime = json.getString("time");// 通话时间
+
+                if (StringUtils.isBlank(strTime) && PhoneUtils.isMobile(phone)) {
+                    phones.add(phone);
+                } else {
+                    Long diffDays = Math.abs(DateTools.getDayDiff(new Date(request.getApplyTime()), DateTools.convert(strTime)));
+                    if (ruleCallDetailDays >= diffDays && PhoneUtils.isMobile(phone)) {
+                        phones.add(phone);
+                    }
+                }
+            });
+            if (phones.size() == 0) {
+                result.setResult(AdmissionResultDTO.RESULT_REJECTED);
+                result.setData(0);
+                return result;
+            }
+
+            JSONObject rs = this.thirdService.queryCntOptPhoneOverdueNum(phones, ruleOverdueDays);
+            if (null == rs || null == rs.get("data") || !"0".equals(rs.getString("code"))) {
+                result.setResult(AdmissionResultDTO.RESULT_EXCEPTIONAL);
+                result.setData("数据返回异常" + rs);
+                return result;
+            }
+
+            Integer overdueNum = rs.getInteger("data"); //逾期ruleOverdueDays的手机号码个数
+            result.setData(overdueNum);
+            if (overdueNum >= ruleRejectNum) {
+                result.setResult(AdmissionResultDTO.RESULT_REJECTED);
+                return result;
+            } else {
+                result.setResult(AdmissionResultDTO.RESULT_APPROVED);
+                return result;
+            }
+        } catch (Exception e) {
+            log.error("[决策1062异常],单号：{}", request.getNid(), e);
+            result.setResult(AdmissionResultDTO.RESULT_EXCEPTIONAL);
+            result.setData("决策异常");
             return result;
         }
     }

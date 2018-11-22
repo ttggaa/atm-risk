@@ -65,6 +65,7 @@ public class DecisionHandleRequest {
     private BigDecimal amount;//借款金额
     private BigDecimal zmScore;//芝麻分
     private Integer maxOverdueDay;//最大逾期天数
+    private Integer successRepayNum;//成功还款次数
 
     public Integer getProductId() {
         if (null == this.productId || this.productId <= 0) {

@@ -558,17 +558,43 @@ public class VerifyServiceNewTest {
         System.out.println("==============================================");
     }
 
+    private DecisionHandleRequest getRequest(){
+        DecisionReqLog reqLog = reqLogDao.getbyNid("218090716122631329");
+        DecisionHandleRequest request = JSONObject.parseObject(reqLog.getReqData(), DecisionHandleRequest.class);
+        return request;
+    }
+
     @Test
     public void verifyMaxOverdueDay() {
 
-        DecisionHandleRequest request = new DecisionHandleRequest();
-        request.setMaxOverdueDay(5);
+        DecisionHandleRequest request = this.getRequest();
+        request.setSuccessRepayNum(3);
         AdmissionRuleDTO rule = new AdmissionRuleDTO();
         Map<String, String> set = new HashMap<>();
         set.put("maxOverdueDay", "5");
         rule.setSetting(set);
 
         AdmissionResultDTO record2 = verifyHandler.verifyMaxOverdueDay(request, rule);
+        System.out.println("==============================================");
+        System.out.println(JSONObject.toJSONString(record2));
+        System.out.println("==============================================");
+    }
+
+    @Test
+    public void verifyCntOverdueNum() {
+
+        DecisionHandleRequest request = this.getRequest();
+        request.setSuccessRepayNum(2);
+        AdmissionRuleDTO rule = new AdmissionRuleDTO();
+        Map<String, String> set = new HashMap<>();
+        set.put("successRepayNum", "3");
+        set.put("callDetailDays", "90");
+        set.put("overdueDays", "1");
+        set.put("rejectNum", "1");
+        rule.setSetting(set);
+
+        AdmissionResultDTO record2 = verifyHandler.verifyCntOverdueNum(request, rule);
+
         System.out.println("==============================================");
         System.out.println(JSONObject.toJSONString(record2));
         System.out.println("==============================================");

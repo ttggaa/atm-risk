@@ -82,4 +82,28 @@ public class ThirdServiceImpl implements ThirdService {
         }
         return null;
     }
+
+    /**
+     * 查询用户的通讯录、最近90天通话记录的手机号码，逾期个数
+     * @param phones
+     * @param overdueDay
+     * @return
+     */
+    @Override
+    public JSONObject queryCntOptPhoneOverdueNum(Set<String> phones, Integer overdueDay) {
+        if (null == phones || phones.size() > 0) {
+            String url = localCache.getLocalCache(GetCacheModel.NO_FLUSH, CacheCfgType.THIRDSERVICECFG, "atm.queryCntOptPhoneOverdueNum.url");
+            Map<String,Object> param = new HashMap<>();
+            param.put("phones",phones);
+            param.put("overdueDay",overdueDay);
+            try {
+                String resultStr = HttpClientUtils.doPost(url, JSONObject.toJSONString(param), "application/json");
+                JSONObject json = JSONObject.parseObject(resultStr);
+                return json;
+            } catch (Throwable e) {
+                log.error("查询用户的通讯录、最近90天通话记录的手机号码，逾期个数异常，phones:{},e:{}", param, e);
+            }
+        }
+        return null;
+    }
 }

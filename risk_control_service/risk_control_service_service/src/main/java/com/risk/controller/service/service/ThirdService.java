@@ -29,4 +29,11 @@ public interface ThirdService {
      * @return
      */
     JSONObject getDeviceCount(Long userId);
+
+    /**
+     * 查询用户的通讯录、最近90天通话记录的手机号码，是否有逾期
+     * @param overdueDay
+     * @return data:逾期ruleOverdueDays的手机号码个数
+     */
+    JSONObject queryCntOptPhoneOverdueNum(Set<String> phones,Integer overdueDay);
 }
