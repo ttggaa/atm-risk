@@ -75,7 +75,10 @@ public class RobotHandler implements AdmissionHandler {
     public AdmissionResultDTO verifyRobot(DecisionHandleRequest request, AdmissionRuleDTO rule) {
         AdmissionResultDTO result = new AdmissionResultDTO();
         try {
-            modelDataService.saveData(request);
+            // 2训练数据不保存数据
+            if (RobotResult.SOURCE_2 != request.getRobotRequestDTO().getSource()) {
+                modelDataService.saveData(request);
+            }
         } catch (Exception e) {
             log.error("保存模型数据异常，nid:{}", request.getNid(), e);
             result.setResult(AdmissionResultDTO.RESULT_EXCEPTIONAL);
