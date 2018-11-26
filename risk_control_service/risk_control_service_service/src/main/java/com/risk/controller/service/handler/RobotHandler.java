@@ -31,6 +31,8 @@ import java.util.*;
 @Slf4j
 @Service
 public class RobotHandler implements AdmissionHandler {
+
+    private final Integer DAY_3 = 3; // 3天
     private final Integer DAY_10 = 10; // 10天
     private final Integer DAY_30 = 30; // 30天
     private final Integer DAY_60 = 60; // 60天
@@ -2950,6 +2952,227 @@ public class RobotHandler implements AdmissionHandler {
         return count;
     }
 
+    /**
+     * 3天内主叫次数-手机
+     */
+    public Integer robotCntCallNum3(DecisionHandleRequest request) {
+        Integer count = 0;
+        try {
+            List<StaOperatorCalls> list = modelDataService.getOperatorCalls(request);
+            if (null != list && list.size() > 0) {
+                for (StaOperatorCalls calls : list) {
+                    if (DAY_3.equals(calls.getDay())) {
+                        count = calls.getCntCallNum();
+                        break;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            log.error("模型：3天内主叫次数-手机异常，nid;{},error", request.getNid());
+        }
+        return count;
+    }
+
+    /**
+     * 3天内主叫时长-手机
+     */
+    public Integer robotCntCallTime3(DecisionHandleRequest request) {
+        Integer count = 0;
+        try {
+            List<StaOperatorCalls> list = modelDataService.getOperatorCalls(request);
+            if (null != list && list.size() > 0) {
+                for (StaOperatorCalls calls : list) {
+                    if (DAY_3.equals(calls.getDay())) {
+                        count = calls.getCntCallTime();
+                        break;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            log.error("模型：3天内主叫时长-手机异常，nid;{},error", request.getNid());
+        }
+        return count;
+    }
+
+    /**
+     * 3天内主叫人次-手机运营商
+     *
+     * @param request
+     * @return
+     */
+    public Integer robotCntCallManNum3(DecisionHandleRequest request) {
+        Integer count = 0;
+        try {
+            List<StaOperatorCalls> list = modelDataService.getOperatorCalls(request);
+            if (null != list && list.size() > 0) {
+                for (StaOperatorCalls calls : list) {
+                    if (DAY_3.equals(calls.getDay())) {
+                        count = calls.getCntCallManNum();
+                        break;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            log.error("模型：用户手机连号验证异常，nid;{},error", request.getNid());
+        }
+        return count;
+    }
+
+    /**
+     * 3天内被叫次数-手机
+     */
+    public Integer robotCntCalledNum3(DecisionHandleRequest request) {
+        Integer count = 0;
+        try {
+            List<StaOperatorCalls> list = modelDataService.getOperatorCalls(request);
+            if (null != list && list.size() > 0) {
+                for (StaOperatorCalls calls : list) {
+                    if (DAY_3.equals(calls.getDay())) {
+                        count = calls.getCntCalledNum();
+                        break;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            log.error("模型：3天内被叫次数-手机异常，nid;{},error", request.getNid());
+        }
+        return count;
+    }
+
+    /**
+     * 3天内被叫时长-手机
+     */
+    public Integer robotCntCalledTime3(DecisionHandleRequest request) {
+        Integer count = 0;
+        try {
+            List<StaOperatorCalls> list = modelDataService.getOperatorCalls(request);
+            if (null != list && list.size() > 0) {
+                for (StaOperatorCalls calls : list) {
+                    if (DAY_3.equals(calls.getDay())) {
+                        count = calls.getCntCalledTime();
+                        break;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            log.error("模型：3天内被叫时长-手机异常，nid;{},error", request.getNid());
+        }
+        return count;
+    }
+
+    /**
+     * 3天内被叫人次-手机
+     *
+     * @param request
+     * @return
+     */
+    public Integer robotCntCalledManNum3(DecisionHandleRequest request) {
+        Integer count = 0;
+        try {
+            List<StaOperatorCalls> list = modelDataService.getOperatorCalls(request);
+            if (null != list && list.size() > 0) {
+                for (StaOperatorCalls calls : list) {
+                    if (DAY_3.equals(calls.getDay())) {
+                        count = calls.getCntCalledManNum();
+                        break;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            log.error("模型：用户手机连号验证异常，nid;{},error", request.getNid());
+        }
+        return count;
+    }
+
+    /**
+     * 3天内互通次数-手机
+     *
+     * @return
+     */
+    public Integer robotCntEachOtherNum3(DecisionHandleRequest request) {
+        Integer count = 0;
+        try {
+            List<StaOperatorCalls> list = modelDataService.getOperatorCalls(request);
+            if (null != list && list.size() > 0) {
+                for (StaOperatorCalls calls : list) {
+                    if (DAY_3.equals(calls.getDay())) {
+                        count = calls.getCntEachOtherNum();
+                        break;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            log.error("模型：3天内互通次数-手机异常，nid;{},error", request.getNid());
+        }
+        return count;
+    }
+
+    /**
+     * 3天内互通时长-手机
+     */
+    public Integer robotCntEachOtherTime3(DecisionHandleRequest request) {
+        Integer count = 0;
+        try {
+            List<StaOperatorCalls> list = modelDataService.getOperatorCalls(request);
+            if (null != list && list.size() > 0) {
+                for (StaOperatorCalls calls : list) {
+                    if (DAY_3.equals(calls.getDay())) {
+                        count = calls.getCntEachOtherTime();
+                        break;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            log.error("模型：3天内互通时长-手机异常，nid;{},error", request.getNid());
+        }
+        return count;
+    }
+
+    /**
+     * 3天内互通人次-手机
+     */
+    public Integer robotCntEachOtherManNum3(DecisionHandleRequest request) {
+        Integer count = 0;
+        try {
+            List<StaOperatorCalls> list = modelDataService.getOperatorCalls(request);
+            if (null != list && list.size() > 0) {
+                for (StaOperatorCalls calls : list) {
+                    if (DAY_3.equals(calls.getDay())) {
+                        count = calls.getCntEachOtherManNum();
+                        break;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            log.error("模型：3天内互通人次-手机异常，nid;{},error", request.getNid());
+        }
+        return count;
+    }
+
+    /**
+     * 3天内通话时长和次数比值-手机
+     */
+    public Object robotCntEachOtherPercent3(DecisionHandleRequest request) {
+        Object count = 0;
+        try {
+            List<StaOperatorCalls> list = modelDataService.getOperatorCalls(request);
+            if (null != list && list.size() > 0) {
+                for (StaOperatorCalls calls : list) {
+                    if (DAY_3.equals(calls.getDay())) {
+                        Integer num = calls.getCntEachOtherNum();
+                        Integer time = calls.getCntEachOtherTime();
+                        if (num != 0 && time != 0) {
+                            count = new BigDecimal(time).divide(new BigDecimal(num), 4, BigDecimal.ROUND_HALF_UP);
+                        }
+                        break;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            log.error("模型：3天内通话时长和次数比值-手机异常，nid;{},error", request.getNid());
+        }
+        return count;
+    }
     /**
      * 通过sql注入批量跑模型数据(必须包含nid)
      * select nid from table
