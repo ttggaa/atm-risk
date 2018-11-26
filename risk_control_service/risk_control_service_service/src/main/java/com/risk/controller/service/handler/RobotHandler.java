@@ -263,7 +263,7 @@ public class RobotHandler implements AdmissionHandler {
                 count = baseinfo.getAge();
             }
         } catch (Exception e) {
-            log.error("模型：用户手机连号验证异常，nid;{},error", request.getNid());
+            log.error("模型：用户手机连号验证异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -286,7 +286,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：设备是否多人使用异常，nid;{},error", request.getNid());
+            log.error("模型：设备是否多人使用异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -310,7 +310,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：检查申请人使用设备的个数异常，nid;{},error", request.getNid());
+            log.error("模型：检查申请人使用设备的个数异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -328,7 +328,7 @@ public class RobotHandler implements AdmissionHandler {
                 count = baseinfo.getCntRegisterNum();
             }
         } catch (Exception e) {
-            log.error("模型：用户手机连号验证异常，nid;{},error", request.getNid());
+            log.error("模型：用户手机连号验证异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -351,7 +351,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：通讯录中联系人数量异常，nid;{},error", request.getNid());
+            log.error("模型：通讯录中联系人数量异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -375,7 +375,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：运营商通话记录验证黑名单异常，nid;{},error", request.getNid());
+            log.error("模型：运营商通话记录验证黑名单异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -398,7 +398,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：手机号码使用时间异常，nid;{},error", request.getNid());
+            log.error("模型：手机号码使用时间异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -421,7 +421,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：运营商平均话费验证（分）异常，nid;{},error", request.getNid());
+            log.error("模型：运营商平均话费验证（分）异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -439,7 +439,7 @@ public class RobotHandler implements AdmissionHandler {
                 count = baseinfo.getOptCallsRegisterNum();
             }
         } catch (Exception e) {
-            log.error("模型：用户手机连号验证异常，nid;{},error", request.getNid());
+            log.error("模型：用户手机连号验证异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -462,7 +462,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：树美多头借贷异常，nid;{},error", request.getNid());
+            log.error("模型：树美多头借贷异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -485,7 +485,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：树美多头借贷异常，nid;{},error", request.getNid());
+            log.error("模型：树美多头借贷异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -508,7 +508,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：树美多头借贷异常，nid;{},error", request.getNid());
+            log.error("模型：树美多头借贷异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -531,7 +531,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：树美多头借贷异常，nid;{},error", request.getNid());
+            log.error("模型：树美多头借贷异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -552,7 +552,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：10天内主叫次数-手机异常，nid;{},error", request.getNid());
+            log.error("模型：10天内主叫次数-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -573,7 +573,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：10天内主叫时长-手机异常，nid;{},error", request.getNid());
+            log.error("模型：10天内主叫时长-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -597,7 +597,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：用户手机连号验证异常，nid;{},error", request.getNid());
+            log.error("模型：用户手机连号验证异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -618,7 +618,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：10天内被叫次数-手机异常，nid;{},error", request.getNid());
+            log.error("模型：10天内被叫次数-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -639,7 +639,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：10天内被叫时长-手机异常，nid;{},error", request.getNid());
+            log.error("模型：10天内被叫时长-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -663,7 +663,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：用户手机连号验证异常，nid;{},error", request.getNid());
+            log.error("模型：用户手机连号验证异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -686,7 +686,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：10天内互通次数-手机异常，nid;{},error", request.getNid());
+            log.error("模型：10天内互通次数-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -707,7 +707,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：10天内互通时长-手机异常，nid;{},error", request.getNid());
+            log.error("模型：10天内互通时长-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -728,7 +728,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：10天内互通人次-手机异常，nid;{},error", request.getNid());
+            log.error("模型：10天内互通人次-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -753,7 +753,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：10天内通话时长和次数比值-手机异常，nid;{},error", request.getNid());
+            log.error("模型：10天内通话时长和次数比值-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -774,7 +774,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：30天内主叫次数-手机异常，nid;{},error", request.getNid());
+            log.error("模型：30天内主叫次数-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -795,7 +795,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：30天内主叫时长-手机异常，nid;{},error", request.getNid());
+            log.error("模型：30天内主叫时长-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -819,7 +819,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：用户手机连号验证异常，nid;{},error", request.getNid());
+            log.error("模型：用户手机连号验证异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -840,7 +840,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：30天内被叫次数-手机异常，nid;{},error", request.getNid());
+            log.error("模型：30天内被叫次数-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -861,7 +861,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：30天内被叫时长-手机异常，nid;{},error", request.getNid());
+            log.error("模型：30天内被叫时长-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -885,7 +885,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：用户手机连号验证异常，nid;{},error", request.getNid());
+            log.error("模型：用户手机连号验证异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -908,7 +908,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：30天内互通次数-手机异常，nid;{},error", request.getNid());
+            log.error("模型：30天内互通次数-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -929,7 +929,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：30天内互通时长-手机异常，nid;{},error", request.getNid());
+            log.error("模型：30天内互通时长-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -950,7 +950,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：30天内互通人次-手机异常，nid;{},error", request.getNid());
+            log.error("模型：30天内互通人次-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -975,7 +975,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：30天内通话时长和次数比值-手机异常，nid;{},error", request.getNid());
+            log.error("模型：30天内通话时长和次数比值-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -996,7 +996,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：60天内主叫次数-手机异常，nid;{},error", request.getNid());
+            log.error("模型：60天内主叫次数-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -1017,7 +1017,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：60天内主叫时长-手机异常，nid;{},error", request.getNid());
+            log.error("模型：60天内主叫时长-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -1041,7 +1041,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：用户手机连号验证异常，nid;{},error", request.getNid());
+            log.error("模型：用户手机连号验证异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -1062,7 +1062,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：60天内被叫次数-手机异常，nid;{},error", request.getNid());
+            log.error("模型：60天内被叫次数-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -1083,7 +1083,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：60天内被叫时长-手机异常，nid;{},error", request.getNid());
+            log.error("模型：60天内被叫时长-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -1107,7 +1107,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：用户手机连号验证异常，nid;{},error", request.getNid());
+            log.error("模型：用户手机连号验证异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -1130,7 +1130,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：60天内互通次数-手机异常，nid;{},error", request.getNid());
+            log.error("模型：60天内互通次数-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -1151,7 +1151,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：60天内互通时长-手机异常，nid;{},error", request.getNid());
+            log.error("模型：60天内互通时长-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -1172,7 +1172,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：60天内互通人次-手机异常，nid;{},error", request.getNid());
+            log.error("模型：60天内互通人次-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -1197,7 +1197,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：60天内通话时长和次数比值-手机异常，nid;{},error", request.getNid());
+            log.error("模型：60天内通话时长和次数比值-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -1220,7 +1220,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：10天运营商主叫次数-手机异常，nid;{},error", request.getNid());
+            log.error("模型：10天运营商主叫次数-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -1243,7 +1243,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：10天运营商主叫时长-手机异常，nid;{},error", request.getNid());
+            log.error("模型：10天运营商主叫时长-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -1266,7 +1266,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：10天运营商主叫人次-手机异常，nid;{},error", request.getNid());
+            log.error("模型：10天运营商主叫人次-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -1289,7 +1289,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：10天运营商被叫次数-手机异常，nid;{},error", request.getNid());
+            log.error("模型：10天运营商被叫次数-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -1312,7 +1312,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：10天运营商被叫时长-手机异常，nid;{},error", request.getNid());
+            log.error("模型：10天运营商被叫时长-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -1335,7 +1335,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：10天运营商被叫人次-手机异常，nid;{},error", request.getNid());
+            log.error("模型：10天运营商被叫人次-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -1358,7 +1358,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：10天运营商总通话次数-手机异常，nid;{},error", request.getNid());
+            log.error("模型：10天运营商总通话次数-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -1381,7 +1381,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：10天运营商总通话时长-手机异常，nid;{},error", request.getNid());
+            log.error("模型：10天运营商总通话时长-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -1404,7 +1404,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：10天运营商总通话人次-手机异常，nid;{},error", request.getNid());
+            log.error("模型：10天运营商总通话人次-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -1427,7 +1427,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：10天运营商短信发送个数-手机异常，nid;{},error", request.getNid());
+            log.error("模型：10天运营商短信发送个数-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -1450,7 +1450,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：10天运营商短信接收个数-手机异常，nid;{},error", request.getNid());
+            log.error("模型：10天运营商短信接收个数-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -1473,7 +1473,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：10天运营商短信通讯人次异常，nid;{},error", request.getNid());
+            log.error("模型：10天运营商短信通讯人次异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -1496,7 +1496,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：10天通讯录有效通话次数-手机（主叫+被叫）异常，nid;{},error", request.getNid());
+            log.error("模型：10天通讯录有效通话次数-手机（主叫+被叫）异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -1519,7 +1519,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：10天通讯录有效通话时长-手机（主叫+被叫）异常，nid;{},error", request.getNid());
+            log.error("模型：10天通讯录有效通话时长-手机（主叫+被叫）异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -1542,7 +1542,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：10天通讯录有效通话人次-手机异常，nid;{},error", request.getNid());
+            log.error("模型：10天通讯录有效通话人次-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -1569,7 +1569,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：10天通讯录有效通话时长/次数比值-手机异常，nid;{},error", request.getNid());
+            log.error("模型：10天通讯录有效通话时长/次数比值-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -1593,7 +1593,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：30天运营商主叫次数-手机异常，nid;{},error", request.getNid());
+            log.error("模型：30天运营商主叫次数-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -1616,7 +1616,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：30天运营商主叫时长-手机异常，nid;{},error", request.getNid());
+            log.error("模型：30天运营商主叫时长-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -1639,7 +1639,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：30天运营商主叫人次-手机异常，nid;{},error", request.getNid());
+            log.error("模型：30天运营商主叫人次-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -1662,7 +1662,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：30天运营商被叫次数-手机异常，nid;{},error", request.getNid());
+            log.error("模型：30天运营商被叫次数-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -1685,7 +1685,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：30天运营商被叫时长-手机异常，nid;{},error", request.getNid());
+            log.error("模型：30天运营商被叫时长-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -1708,7 +1708,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：30天运营商被叫人次-手机异常，nid;{},error", request.getNid());
+            log.error("模型：30天运营商被叫人次-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -1731,7 +1731,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：30天运营商总通话次数-手机异常，nid;{},error", request.getNid());
+            log.error("模型：30天运营商总通话次数-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -1754,7 +1754,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：30天运营商总通话时长-手机异常，nid;{},error", request.getNid());
+            log.error("模型：30天运营商总通话时长-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -1777,7 +1777,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：30天运营商总通话人次-手机异常，nid;{},error", request.getNid());
+            log.error("模型：30天运营商总通话人次-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -1800,7 +1800,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：30天运营商短信发送个数-手机异常，nid;{},error", request.getNid());
+            log.error("模型：30天运营商短信发送个数-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -1823,7 +1823,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：30天运营商短信接收个数-手机异常，nid;{},error", request.getNid());
+            log.error("模型：30天运营商短信接收个数-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -1846,7 +1846,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：30天运营商短信通讯人次异常，nid;{},error", request.getNid());
+            log.error("模型：30天运营商短信通讯人次异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -1869,7 +1869,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：30天通讯录有效通话次数-手机（主叫+被叫）异常，nid;{},error", request.getNid());
+            log.error("模型：30天通讯录有效通话次数-手机（主叫+被叫）异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -1892,7 +1892,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：30天通讯录有效通话时长-手机（主叫+被叫）异常，nid;{},error", request.getNid());
+            log.error("模型：30天通讯录有效通话时长-手机（主叫+被叫）异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -1915,7 +1915,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：30天通讯录有效通话人次-手机异常，nid;{},error", request.getNid());
+            log.error("模型：30天通讯录有效通话人次-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -1942,7 +1942,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：30天通讯录有效通话时长/次数比值-手机异常，nid;{},error", request.getNid());
+            log.error("模型：30天通讯录有效通话时长/次数比值-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -1966,7 +1966,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：60天运营商主叫次数-手机异常，nid;{},error", request.getNid());
+            log.error("模型：60天运营商主叫次数-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -1989,7 +1989,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：60天运营商主叫时长-手机异常，nid;{},error", request.getNid());
+            log.error("模型：60天运营商主叫时长-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -2012,7 +2012,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：60天运营商主叫人次-手机异常，nid;{},error", request.getNid());
+            log.error("模型：60天运营商主叫人次-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -2035,7 +2035,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：60天运营商被叫次数-手机异常，nid;{},error", request.getNid());
+            log.error("模型：60天运营商被叫次数-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -2058,7 +2058,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：60天运营商被叫时长-手机异常，nid;{},error", request.getNid());
+            log.error("模型：60天运营商被叫时长-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -2081,7 +2081,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：60天运营商被叫人次-手机异常，nid;{},error", request.getNid());
+            log.error("模型：60天运营商被叫人次-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -2104,7 +2104,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：60天运营商总通话次数-手机异常，nid;{},error", request.getNid());
+            log.error("模型：60天运营商总通话次数-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -2127,7 +2127,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：60天运营商总通话时长-手机异常，nid;{},error", request.getNid());
+            log.error("模型：60天运营商总通话时长-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -2150,7 +2150,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：60天运营商总通话人次-手机异常，nid;{},error", request.getNid());
+            log.error("模型：60天运营商总通话人次-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -2173,7 +2173,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：60天运营商短信发送个数-手机异常，nid;{},error", request.getNid());
+            log.error("模型：60天运营商短信发送个数-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -2196,7 +2196,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：60天运营商短信接收个数-手机异常，nid;{},error", request.getNid());
+            log.error("模型：60天运营商短信接收个数-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -2219,7 +2219,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：60天运营商短信通讯人次异常，nid;{},error", request.getNid());
+            log.error("模型：60天运营商短信通讯人次异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -2242,7 +2242,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：60天通讯录有效通话次数-手机（主叫+被叫）异常，nid;{},error", request.getNid());
+            log.error("模型：60天通讯录有效通话次数-手机（主叫+被叫）异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -2265,7 +2265,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：60天通讯录有效通话时长-手机（主叫+被叫）异常，nid;{},error", request.getNid());
+            log.error("模型：60天通讯录有效通话时长-手机（主叫+被叫）异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -2288,7 +2288,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：60天通讯录有效通话人次-手机异常，nid;{},error", request.getNid());
+            log.error("模型：60天通讯录有效通话人次-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -2315,7 +2315,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：60天通讯录有效通话时长/次数比值-手机异常，nid;{},error", request.getNid());
+            log.error("模型：60天通讯录有效通话时长/次数比值-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -2346,7 +2346,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：通话风险分析-与催收类号码联系情况次数，nid;{},error", request.getNid());
+            log.error("模型：通话风险分析-与催收类号码联系情况次数，nid;{},error", request.getNid(), e);
         }
 
         return count;
@@ -2377,7 +2377,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：通话风险分析-与信用卡类号码联系情况次数，nid;{},error", request.getNid());
+            log.error("模型：通话风险分析-与信用卡类号码联系情况次数，nid;{},error", request.getNid(), e);
         }
 
         return count;
@@ -2407,7 +2407,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：通话风险分析-与贷款类号码联系情况次数，nid;{},error", request.getNid());
+            log.error("模型：通话风险分析-与贷款类号码联系情况次数，nid;{},error", request.getNid(), e);
         }
 
         return count;
@@ -2463,7 +2463,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：通话风险分析-与110，120，律师、法院等次数，nid;{},error", request.getNid());
+            log.error("模型：通话风险分析-与110，120，律师、法院等次数，nid;{},error", request.getNid(), e);
         }
 
         return count;
@@ -2487,7 +2487,7 @@ public class RobotHandler implements AdmissionHandler {
             }
             count = itemJson.getInteger("phone_gray_score");
         } catch (Exception e) {
-            log.error("模型：通话风险分析-联系黑中介分数，nid;{},error", request.getNid());
+            log.error("模型：通话风险分析-联系黑中介分数，nid;{},error", request.getNid(), e);
         }
 
         return count;
@@ -2511,7 +2511,7 @@ public class RobotHandler implements AdmissionHandler {
             }
             count = itemJson.getInteger("contacts_router_cnt");
         } catch (Exception e) {
-            log.error("模型：通话风险分析-引起间接黑名单人数，nid;{},error", request.getNid());
+            log.error("模型：通话风险分析-引起间接黑名单人数，nid;{},error", request.getNid(), e);
             e.printStackTrace();
         }
 
@@ -2536,7 +2536,7 @@ public class RobotHandler implements AdmissionHandler {
             }
             count = itemJson.getInteger("contacts_class2_blacklist_cnt");
         } catch (Exception e) {
-            log.error("模型：通话风险分析-间接联系人中黑名单人数，nid;{},error", request.getNid());
+            log.error("模型：通话风险分析-间接联系人中黑名单人数，nid;{},error", request.getNid(), e);
             e.printStackTrace();
         }
 
@@ -2561,7 +2561,7 @@ public class RobotHandler implements AdmissionHandler {
             }
             count = itemJson.getInteger("searched_org_cnt");
         } catch (Exception e) {
-            log.error("模型：通话风险分析-查询过该用户的相关企业数量，nid;{},error", request.getNid());
+            log.error("模型：通话风险分析-查询过该用户的相关企业数量，nid;{},error", request.getNid(), e);
             e.printStackTrace();
         }
 
@@ -2590,7 +2590,7 @@ public class RobotHandler implements AdmissionHandler {
             }
             count = array.size();
         } catch (Exception e) {
-            log.error("模型：通话风险分析-身份证组合过的其他姓名，nid;{},error", request.getNid());
+            log.error("模型：通话风险分析-身份证组合过的其他姓名，nid;{},error", request.getNid(), e);
             e.printStackTrace();
         }
 
@@ -2619,7 +2619,7 @@ public class RobotHandler implements AdmissionHandler {
             }
             count = array.size();
         } catch (Exception e) {
-            log.error("模型：通话风险分析-身份证组合过其他电话，nid;{},error", request.getNid());
+            log.error("模型：通话风险分析-身份证组合过其他电话，nid;{},error", request.getNid(), e);
             e.printStackTrace();
         }
 
@@ -2648,7 +2648,7 @@ public class RobotHandler implements AdmissionHandler {
             }
             count = array.size();
         } catch (Exception e) {
-            log.error("模型：通话风险分析-身份证组合过其他电话，nid;{},error", request.getNid());
+            log.error("模型：通话风险分析-身份证组合过其他电话，nid;{},error", request.getNid(), e);
             e.printStackTrace();
         }
 
@@ -2677,7 +2677,7 @@ public class RobotHandler implements AdmissionHandler {
             }
             count = array.size();
         } catch (Exception e) {
-            log.error("模型：通话风险分析-电话号码组合过其他身份证，nid;{},error", request.getNid());
+            log.error("模型：通话风险分析-电话号码组合过其他身份证，nid;{},error", request.getNid(), e);
         }
 
         return count;
@@ -2708,7 +2708,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：出行分析-联系人所在区域个数汇总，nid;{},error", request.getNid());
+            log.error("模型：出行分析-联系人所在区域个数汇总，nid;{},error", request.getNid(), e);
             e.printStackTrace();
         }
         log.debug("[104维度-count] : count = {}", count);
@@ -2745,7 +2745,7 @@ public class RobotHandler implements AdmissionHandler {
 
             count = areas.size();
         } catch (Exception e) {
-            log.error("模型：出行分析-外出不同城市的个数，曾在那些城市打过电话，nid;{},error", request.getNid());
+            log.error("模型：出行分析-外出不同城市的个数，曾在那些城市打过电话，nid;{},error", request.getNid(), e);
             e.printStackTrace();
         }
 
@@ -2778,8 +2778,8 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：通话分析-深夜[1:30-5:30]通话总次数，nid;{},error", request.getNid());
-            e.printStackTrace();
+            log.error("模型：通话分析-深夜[1:30-5:30]通话总次数，nid;{},error", request.getNid(), e);
+//            e.printStackTrace();
         }
 
         return count;
@@ -2813,8 +2813,8 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：深夜通话分析-深夜[1:30-5:30]通话总次数，nid;{},error", request.getNid());
-            e.printStackTrace();
+            log.error("模型：深夜通话分析-深夜[1:30-5:30]通话总次数，nid;{},error", request.getNid(), e);
+//            e.printStackTrace();
         }
 
         log.debug("[107维度-返回值]：count = {}", count);
@@ -2850,8 +2850,8 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：深夜通话分析-深夜[1:30-5:30]通话号码数，nid;{},error", request.getNid());
-            e.printStackTrace();
+            log.error("模型：深夜通话分析-深夜[1:30-5:30]通话号码数，nid;{},error", request.getNid(), e);
+//            e.printStackTrace();
         }
         log.debug("[108维度-返回值]：count = {}", count);
         return count;
@@ -2883,8 +2883,8 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：深夜通话分析-深夜[1:30-5:30]主叫数，nid;{},error", request.getNid());
-            e.printStackTrace();
+            log.error("模型：深夜通话分析-深夜[1:30-5:30]主叫数，nid;{},error", request.getNid(), e);
+//            e.printStackTrace();
         }
 
         return count;
@@ -2917,8 +2917,8 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：深夜通话分析-深夜[1:30-5:30]被叫数，nid;{},error", request.getNid());
-            e.printStackTrace();
+            log.error("模型：深夜通话分析-深夜[1:30-5:30]被叫数，nid;{},error", request.getNid(), e);
+//            e.printStackTrace();
         }
         log.debug("[110维度-返回值] : count = {}", count);
         return count;
@@ -2945,8 +2945,8 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：行为分析-手机静默情况，nid;{},error", request.getNid());
-            e.printStackTrace();
+            log.error("模型：行为分析-手机静默情况，nid;{},error", request.getNid(), e);
+//            e.printStackTrace();
         }
 
         return count;
@@ -2968,7 +2968,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：3天内主叫次数-手机异常，nid;{},error", request.getNid());
+            log.error("模型：3天内主叫次数-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -2989,7 +2989,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：3天内主叫时长-手机异常，nid;{},error", request.getNid());
+            log.error("模型：3天内主叫时长-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -3013,7 +3013,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：用户手机连号验证异常，nid;{},error", request.getNid());
+            log.error("模型：用户手机连号验证异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -3034,7 +3034,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：3天内被叫次数-手机异常，nid;{},error", request.getNid());
+            log.error("模型：3天内被叫次数-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -3055,7 +3055,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：3天内被叫时长-手机异常，nid;{},error", request.getNid());
+            log.error("模型：3天内被叫时长-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -3079,7 +3079,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：用户手机连号验证异常，nid;{},error", request.getNid());
+            log.error("模型：用户手机连号验证异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -3102,7 +3102,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：3天内互通次数-手机异常，nid;{},error", request.getNid());
+            log.error("模型：3天内互通次数-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -3123,7 +3123,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：3天内互通时长-手机异常，nid;{},error", request.getNid());
+            log.error("模型：3天内互通时长-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -3144,7 +3144,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：3天内互通人次-手机异常，nid;{},error", request.getNid());
+            log.error("模型：3天内互通人次-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
@@ -3169,7 +3169,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("模型：3天内通话时长和次数比值-手机异常，nid;{},error", request.getNid());
+            log.error("模型：3天内通话时长和次数比值-手机异常，nid;{},error", request.getNid(), e);
         }
         return count;
     }
