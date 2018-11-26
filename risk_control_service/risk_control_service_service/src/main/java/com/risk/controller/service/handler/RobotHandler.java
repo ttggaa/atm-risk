@@ -134,7 +134,7 @@ public class RobotHandler implements AdmissionHandler {
             List<RobotResultDetail> listRobot = new ArrayList<>();
 
             // 查询所有模型规则
-            List<RobotRule> ruleList = robotRuleDao.getAllrobotRule(null);
+            List<RobotRule> ruleList = robotRuleDao.getAllrobotRule(null,1);
             for (RobotRule robotRule : ruleList) {
 
                 if (StringUtils.isBlank(robotRule.getHandler())) {

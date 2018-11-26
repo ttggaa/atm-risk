@@ -5,10 +5,15 @@
     </resultMap>
 
     <select id="getAllrobotRule" resultMap="getMap" parameterType="Long">
-        SELECT * from risk_robot_rule WHERE enabled = 1
-        <if test="null!=ruleId and 0!=ruleId">
-            and id = #{ruleId}
-        </if>
+        SELECT * from risk_robot_rule
+        <where>
+            <if test="null!=ruleId and 0!=ruleId">
+                and id = #{ruleId}
+            </if>
+            <if test="null!=enabled">
+                enabled = #{enabled}
+            </if>
+        </where>
     </select>
 
 </mapper>

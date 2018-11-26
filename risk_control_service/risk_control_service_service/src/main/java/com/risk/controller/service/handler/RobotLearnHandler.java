@@ -58,7 +58,7 @@ public class RobotLearnHandler implements AdmissionHandler {
 
         if (null != list && list.size() > 0) {
             // 1.设置默认值
-            List<RobotRule> ruleList = robotRuleDao.getAllrobotRule(ruleId);
+            List<RobotRule> ruleList = robotRuleDao.getAllrobotRule(ruleId, null);
             if (!bool) {
                 robotRuleDetailDao.updateAllSetZero(ruleId);
             }
