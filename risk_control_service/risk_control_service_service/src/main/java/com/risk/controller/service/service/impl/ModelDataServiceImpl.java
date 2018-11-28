@@ -525,8 +525,7 @@ public class ModelDataServiceImpl implements ModelDataService {
         try {
             riskModelOperatorReportDao.saveCallRiskAnalysis(listParams);
         } catch (Exception e) {
-            log.error("[模型数据-生成]：genCallRiskAnalysis插入数据出错,nid:{}", request.getNid());
-            e.printStackTrace();
+            log.error("[模型数据-生成]：genCallRiskAnalysis插入数据出错,nid:{}", request.getNid(), e);
         }
     }
 
@@ -619,8 +618,7 @@ public class ModelDataServiceImpl implements ModelDataService {
         try {
             riskModelOperatorReportDao.saveBasicCheckItem(params);
         } catch (Exception e) {
-            log.error("[模型数据-生成]：genBasicCheckItem插入数据出错,nid:{}", request.getNid());
-            e.printStackTrace();
+            log.error("[模型数据-生成]：genBasicCheckItem插入数据出错,nid:{}", request.getNid(), e);
         }
     }
 
@@ -669,8 +667,7 @@ public class ModelDataServiceImpl implements ModelDataService {
             try {
                 riskModelOperatorReportDao.saveCheckBlackInfo(check_black_info);
             } catch (Exception e) {
-                log.error("[模型数据-生成]：genCheckBlackInfo插入数据出错,nid:{}", request.getNid());
-                e.printStackTrace();
+                log.error("[模型数据-生成]：genCheckBlackInfo插入数据出错,nid:{}", request.getNid(), e);
             }
         });
     }
@@ -702,8 +699,7 @@ public class ModelDataServiceImpl implements ModelDataService {
         try {
             riskModelOperatorReportDao.saveCallFamilyDetail(listParams);
         } catch (Exception e) {
-            log.error("[模型数据-生成]：genCallFamilyDetail插入数据出错,nid:{}", request.getNid());
-            e.printStackTrace();
+            log.error("[模型数据-生成]：genCallFamilyDetail插入数据出错,nid:{}", request.getNid(), e);
         }
     }
 
@@ -792,8 +788,7 @@ public class ModelDataServiceImpl implements ModelDataService {
         try {
             riskModelOperatorReportDao.saveCallSilentAreas(params);
         } catch (Exception e) {
-            log.error("[模型数据-生成]：genCallSilentAreas插入数据出错,nid:{}", request.getNid());
-            e.printStackTrace();
+            log.error("[模型数据-生成]：genCallSilentAreas插入数据出错,nid:{}", request.getNid(), e);
         }
     }
 
