@@ -1,6 +1,8 @@
 package com.risk.controller.service.handler;
 
 import com.alibaba.fastjson.JSONObject;
+import com.risk.controller.service.common.utils.DateTools;
+import com.risk.controller.service.common.utils.PhoneUtils;
 import com.risk.controller.service.entity.DataOrderMapping;
 import com.risk.controller.service.mongo.dao.MongoCollections;
 import com.risk.controller.service.mongo.dao.MongoDao;
@@ -10,10 +12,10 @@ import com.risk.controller.service.service.DataOrderMappingService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -502,6 +504,7 @@ public class MongoHandler {
 
     /**
      * 查询树美多头信息
+     *
      * @param request
      * @return
      */
@@ -528,6 +531,7 @@ public class MongoHandler {
 
     /**
      * 通过number查询运营商通话记录
+     *
      * @param operatorNum
      * @return
      */
@@ -544,6 +548,7 @@ public class MongoHandler {
 
     /**
      * 通过clientNum查询用户设备通讯录
+     *
      * @param clientNum
      * @return
      */
@@ -560,6 +565,7 @@ public class MongoHandler {
 
     /**
      * 通过nid查询用户设备通讯录
+     *
      * @param nid
      * @return
      */
@@ -578,5 +584,131 @@ public class MongoHandler {
             list = mongoDao.find(queries, JSONObject.class, MongoCollections.DB_DEVICE_CONTACT, null);
         }
         return list;
+    }
+
+    /**
+     * 运营商互通。查询最近ruleOldDays天互相通话次数
+     *
+     * @param ruleDays    订单申请时间
+     * @param ruleDays    最近多少天
+     * @param callDetails 运营商通话记录
+     * @return 互通次数
+     */
+    public int getOptEachCallNum(Long applyTime, int ruleDays, List<JSONObject> callDetails) {
+        int count = 0;
+
+        if (CollectionUtils.isEmpty(callDetails)) {
+            return count;
+        }
+
+        // 运营商主叫被叫，总次数
+        Map<String, Integer> eachCallNum = new HashMap<>();//所有通讯录主叫次数
+        Map<String, Integer> eachCalledNum = new HashMap<>();//所有通讯录被叫次数
+
+        for (JSONObject jsonObject : callDetails) {
+            String strTime = jsonObject.getString("time");// 通话时间
+            String peerNumber = jsonObject.getString("peer_number");//通话手机号码
+            Integer duration = jsonObject.getInteger("duration");//通话时长
+            String dialType = jsonObject.getString("dial_type");//DIALED被叫，DIAL主叫
+
+            if (!PhoneUtils.isMobile(peerNumber) || StringUtils.isBlank(strTime) || null == duration || duration == 0) {
+                continue;
+            }
+            Long diffDays = Math.abs(DateTools.getDayDiff(new Date(applyTime), DateTools.convert(strTime)));
+            if (diffDays.compareTo(Long.valueOf(ruleDays)) <= 0) {
+                // 运营商主叫被叫
+                if ("DIALED".equals(dialType)) {
+                    if (eachCalledNum.containsKey(peerNumber)) {
+                        eachCalledNum.put(peerNumber, eachCalledNum.get(peerNumber) + 1);
+                    } else {
+                        eachCalledNum.put(peerNumber, 1);
+                    }
+                } else if ("DIAL".equals(dialType)) {
+                    if (eachCallNum.containsKey(peerNumber)) {
+                        eachCallNum.put(peerNumber, eachCallNum.get(peerNumber) + 1);
+                    } else {
+                        eachCallNum.put(peerNumber, 1);
+                    }
+                }
+            }
+        }
+
+        // 计算通讯录互通
+        for (Map.Entry<String, Integer> entry : eachCallNum.entrySet()) {
+            // 该手机号码既有主叫也有被叫
+            if (eachCalledNum.containsKey(entry.getKey())) {
+                count += (entry.getValue() + eachCalledNum.get(entry.getKey())) / 2;
+            }
+        }
+        return count;
+    }
+
+    /**
+     * 通讯录ruleDays之内的互相通话次数
+     *
+     * @param applyTime   申请时间
+     * @param ruleDays    天数
+     * @param contactList 设备通讯录
+     * @param callDetails 运营商通话记录
+     * @return
+     */
+    public int getCntEachCallNum(Long applyTime, Integer ruleDays, List<JSONObject> contactList, List<JSONObject> callDetails) {
+        int count = 0;
+
+        if (CollectionUtils.isEmpty(callDetails) && CollectionUtils.isEmpty(contactList)) {
+            return count;
+        }
+        Set<String> devicePhones = new HashSet<>();
+        contactList.forEach(json -> {
+            String phone = json.getString("contactsPhone");
+            phone = PhoneUtils.cleanTel(phone);
+            if (PhoneUtils.isMobile(phone)) {
+                devicePhones.add(phone);
+            }
+        });
+
+
+        // 运营商主叫被叫，总次数
+        Map<String, Integer> eachCallNum = new HashMap<>();//所有通讯录主叫次数
+        Map<String, Integer> eachCalledNum = new HashMap<>();//所有通讯录被叫次数
+
+        for (JSONObject jsonObject : callDetails) {
+            String strTime = jsonObject.getString("time");// 通话时间
+            String peerNumber = jsonObject.getString("peer_number");//通话手机号码
+            Integer duration = jsonObject.getInteger("duration");//通话时长
+            String dialType = jsonObject.getString("dial_type");//DIALED被叫，DIAL主叫
+
+            if (!PhoneUtils.isMobile(peerNumber) || StringUtils.isBlank(strTime) || null == duration || duration == 0) {
+                continue;
+            }
+            Long diffDays = Math.abs(DateTools.getDayDiff(new Date(applyTime), DateTools.convert(strTime)));
+
+            // 通讯录互通
+            if (diffDays.compareTo(Long.valueOf(ruleDays)) <= 0 && devicePhones.contains(peerNumber)) {
+                // 运营商主叫被叫
+                if ("DIALED".equals(dialType)) {
+                    if (eachCalledNum.containsKey(peerNumber)) {
+                        eachCalledNum.put(peerNumber, eachCalledNum.get(peerNumber) + 1);
+                    } else {
+                        eachCalledNum.put(peerNumber, 1);
+                    }
+                } else if ("DIAL".equals(dialType)) {
+                    if (eachCallNum.containsKey(peerNumber)) {
+                        eachCallNum.put(peerNumber, eachCallNum.get(peerNumber) + 1);
+                    } else {
+                        eachCallNum.put(peerNumber, 1);
+                    }
+                }
+            }
+        }
+
+        // 计算通讯录互通
+        for (Map.Entry<String, Integer> entry : eachCallNum.entrySet()) {
+            // 该手机号码既有主叫也有被叫
+            if (eachCalledNum.containsKey(entry.getKey())) {
+                count += (entry.getValue() + eachCalledNum.get(entry.getKey())) / 2;
+            }
+        }
+        return count;
     }
 }

@@ -539,17 +539,17 @@ public class VerifyServiceNewTest {
 
     @Test
     public void verify30DaysCallDetail() {
-
-        DecisionReqLog reqLog = reqLogDao.getbyNid("218103007243914642");
-        DecisionHandleRequest request = JSONObject.parseObject(reqLog.getReqData(), DecisionHandleRequest.class);
+        DecisionHandleRequest request = this.getRequest();
         AdmissionRuleDTO rule = new AdmissionRuleDTO();
         Map<String, String> set = new HashMap<>();
-        set.put("callDetailDays", "7");
-        set.put("callNumDays", "30");
-        set.put("callDetailNum", "1");
-        set.put("cntCallNum30", "10");
-        set.put("allCallNum30", "100");
+        set.put("oldDays", "7");
+        set.put("oldPassNum", "1");
+        set.put("newDays", "180");
+        set.put("newCntPassNum", "10");
+        set.put("newAllPassNum", "100");
         rule.setSetting(set);
+
+        request.setLabelGroupId(1009L);
 
 
         AdmissionResultDTO record2 = verifyHandler.verify30DaysCallDetail(request, rule);
@@ -600,4 +600,21 @@ public class VerifyServiceNewTest {
         System.out.println("==============================================");
     }
 
+    @Test
+    public void verifyRepeatContactPhone() {
+        DecisionHandleRequest request = new DecisionHandleRequest();
+        request.setNid("31806050084165325");
+
+        AdmissionRuleDTO rule = new AdmissionRuleDTO();
+        Map<String, String> set = new HashMap<>();
+        set.put("repeatPerson", "2");
+        set.put("repeatNum", "2");
+        rule.setSetting(set);
+
+        AdmissionResultDTO record = verifyHandler.verifyRepeatContactPhone(request, rule);
+
+        System.out.println("===========================");
+        System.out.println(JSONObject.toJSONString(record));
+        System.out.println("===========================");
+    }
 }
