@@ -31,7 +31,6 @@ public class RobotRequestDTO {
     private Integer userShortNumCount;//短号个数（设备通讯录、设备通话记录。运营商通话记录）
     private Integer userOpertorPhoneUsedTime;//手机使用时长
     private Integer userOperatorAvgCharge;// 运营商平均话费
-    private Integer userShumeiCount;//树美多头借贷个数
     private Integer robotKhYmdCount;//用户、紧急联系人手机号码空号、羊毛党验证
 
 //    private Integer userCallNum10;					//10天内主叫次数-手机

@@ -453,8 +453,8 @@ public class RobotHandler implements AdmissionHandler {
     public Integer robotShumeiMultiNum7(DecisionHandleRequest request) {
         Integer count = 0;
         try {
-            if (null != request.getRobotRequestDTO().getUserShumeiCount()) {
-                count = request.getRobotRequestDTO().getUserShumeiCount();
+            if (null != request.getRobotRequestDTO().getStaSmBorrows()) {
+                count = request.getRobotRequestDTO().getStaSmBorrows().getApplications7d();
             } else {
                 StaSmBorrows staSmBorrows = modelDataService.getStaSmBorrows(request);
                 if (null != staSmBorrows) {
@@ -476,8 +476,8 @@ public class RobotHandler implements AdmissionHandler {
     public Integer robotShumeiMultiNum30(DecisionHandleRequest request) {
         Integer count = 0;
         try {
-            if (null != request.getRobotRequestDTO().getUserShumeiCount()) {
-                count = request.getRobotRequestDTO().getUserShumeiCount();
+            if (null != request.getRobotRequestDTO().getStaSmBorrows()) {
+                count = request.getRobotRequestDTO().getStaSmBorrows().getApplications30d();
             } else {
                 StaSmBorrows staSmBorrows = modelDataService.getStaSmBorrows(request);
                 if (null != staSmBorrows) {
@@ -499,8 +499,8 @@ public class RobotHandler implements AdmissionHandler {
     public Integer robotShumeiMultiNum60(DecisionHandleRequest request) {
         Integer count = 0;
         try {
-            if (null != request.getRobotRequestDTO().getUserShumeiCount()) {
-                count = request.getRobotRequestDTO().getUserShumeiCount();
+            if (null != request.getRobotRequestDTO().getStaSmBorrows()) {
+                count = request.getRobotRequestDTO().getStaSmBorrows().getApplications60d();
             } else {
                 StaSmBorrows staSmBorrows = modelDataService.getStaSmBorrows(request);
                 if (null != staSmBorrows) {
@@ -522,8 +522,8 @@ public class RobotHandler implements AdmissionHandler {
     public Integer robotShumeiMultiNum(DecisionHandleRequest request) {
         Integer count = 0;
         try {
-            if (null != request.getRobotRequestDTO().getUserShumeiCount()) {
-                count = request.getRobotRequestDTO().getUserShumeiCount();
+            if (null != request.getRobotRequestDTO().getStaSmBorrows()) {
+                count = request.getRobotRequestDTO().getStaSmBorrows().getApplications60d();
             } else {
                 StaSmBorrows staSmBorrows = modelDataService.getStaSmBorrows(request);
                 if (null != staSmBorrows) {

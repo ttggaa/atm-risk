@@ -54,7 +54,6 @@ public class ShuMeiHandler implements AdmissionHandler {
 
         int applyCount = detail.getInteger("itfin_loan_applications_7d");
         int minCount = Integer.valueOf(rule.getSetting().get("minCount"));
-        request.getRobotRequestDTO().setUserShumeiCount(applyCount);
 
         result.setData(applyCount);
         if (applyCount >= minCount) {
