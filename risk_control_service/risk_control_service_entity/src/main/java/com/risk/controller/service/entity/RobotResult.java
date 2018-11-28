@@ -9,6 +9,8 @@ public class RobotResult {
     private Long id;
     private String nid;//订单号
     private BigDecimal num;//规则对应的个数
+    private BigDecimal score;//用户得分
+    private BigDecimal totalScore;//总分
     private Integer result;//是否满足，1满足，0不满足
     private Integer source;//来源1正式数据，2训练数据
     private Long addTime;
@@ -20,9 +22,11 @@ public class RobotResult {
     public RobotResult() {
     }
 
-    public RobotResult(String nid, BigDecimal num, Integer result, Integer source) {
+    public RobotResult(String nid, BigDecimal num, Integer result, Integer source, BigDecimal score, BigDecimal totalScore) {
         this.nid = nid;
         this.num = num;
+        this.score = score;
+        this.totalScore = totalScore;
         this.result = result;
         if (null == source) {
             source = RobotResult.SOURCE_1;

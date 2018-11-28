@@ -126,9 +126,9 @@ public class RobotHandler implements AdmissionHandler {
 
         BigDecimal ruleMinScore = new BigDecimal(rule.getSetting().get("minScore"));
         BigDecimal ruleMaxScore = new BigDecimal(rule.getSetting().get("maxScore"));
-        BigDecimal ruleTotalScore = new BigDecimal(rule.getSetting().get("totalScore"));
 
         BigDecimal divideScore = BigDecimal.ZERO; // 应该减去的分值
+        BigDecimal totalScore = BigDecimal.ZERO; // 应该减去的分值
 
         try {
             List<RobotResultDetail> listRobot = new ArrayList<>();
@@ -136,7 +136,7 @@ public class RobotHandler implements AdmissionHandler {
             // 查询所有模型规则
             List<RobotRule> ruleList = robotRuleDao.getAllrobotRule(null,1);
             for (RobotRule robotRule : ruleList) {
-
+                totalScore = totalScore.add(robotRule.getPercent());
                 if (StringUtils.isBlank(robotRule.getHandler())) {
                     continue;
                 }
@@ -181,8 +181,8 @@ public class RobotHandler implements AdmissionHandler {
                 listRobot.add(robotResultDetail);
             }
             // finalScore = ((总分-扣分)/总分) *10000 -6000,最终得分向下取整
-            BigDecimal finalScore = ruleTotalScore.subtract(divideScore)
-                    .divide(ruleTotalScore, 8, BigDecimal.ROUND_HALF_UP)
+            BigDecimal finalScore = totalScore.subtract(divideScore)
+                    .divide(totalScore, 8, BigDecimal.ROUND_HALF_UP)
                     .multiply(new BigDecimal(10000))
                     .subtract(new BigDecimal(6000)).setScale(0, BigDecimal.ROUND_DOWN);
 
@@ -196,7 +196,7 @@ public class RobotHandler implements AdmissionHandler {
                 result.setResult(AdmissionResultDTO.RESULT_REJECTED);
             }
 
-            RobotResult robotResult = new RobotResult(request.getNid(), divideScore, result.getResult(), request.getRobotRequestDTO().getSource());
+            RobotResult robotResult = new RobotResult(request.getNid(), divideScore, result.getResult(), request.getRobotRequestDTO().getSource(), finalScore, totalScore);
             robotResultDao.insert(robotResult);
             if (listRobot.size() > 0) {
                 listRobot.forEach(robot -> robot.setResultId(robotResult.getId()));

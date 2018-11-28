@@ -6,8 +6,8 @@
 
     <insert id="insert" parameterType="com.risk.controller.service.entity.RobotResult"  useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         INSERT INTO `zx_risk`.`risk_robot_result`
-        (`nid`, `num`, `result`, `source`, `add_time`, `update_time`)
+        (`nid`, `num`, `result`, `source`, `add_time`, `update_time`,`score`,`total_score`)
         VALUES
-        ( #{nid}, #{num}, #{result}, #{source}, SYSDATE(),SYSDATE());
+        ( #{nid}, #{num}, #{result}, #{source}, SYSDATE(),SYSDATE(), #{score},#{totalScore});
     </insert>
 </mapper>
