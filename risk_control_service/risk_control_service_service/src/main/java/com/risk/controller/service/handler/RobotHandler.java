@@ -184,9 +184,9 @@ public class RobotHandler implements AdmissionHandler {
             BigDecimal finalScore = totalScore.subtract(divideScore)
                     .divide(totalScore, 8, BigDecimal.ROUND_HALF_UP)
                     .multiply(new BigDecimal(10000))
-                    .subtract(new BigDecimal(6000)).setScale(0, BigDecimal.ROUND_DOWN);
+                    .subtract(new BigDecimal(6000)).setScale(4, BigDecimal.ROUND_HALF_UP);
 
-            result.setData(finalScore);
+            result.setData(finalScore.setScale(0,BigDecimal.ROUND_DOWN));
 
             if (finalScore.compareTo(ruleMaxScore) >= 0) {
                 result.setResult(AdmissionResultDTO.RESULT_APPROVED);
