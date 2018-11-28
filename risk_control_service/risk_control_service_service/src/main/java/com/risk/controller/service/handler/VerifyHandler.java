@@ -2506,6 +2506,11 @@ public class VerifyHandler implements AdmissionHandler {
             Integer gray = null;
 
             JSONObject operatorReport = modelDataService.getOperatorReport(request);
+            if (null == operatorReport) {
+                result.setResult(AdmissionResultDTO.RESULT_SUSPEND);
+                result.setData("未查询到运营商报告");
+                return result;
+            }
             JSONArray user_info_check = operatorReport.getJSONArray(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.USER_INFO_CHECK.getValue());
             for (Object call : user_info_check) {
                 JSONObject item = (JSONObject) call;
@@ -2551,10 +2556,15 @@ public class VerifyHandler implements AdmissionHandler {
             Integer cnt = null;
 
             JSONObject operatorReport = modelDataService.getOperatorReport(request);
+            if (null == operatorReport) {
+                result.setResult(AdmissionResultDTO.RESULT_SUSPEND);
+                result.setData("未查询到运营商报告");
+                return result;
+            }
             JSONArray user_info_check = operatorReport.getJSONArray(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.USER_INFO_CHECK.getValue());
             for (Object call : user_info_check) {
                 JSONObject item = (JSONObject) call;
-                if ( null != item.getJSONObject(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CHECK_BLACK_INFO.getValue())) {
+                if (null != item.getJSONObject(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CHECK_BLACK_INFO.getValue())) {
                     JSONObject check_black_info = item.getJSONObject(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CHECK_BLACK_INFO.getValue());
                     cnt = check_black_info.getInteger("contacts_router_cnt");
                 }
