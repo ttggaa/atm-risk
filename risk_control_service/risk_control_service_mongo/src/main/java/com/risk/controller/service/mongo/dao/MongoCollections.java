@@ -35,7 +35,7 @@ public class MongoCollections {
         BEHAVIOR_CHECK("behavior_check"),
         ;
 
-        private String value;
+        private final String value;
 
         OPERATOR_MOJIE_INFO_ELEMENT(String value) {
             this.value = value;
