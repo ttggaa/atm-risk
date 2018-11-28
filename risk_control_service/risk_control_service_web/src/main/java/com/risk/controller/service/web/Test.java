@@ -1,7 +1,9 @@
 package com.risk.controller.service.web;
 
 import com.risk.controller.service.common.utils.ResponseEntity;
+import com.risk.controller.service.dto.AdmissionRuleDTO;
 import com.risk.controller.service.handler.RobotHandler;
+import com.risk.controller.service.handler.VerifyHandler;
 import com.risk.controller.service.request.DecisionHandleRequest;
 import com.risk.controller.service.service.ModelDataService;
 import com.risk.controller.service.service.ModelService;
@@ -14,6 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Controller
 public class Test {
 
@@ -21,6 +26,8 @@ public class Test {
     private ModelDataService modelDataService;
     @Autowired
     private RobotHandler robotHandler;
+    @Autowired
+    private VerifyHandler verifyHandler;
 
     @RequestMapping(value = "/test")
     @ResponseBody
@@ -28,6 +35,12 @@ public class Test {
         DecisionHandleRequest request = new DecisionHandleRequest();
         request.setUserName("17317600807");
         request.setNid("218110715285014286");
+
+        Map map = new HashMap();
+        map.put("routerCnt","10");
+        AdmissionRuleDTO rule = new AdmissionRuleDTO();
+        rule.setSetting(map);
+        verifyHandler.verifyRouterCnt(request,rule);
 //        System.out.println(robotHandler.robotCallRiskAnalysisCollection(request));
 //        System.out.println(robotHandler.robotCallRiskAnalysisCreditCard(request));
 //        System.out.println(robotHandler.robotCallRiskAnalysisLoan(request));
@@ -40,7 +53,7 @@ public class Test {
 //        System.out.println(robotHandler.robotCallIdcardWithOtherPhones(request));
 //        System.out.println(robotHandler.robotCallPhoneWithOtherNames(request));
 //        System.out.println(robotHandler.robotCallPhoneWithOtherIdcards(request));
-        System.out.println(robotHandler.robotCallContactRegion(request));
+//        System.out.println(robotHandler.robotCallContactRegion(request));
 //        System.out.println(robotHandler.robotCallTripInfo(request));
 //        System.out.println(robotHandler.robotCallDurationDetail(request));
 //        System.out.println(robotHandler.robotCallMidnightTotalCnt(request));

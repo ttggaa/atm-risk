@@ -68,6 +68,8 @@ public class VerifyHandler implements AdmissionHandler {
     private OperatorService operatorService;
     @Autowired
     private ThirdService thirdService;
+    @Autowired
+    private ModelDataService modelDataService;
 
     public AdmissionResultDTO handUp(DecisionHandleRequest request, AdmissionRuleDTO rule) {
         AdmissionResultDTO result = new AdmissionResultDTO();
@@ -2402,7 +2404,7 @@ public class VerifyHandler implements AdmissionHandler {
     }
 
     /**
-     * 1061验证最大逾期天数
+     * 1063验证最大逾期天数
      *
      * @param request
      * @param rule
@@ -2410,25 +2412,28 @@ public class VerifyHandler implements AdmissionHandler {
      */
     public AdmissionResultDTO verifyGrayScore(DecisionHandleRequest request, AdmissionRuleDTO rule) {
         AdmissionResultDTO result = new AdmissionResultDTO();
-        if (null == rule
-                || !rule.getSetting().containsKey("maxOverdueDay")) {
-
+        if (null == rule || !rule.getSetting().containsKey("grayScore")) {
             result.setResult(AdmissionResultDTO.RESULT_SKIP);
             result.setData("规则为空，跳过");
             return result;
         }
 
         try {
-            JSONObject operatorReport = this.getOperatorReport(request);
+            Integer grayScore = Integer.valueOf(rule.getSetting().get("grayScore")); //黑中介规则分数
+            Integer gray = null;
+
+            JSONObject operatorReport = modelDataService.getOperatorReport(request);
             JSONArray user_info_check = operatorReport.getJSONArray(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.USER_INFO_CHECK.getValue());
+            for (Object call : user_info_check) {
+                JSONObject item = (JSONObject) call;
+                if ( null != item.getJSONObject(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CHECK_BLACK_INFO.getValue())) {
+                    JSONObject check_black_info = item.getJSONObject(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CHECK_BLACK_INFO.getValue());
+                    gray = check_black_info.getInteger("phone_gray_score");
+                }
+            }
 
-
-            Integer ruleMaxOverdueDay = Integer.valueOf(rule.getSetting().get("maxOverdueDay"));//历史最大逾期天数
-            Integer maxOverdueDay = request.getMaxOverdueDay();
-            maxOverdueDay = null == maxOverdueDay ? 0 : maxOverdueDay;
-
-            result.setData(maxOverdueDay);
-            if (maxOverdueDay >= ruleMaxOverdueDay) {
+            result.setData(gray);
+            if (null != gray && gray.compareTo(grayScore) <= 0) {
                 result.setResult(AdmissionResultDTO.RESULT_REJECTED);
                 return result;
             } else {
@@ -2436,9 +2441,54 @@ public class VerifyHandler implements AdmissionHandler {
                 return result;
             }
         } catch (Exception e) {
-            log.error("[决策1060异常]：单号：{}", request.getNid(), e);
+            log.error("[决策1063异常]：单号：{}", request.getNid(), e);
             result.setResult(AdmissionResultDTO.RESULT_EXCEPTIONAL);
-            result.setData("决策1060异常");
+            result.setData("决策1063异常");
+            return result;
+        }
+    }
+
+    /**
+     * 1064引起黑名单的直接联系人数量
+     *
+     * @param request
+     * @param rule
+     * @return
+     */
+    public AdmissionResultDTO verifyRouterCnt(DecisionHandleRequest request, AdmissionRuleDTO rule) {
+        AdmissionResultDTO result = new AdmissionResultDTO();
+        if (null == rule || !rule.getSetting().containsKey("routerCnt")) {
+            result.setResult(AdmissionResultDTO.RESULT_SKIP);
+            result.setData("规则为空，跳过");
+            return result;
+        }
+
+        try {
+            Integer routerCnt = Integer.valueOf(rule.getSetting().get("routerCnt")); // 规则配置数
+            Integer cnt = null;
+
+            JSONObject operatorReport = modelDataService.getOperatorReport(request);
+            JSONArray user_info_check = operatorReport.getJSONArray(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.USER_INFO_CHECK.getValue());
+            for (Object call : user_info_check) {
+                JSONObject item = (JSONObject) call;
+                if ( null != item.getJSONObject(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CHECK_BLACK_INFO.getValue())) {
+                    JSONObject check_black_info = item.getJSONObject(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CHECK_BLACK_INFO.getValue());
+                    cnt = check_black_info.getInteger("contacts_router_cnt");
+                }
+            }
+
+            result.setData(cnt);
+            if (null != cnt && cnt.compareTo(routerCnt) > 0) {
+                result.setResult(AdmissionResultDTO.RESULT_REJECTED);
+                return result;
+            } else {
+                result.setResult(AdmissionResultDTO.RESULT_APPROVED);
+                return result;
+            }
+        } catch (Exception e) {
+            log.error("[决策1064异常]：单号：{}", request.getNid(), e);
+            result.setResult(AdmissionResultDTO.RESULT_EXCEPTIONAL);
+            result.setData("决策1064异常");
             return result;
         }
     }
