@@ -525,8 +525,7 @@ public class ModelDataServiceImpl implements ModelDataService {
         try {
             riskModelOperatorReportDao.saveCallRiskAnalysis(listParams);
         } catch (Exception e) {
-            log.error("[模型数据-生成]：genCallRiskAnalysis插入数据出错,nid:{}", request.getNid());
-            e.printStackTrace();
+            log.error("[模型数据-生成]：genCallRiskAnalysis插入数据出错,nid:{}", request.getNid(), e);
         }
     }
 
@@ -619,8 +618,7 @@ public class ModelDataServiceImpl implements ModelDataService {
         try {
             riskModelOperatorReportDao.saveBasicCheckItem(params);
         } catch (Exception e) {
-            log.error("[模型数据-生成]：genBasicCheckItem插入数据出错,nid:{}", request.getNid());
-            e.printStackTrace();
+            log.error("[模型数据-生成]：genBasicCheckItem插入数据出错,nid:{}", request.getNid(), e);
         }
     }
 
@@ -631,19 +629,18 @@ public class ModelDataServiceImpl implements ModelDataService {
      */
     public void genUserInfoCheck(DecisionHandleRequest request) {
         JSONObject operatorReport = this.getOperatorReport(request);
-
-        JSONArray user_info_check = operatorReport.getJSONArray("user_info_check");
+        JSONArray user_info_check = operatorReport.getJSONArray(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.USER_INFO_CHECK.getValue());
         user_info_check.forEach(call -> {
             JSONObject item = (JSONObject) call;
-            if (null == item || null == item.getJSONObject("check_black_info")) {
+            if (null == item || null == item.getJSONObject(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CHECK_BLACK_INFO.getValue())) {
                 return;
             }
 
-            JSONObject check_black_info = item.getJSONObject("check_black_info");
+            JSONObject check_black_info = item.getJSONObject(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CHECK_BLACK_INFO.getValue());
             check_black_info.put("nid", request.getNid());
             check_black_info.put("phone", request.getUserName());
 
-            JSONObject check_search_info = item.getJSONObject("check_search_info");
+            JSONObject check_search_info = item.getJSONObject(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CHECK_SEARCH_INFO.getValue());
             Set<String> searchInfoKeys = check_search_info.keySet();
             searchInfoKeys.forEach(key -> {
                 check_black_info.put(key, check_search_info.get(key));
@@ -669,8 +666,7 @@ public class ModelDataServiceImpl implements ModelDataService {
             try {
                 riskModelOperatorReportDao.saveCheckBlackInfo(check_black_info);
             } catch (Exception e) {
-                log.error("[模型数据-生成]：genCheckBlackInfo插入数据出错,nid:{}", request.getNid());
-                e.printStackTrace();
+                log.error("[模型数据-生成]：genCheckBlackInfo插入数据出错,nid:{}", request.getNid(), e);
             }
         });
     }
@@ -702,8 +698,7 @@ public class ModelDataServiceImpl implements ModelDataService {
         try {
             riskModelOperatorReportDao.saveCallFamilyDetail(listParams);
         } catch (Exception e) {
-            log.error("[模型数据-生成]：genCallFamilyDetail插入数据出错,nid:{}", request.getNid());
-            e.printStackTrace();
+            log.error("[模型数据-生成]：genCallFamilyDetail插入数据出错,nid:{}", request.getNid(), e);
         }
     }
 
@@ -792,8 +787,7 @@ public class ModelDataServiceImpl implements ModelDataService {
         try {
             riskModelOperatorReportDao.saveCallSilentAreas(params);
         } catch (Exception e) {
-            log.error("[模型数据-生成]：genCallSilentAreas插入数据出错,nid:{}", request.getNid());
-            e.printStackTrace();
+            log.error("[模型数据-生成]：genCallSilentAreas插入数据出错,nid:{}", request.getNid(), e);
         }
     }
 
