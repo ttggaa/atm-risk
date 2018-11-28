@@ -444,23 +444,4 @@ public class PaixuController {
     public ResponseEntity sendPaixu(DecisionHandleRequest req, String nids) throws Exception {
         return paixuServiceImpl.sendPaixu(req, nids);
     }
-
-	@RequestMapping(value = "/test3")
-	@ResponseBody
-	public void verifyXinyanData() {
-		DecisionHandleRequest request = new DecisionHandleRequest();
-		request.setNid("218102218100294838");
-
-		AdmissionRuleDTO rule = new AdmissionRuleDTO();
-		Map<String, String> set = new HashMap<>();
-		set.put("repeatPerson", "3");
-		set.put("repeatNum", "3");
-		rule.setSetting(set);
-
-		AdmissionResultDTO record = verifyHandler.verifyRepeatContactPhone(request, rule);
-
-		System.out.println("===========================");
-		System.out.println(JSONObject.toJSONString(record));
-		System.out.println("===========================");
-	}
 }

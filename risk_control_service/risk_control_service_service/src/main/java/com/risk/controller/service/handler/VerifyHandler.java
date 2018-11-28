@@ -20,6 +20,7 @@ import com.risk.controller.service.service.impl.LocalCache;
 import com.risk.controller.service.util.AdmissionHandler;
 import com.risk.controller.service.utils.DataBaseUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,8 +52,6 @@ public class VerifyHandler implements AdmissionHandler {
     private BlacklistMacDao blacklistMacDao;
     @Resource
     private BlacklistIdcardDao blacklistIdcardDao;
-    @Resource
-    private ClientContactDao clientContactDao;
     @Resource
     private DataBaseUtils dataBaseUtils;
     @Resource
@@ -2113,14 +2112,39 @@ public class VerifyHandler implements AdmissionHandler {
         }
 
         try {
+
+            // 用户设备通讯录
+            List<JSONObject> deviceContactList = this.mongoHandler.getUserDeviceContact(request);
+            if (CollectionUtils.isEmpty(deviceContactList)) {
+                result.setResult(AdmissionResultDTO.RESULT_REJECTED);
+                result.setData("未查询到设备通讯录");
+                return result;
+            }
+            Set<String> devicePhones = new HashSet<>();
+            deviceContactList.forEach(json -> {
+                String phone = json.getString("contactsPhone");
+                phone = PhoneUtils.cleanTel(phone);
+                if (PhoneUtils.isMobile(phone)) {
+                    devicePhones.add(phone);
+                }
+            });
+
+            // 用户运营商通通话记录
+            List<JSONObject> operatorCallDetail = this.mongoHandler.getUserOperatorCallDetail(request);
+            if (CollectionUtils.isEmpty(operatorCallDetail)) {
+                result.setResult(AdmissionResultDTO.RESULT_SUSPEND);
+                result.setData("未查询到运营商通话记录");
+                return result;
+            }
+
             // 获取天数通话限制
             Integer ruleNum = Integer.valueOf(rule.getSetting().get("callNum"));
             Integer ruleDay = Integer.valueOf(rule.getSetting().get("callDay"));
-            Integer userCalledNum = operatorService.robotCallAndCalledNum7(request.getNid(), request.getApplyTime(), ruleDay);
-            result.setData(userCalledNum);
 
-            // 校验
-            if (ruleNum.compareTo(userCalledNum) >= 0) {
+            int count = mongoHandler.getCntEachCallNum(request.getApplyTime(), ruleDay, deviceContactList, operatorCallDetail);
+            result.setData(count);
+
+            if (ruleNum.compareTo(count) >= 0) {
                 result.setResult(AdmissionResultDTO.RESULT_REJECTED);
                 return result;
             }
@@ -2151,16 +2175,42 @@ public class VerifyHandler implements AdmissionHandler {
 
         try {
 
-            Integer repeatPerson = Integer.valueOf(rule.getSetting().get("repeatPerson"));//出现重复的人数
-            Integer repeatNum = Integer.valueOf(rule.getSetting().get("repeatNum"));// 单个号码重复次数
+            Integer ruleRepeatPersonNum = Integer.valueOf(rule.getSetting().get("repeatPerson"));//出现重复的人数
+            Integer ruleRepeatNum = Integer.valueOf(rule.getSetting().get("repeatNum"));// 单个号码重复次数
 
-            Map param = new HashMap();
-            param.put("repeatNum", repeatNum);
-            param.put("nid", request.getNid());
-            int repeatPersonCur = clientContactDao.getRepeatPersons(param);
+            List<JSONObject> deviceContactList = this.mongoHandler.getUserDeviceContact(request);
+            if (CollectionUtils.isEmpty(deviceContactList)) {
+                result.setResult(AdmissionResultDTO.RESULT_REJECTED);
+                result.setData("未查询到设备通讯录");
+                return result;
+            }
+
+            Map<String, Set<String>> map = new HashMap<>();
+            deviceContactList.forEach(json -> {
+                String phone = json.getString("contactsPhone");
+                String name = json.getString("contacts");
+                phone = PhoneUtils.cleanTel(phone);
+                if (PhoneUtils.isMobile(phone)) {
+                    if (map.containsKey(phone)) {
+                        map.get(phone).add(name);
+                    } else {
+                        map.put(phone, new HashSet<String>() {{
+                            add(name);
+                        }});
+                    }
+                }
+            });
+
+            // 同一个手机号码不同名字的个数是否超过规则个数
+            int repeatPersonCur = 0;
+            for (String key : map.keySet()) {
+                if (map.get(key).size() >= ruleRepeatNum) {
+                    repeatPersonCur++;
+                }
+            }
             result.setData(repeatPersonCur);
             // 校验
-            if (repeatPerson.intValue() <= repeatPersonCur) {
+            if (ruleRepeatPersonNum.intValue() <= repeatPersonCur) {
                 result.setResult(AdmissionResultDTO.RESULT_REJECTED);
                 return result;
             }
@@ -2198,48 +2248,81 @@ public class VerifyHandler implements AdmissionHandler {
         }
 
         try {
-            int oldDays = Integer.valueOf(rule.getSetting().get("oldDays"));//
-            int newDays = Integer.valueOf(rule.getSetting().get("newDays"));//
-            int oldPassNum = Integer.valueOf(rule.getSetting().get("oldPassNum"));//
-            int newCntPassNum = Integer.valueOf(rule.getSetting().get("newCntPassNum"));//
-            int newAllPassNum = Integer.valueOf(rule.getSetting().get("newAllPassNum"));//
+
+            // 用户设备通讯录
+            List<JSONObject> deviceContactList = this.mongoHandler.getUserDeviceContact(request);
+            if (CollectionUtils.isEmpty(deviceContactList)) {
+                result.setResult(AdmissionResultDTO.RESULT_REJECTED);
+                result.setData("未查询到设备通讯录");
+                return result;
+            }
+            Set<String> devicePhones = new HashSet<>();
+            deviceContactList.forEach(json -> {
+                String phone = json.getString("contactsPhone");
+                phone = PhoneUtils.cleanTel(phone);
+                if (PhoneUtils.isMobile(phone)) {
+                    devicePhones.add(phone);
+                }
+            });
+
+            // 用户运营商通通话记录
+            List<JSONObject> operatorCallDetail = this.mongoHandler.getUserOperatorCallDetail(request);
+            if (CollectionUtils.isEmpty(operatorCallDetail)) {
+                result.setResult(AdmissionResultDTO.RESULT_SUSPEND);
+                result.setData("未查询到运营商通话记录");
+                return result;
+            }
 
             // 新户
             if (DecisionHandleRequest.LABLEGROUPIDNEW_1.equals(request.getLabelGroupId())) {
 
-                Map<String, Object> param = new HashMap<>();
-                param.put("userId", request.getUserId());
-                param.put("nid", request.getNid());
-                param.put("applyTime", request.getApplyTime());
-                param.put("days", newDays);
+                int ruleNewDays = Integer.valueOf(rule.getSetting().get("newDays"));//
+                int ruleNewCntPassNum = Integer.valueOf(rule.getSetting().get("newCntPassNum"));//
+                int ruleNewAllPassNum = Integer.valueOf(rule.getSetting().get("newAllPassNum"));//
 
-                int cntCallNum30 = clientContactDao.getValidCallDetail(param);
-                result.setData(cntCallNum30);
+                int cntValidNum = 0; //通讯录有效通话次数
+                int optValidNum = 0; //运营商通话次数
 
-                if (newCntPassNum > cntCallNum30) {
+                for (JSONObject jsonObject : operatorCallDetail) {
+                    String strTime = jsonObject.getString("time");// 通话时间
+                    String peerNumber = jsonObject.getString("peer_number");//通话手机号码
+                    Long duration = jsonObject.getLong("duration");//通话时长
+
+                    if (!PhoneUtils.isMobile(peerNumber) || StringUtils.isBlank(strTime) || null == duration || duration == 0) {
+                        continue;
+                    }
+
+                    Long diffDays = Math.abs(DateTools.getDayDiff(new Date(request.getApplyTime()), DateTools.convert(strTime)));
+
+                    // 规则天数
+                    if (diffDays <= ruleNewDays) {
+                        optValidNum ++;
+                        // 有效通话
+                        if (devicePhones.contains(peerNumber)) {
+                            cntValidNum++;
+                        }
+                    }
+                }
+
+                result.setData(cntValidNum);
+                if (ruleNewCntPassNum > cntValidNum) {
                     result.setResult(AdmissionResultDTO.RESULT_REJECTED);
                     return result;
                 }
 
-                int allCallNum30 = clientContactDao.getAllCallDetail(param);
-                result.setData(allCallNum30);
-                if (newAllPassNum > allCallNum30) {
+                result.setData(optValidNum);
+                if (ruleNewAllPassNum > optValidNum) {
                     result.setResult(AdmissionResultDTO.RESULT_REJECTED);
                     return result;
                 }
             }
             // 老户
             else if (DecisionHandleRequest.lableGroupIdOld.equals(request.getLabelGroupId())) {
-
-                Map<String, Object> param = new HashMap<>();
-                param.put("userId", request.getUserId());
-                param.put("nid", request.getNid());
-                param.put("applyTime", request.getApplyTime());
-                param.put("days", oldDays);
-
-                int count = clientContactDao.getAllCallDetail(param);
+                int ruleOldDays = Integer.valueOf(rule.getSetting().get("oldDays"));//
+                int ruleOldPassNum = Integer.valueOf(rule.getSetting().get("oldPassNum"));//
+                int count = mongoHandler.getOptEachCallNum(request.getApplyTime(), ruleOldDays, operatorCallDetail);
                 result.setData(count);
-                if (oldPassNum > count) {
+                if (ruleOldPassNum > count) {
                     result.setResult(AdmissionResultDTO.RESULT_REJECTED);
                     return result;
                 }
