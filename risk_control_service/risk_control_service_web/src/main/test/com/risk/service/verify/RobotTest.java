@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.risk.controller.service.SpringBootStart;
 import com.risk.controller.service.dto.AdmissionResultDTO;
 import com.risk.controller.service.dto.AdmissionRuleDTO;
+import com.risk.controller.service.entity.RobotResult;
 import com.risk.controller.service.handler.RobotHandler;
 import com.risk.controller.service.request.DecisionHandleRequest;
 import com.risk.controller.service.service.ModelService;
@@ -546,8 +547,8 @@ public class RobotTest {
     }
     @Test
     public void runModelBySql() {
-        String sql = "select nid from risk_decision_req_log ";
-        robotHandler.runModelBySql(sql);
+        String sql = "select nid from risk_decision_req_log order by id desc limit 10";
+        robotHandler.runModelBySql(sql, RobotResult.SOURCE_3);
     }
 
     @Test

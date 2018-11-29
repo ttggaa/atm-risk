@@ -423,4 +423,10 @@ public class AsyncTaskServiceImpl {
         return ret;
     }
 
+    @Async
+    public void noticeBorrowResultHandle(DecisionHandleRequest request) {
+        AdmissionResultDTO admResult = new AdmissionResultDTO();
+        admResult.setResult(AdmissionResultDTO.RESULT_APPROVED);
+        this.decisionService.noticeBorrowResultHandle(request.getNid(), admResult);
+    }
 }

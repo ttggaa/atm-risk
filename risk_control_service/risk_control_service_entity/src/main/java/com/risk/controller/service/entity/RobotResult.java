@@ -16,8 +16,9 @@ public class RobotResult {
     private Long addTime;
     private Long updateTime;
 
-    public static Integer SOURCE_1 = 1; //来源1正式数据
-    public static Integer SOURCE_2 = 2;//2训练数据
+    public static Integer SOURCE_1 = 1; // 1正式数据，查询生产模型区间
+    public static Integer SOURCE_2 = 2; // 2训练数据，查询训练模型区间
+    public static Integer SOURCE_3 = 3; // 3训练数据，查询生产模型区间
 
     public RobotResult() {
     }

@@ -3,10 +3,7 @@ package com.risk.controller.service.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.risk.controller.service.common.constans.ERROR;
 import com.risk.controller.service.common.utils.ResponseEntity;
-import com.risk.controller.service.dao.AdmissionResultDao;
-import com.risk.controller.service.dao.AdmissionResultDetailDao;
-import com.risk.controller.service.dao.DecisionReqLogDao;
-import com.risk.controller.service.dao.DecisionRobotNoticeDao;
+import com.risk.controller.service.dao.*;
 import com.risk.controller.service.dto.AdmissionResultDTO;
 import com.risk.controller.service.entity.AdmissionResult;
 import com.risk.controller.service.entity.AdmissionResultDetail;
@@ -15,6 +12,7 @@ import com.risk.controller.service.entity.DecisionResultLabel;
 import com.risk.controller.service.request.DecisionHandleRequest;
 import com.risk.controller.service.service.DecisionRobotService;
 import com.risk.controller.service.service.DecisionRuleService;
+import com.risk.controller.service.service.DecisionService;
 import com.risk.controller.service.service.RiskControlServiceService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -51,6 +49,10 @@ public class RiskControlServiceServiceImpl implements RiskControlServiceService 
     private DecisionReqLogDao decisionReqLogDao;
     @Autowired
     private AdmissionResultDetailDao admissionResultDetailDao;
+    @Autowired
+    private DecisionService decisionService;
+    @Autowired
+    private DecisionWhiteListDao decisionWhiteListDao;
 
     private final static Integer ONE = 1;
 
@@ -95,6 +97,11 @@ public class RiskControlServiceServiceImpl implements RiskControlServiceService 
 
         // 保存请求参数到数据库
         this.saveDecisionRequest(request);
+        int count = this.decisionWhiteListDao.getByPhone(request.getUserName());
+        if (count > 0) {
+            asyncTaskService.noticeBorrowResultHandle(request);
+            return new ResponseEntity(ResponseEntity.STATUS_OK);
+        }
 
         // 接收到数据存入数据库中
         AdmissionResultDTO ret = new AdmissionResultDTO(); // 决策最终结果

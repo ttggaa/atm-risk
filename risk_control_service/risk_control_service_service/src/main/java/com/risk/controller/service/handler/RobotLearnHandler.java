@@ -32,7 +32,7 @@ public class RobotLearnHandler implements AdmissionHandler {
     @Autowired
     private RobotRuleDao robotRuleDao;
     @Autowired
-    private RobotRuleDetailDao robotRuleDetailDao;
+    private RobotRuleDetailLearnDao robotRuleDetailLearnDao;
     @Autowired
     private LocalCache localCache;
     @Autowired
@@ -60,9 +60,9 @@ public class RobotLearnHandler implements AdmissionHandler {
             // 1.设置默认值
             List<RobotRule> ruleList = robotRuleDao.getAllrobotRule(ruleId, null);
             if (!bool) {
-                robotRuleDetailDao.updateAllSetZero(ruleId);
+                robotRuleDetailLearnDao.updateAllSetZero(ruleId);
             }
-            List<RobotRuleDetail> ruleDetailsList = robotRuleDetailDao.getAllEnabled();
+            List<RobotRuleDetailLearn> ruleDetailsList = robotRuleDetailLearnDao.getAllEnabled();
 
             this.setRobotLeanData(list, ruleList, ruleDetailsList);
 
@@ -77,28 +77,28 @@ public class RobotLearnHandler implements AdmissionHandler {
      *
      * @param ruleDetailsList
      */
-    private void updateBatchRobotRuleDetail(List<RobotRuleDetail> ruleDetailsList) {
+    private void updateBatchRobotRuleDetail(List<RobotRuleDetailLearn> ruleDetailsList) {
         if (null != ruleDetailsList && ruleDetailsList.size() > 0) {
             // 1、计算比值
-            for (RobotRuleDetail detail : ruleDetailsList) {
+            for (RobotRuleDetailLearn detail : ruleDetailsList) {
                 if (detail.getTotalCnt() == 0) {
-                    detail.setLearnGoodPercent(BigDecimal.ZERO);
-                    detail.setLearnOverduePercent(BigDecimal.ZERO);
+                    detail.setGoodPercent(BigDecimal.ZERO);
+                    detail.setOverduePercent(BigDecimal.ZERO);
                 } else {
                     if (detail.getGoodCnt() == 0) {
-                        detail.setLearnGoodPercent(BigDecimal.ZERO);
+                        detail.setGoodPercent(BigDecimal.ZERO);
                     } else {
-                        detail.setLearnGoodPercent(new BigDecimal(detail.getGoodCnt()).divide(new BigDecimal(detail.getTotalCnt()), 4, BigDecimal.ROUND_HALF_UP));
+                        detail.setGoodPercent(new BigDecimal(detail.getGoodCnt()).divide(new BigDecimal(detail.getTotalCnt()), 4, BigDecimal.ROUND_HALF_UP));
                     }
 
                     if (detail.getOverdueCnt() == 0) {
-                        detail.setLearnOverduePercent(BigDecimal.ZERO);
+                        detail.setOverduePercent(BigDecimal.ZERO);
                     } else {
-                        detail.setLearnOverduePercent(new BigDecimal(detail.getOverdueCnt()).divide(new BigDecimal(detail.getTotalCnt()), 4, BigDecimal.ROUND_HALF_UP));
+                        detail.setOverduePercent(new BigDecimal(detail.getOverdueCnt()).divide(new BigDecimal(detail.getTotalCnt()), 4, BigDecimal.ROUND_HALF_UP));
                     }
                 }
             }
-            robotRuleDetailDao.updateBatchById(ruleDetailsList);
+            robotRuleDetailLearnDao.updateBatchById(ruleDetailsList);
         }
     }
 
@@ -109,7 +109,7 @@ public class RobotLearnHandler implements AdmissionHandler {
      * @param ruleList
      * @param ruleDetailsList
      */
-    private void setRobotLeanData(List<Map<String, Object>> list, List<RobotRule> ruleList, List<RobotRuleDetail> ruleDetailsList) {
+    private void setRobotLeanData(List<Map<String, Object>> list, List<RobotRule> ruleList, List<RobotRuleDetailLearn> ruleDetailsList) {
         if (null != ruleList && ruleList.size() > 0 && null != ruleDetailsList && ruleDetailsList.size() > 0) {
 
             for (Map<String, Object> map : list) {
@@ -175,10 +175,10 @@ public class RobotLearnHandler implements AdmissionHandler {
      * @param overdueDays     逾期天数
      * @return
      */
-    private void setRobotDetailData(List<RobotRuleDetail> ruleDetailsList, Long ruldId, Object count, int status, int overdueDays) {
+    private void setRobotDetailData(List<RobotRuleDetailLearn> ruleDetailsList, Long ruldId, Object count, int status, int overdueDays) {
         if (null != ruleDetailsList && ruleDetailsList.size() > 0) {
 
-            for (RobotRuleDetail robotRuleDetail : ruleDetailsList) {
+            for (RobotRuleDetailLearn robotRuleDetail : ruleDetailsList) {
                 if (robotRuleDetail.getRuleId().equals(ruldId)
                         && robotRuleDetail.getMinScope().compareTo(new BigDecimal(String.valueOf(count))) <= 0
                         && robotRuleDetail.getMaxScope().compareTo(new BigDecimal(String.valueOf(count))) > 0

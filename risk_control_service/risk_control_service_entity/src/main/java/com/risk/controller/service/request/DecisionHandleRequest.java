@@ -67,6 +67,7 @@ public class DecisionHandleRequest {
     private Integer maxOverdueDay;//最大逾期天数
     private Integer successRepayNum;//成功还款次数
 
+
     public Integer getProductId() {
         if (null == this.productId || this.productId <= 0) {
             return 1;

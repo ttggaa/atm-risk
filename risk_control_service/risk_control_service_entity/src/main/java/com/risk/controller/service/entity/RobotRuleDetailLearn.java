@@ -5,7 +5,7 @@ import lombok.Data;
 import java.math.BigDecimal;
 
 @Data
-public class RobotRuleDetail {
+public class RobotRuleDetailLearn {
     private Long id;//
     private Long ruleId;//模型id
     private BigDecimal minScope;//范围最小值>=

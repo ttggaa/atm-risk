@@ -1,6 +1,7 @@
 package com.risk.controller.service.dto;
 
 import com.alibaba.fastjson.JSONObject;
+import com.risk.controller.service.entity.RobotResult;
 import com.risk.controller.service.entity.StaOperatorCalls;
 import com.risk.controller.service.entity.StaSmBorrows;
 import com.risk.controller.service.entity.StaUserBaseinfo;
@@ -64,5 +65,13 @@ public class RobotRequestDTO {
     private StaUserBaseinfo staUserBaseinfo; //用户基础信息
     private StaSmBorrows staSmBorrows; //树美多头信息
     private List<StaOperatorCalls> listOperatorCalls; //用户运营商通话信息
+
+    public Integer getSource() {
+        if (null == this.source || this.source <= 0) {
+            return RobotResult.SOURCE_1;
+        } else {
+            return this.source;
+        }
+    }
 
 }

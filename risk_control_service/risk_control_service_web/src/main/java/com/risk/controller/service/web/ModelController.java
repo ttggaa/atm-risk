@@ -74,8 +74,8 @@ public class ModelController {
 
     @ResponseBody
     @RequestMapping(value = "/runModelBySql", method = RequestMethod.POST)
-    public ResponseEntity runModelBySql(String sql) {
-        robotHandler.runModelBySql(sql);
+    public ResponseEntity runModelBySql(String sql,Integer source) {
+        robotHandler.runModelBySql(sql, source);
         return new ResponseEntity(ResponseEntity.STATUS_OK);
     }
 

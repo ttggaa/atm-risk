@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.risk.controller.service.dao.DecisionWhiteListDao">
+    <resultMap id="getMap" type="com.risk.controller.service.entity.DecisionWhiteList">
+    </resultMap>
+
+    <select id="getByPhone" resultType="int">
+        select count(1) cnt from risk_decision_white_list where phone = #{0} and enabled=1
+    </select>
+</mapper>

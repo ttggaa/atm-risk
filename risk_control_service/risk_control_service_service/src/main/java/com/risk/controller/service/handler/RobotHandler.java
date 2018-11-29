@@ -20,6 +20,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
@@ -43,6 +44,8 @@ public class RobotHandler implements AdmissionHandler {
     private RobotRuleDao robotRuleDao;
     @Autowired
     private RobotRuleDetailDao robotRuleDetailDao;
+    @Autowired
+    private RobotRuleDetailLearnDao robotRuleDetailLearnDao;
     @Autowired
     private LocalCache localCache;
     @Autowired
@@ -77,8 +80,9 @@ public class RobotHandler implements AdmissionHandler {
     public AdmissionResultDTO verifyRobot(DecisionHandleRequest request, AdmissionRuleDTO rule) {
         AdmissionResultDTO result = new AdmissionResultDTO();
         try {
-            // 2训练数据不保存数据
-            if (RobotResult.SOURCE_2 != request.getRobotRequestDTO().getSource()) {
+            // 训练数据不保存数据
+            if (RobotResult.SOURCE_2 != request.getRobotRequestDTO().getSource()
+                    && RobotResult.SOURCE_3 != request.getRobotRequestDTO().getSource()) {
                 modelDataService.saveData(request);
             }
         } catch (Exception e) {
@@ -162,25 +166,40 @@ public class RobotHandler implements AdmissionHandler {
                     continue;
                 }
 
-                // 查询方法返回值对应的规则明细
-                RobotRuleDetail detail = robotRuleDetailDao.getDetailByCondition(robotRule.getId(), count);
-
-                if (null == detail) {
-                    continue;
-                }
-
                 BigDecimal ruleResult = BigDecimal.ZERO;
-                if (null != robotRule && robotRule.getPercent().compareTo(BigDecimal.ZERO) > 0 &&
-                        null != detail && detail.getOverduePercent().compareTo(BigDecimal.ZERO) > 0) {
+                Long detailId;
 
-                    ruleResult = robotRule.getPercent().multiply(detail.getOverduePercent());
-                    divideScore = divideScore.add(ruleResult);
+                // 查询方法返回值对应的规则明细
+                if (RobotResult.SOURCE_2.equals(request.getRobotRequestDTO().getSource())) {
+                    RobotRuleDetailLearn detail = robotRuleDetailLearnDao.getDetailByCondition(robotRule.getId(), count);
+                    if (null == detail) {
+                        continue;
+                    }
+                    if (null != robotRule && robotRule.getPercent().compareTo(BigDecimal.ZERO) > 0 &&
+                            null != detail && detail.getOverduePercent().compareTo(BigDecimal.ZERO) > 0) {
+
+                        ruleResult = robotRule.getPercent().multiply(detail.getOverduePercent());
+                        divideScore = divideScore.add(ruleResult);
+                    }
+                    detailId = detail.getId();
+                } else {
+                    RobotRuleDetail detail = robotRuleDetailDao.getDetailByCondition(robotRule.getId(), count);
+                    if (null == detail) {
+                        continue;
+                    }
+                    if (null != robotRule && robotRule.getPercent().compareTo(BigDecimal.ZERO) > 0 &&
+                            null != detail && detail.getOverduePercent().compareTo(BigDecimal.ZERO) > 0) {
+
+                        ruleResult = robotRule.getPercent().multiply(detail.getOverduePercent());
+                        divideScore = divideScore.add(ruleResult);
+                    }
+                    detailId = detail.getId();
                 }
 
-                RobotResultDetail robotResultDetail = new RobotResultDetail(detail.getId(), count, ruleResult);
+                RobotResultDetail robotResultDetail = new RobotResultDetail(detailId, count, ruleResult);
                 listRobot.add(robotResultDetail);
             }
-            // finalScore = ((总分-扣分)/总分) *10000 -6000,最终得分向下取整
+
             BigDecimal finalScore = totalScore.subtract(divideScore)
                     .divide(totalScore, 8, BigDecimal.ROUND_HALF_UP)
                     .multiply(new BigDecimal(10000))
@@ -3178,12 +3197,12 @@ public class RobotHandler implements AdmissionHandler {
      * select nid from table
      *
      * @param sql
+     * @param source 生产训练、还是测试训练
      */
-    @Async
-    public void runModelBySql(String sql) {
+    public void runModelBySql(String sql, Integer source) {
         List<Map<String, Object>> list = this.modelService.runModelBySql(sql);
 
-        if (null != list && list.size() > 0) {
+        if (!CollectionUtils.isEmpty(list)) {
 
             AdmissionRule rule = admissionRuleDao.getByRuleId(1057L);
             AdmissionRuleDTO ruleDto = AdmissionRuleDTO.fromAdmissionRule(rule);
@@ -3197,7 +3216,7 @@ public class RobotHandler implements AdmissionHandler {
                         DecisionReqLog reqLog = decisionReqLogDao.getbyNid(nid);
                         if (null != reqLog) {
                             DecisionHandleRequest request = JSONObject.parseObject(reqLog.getReqData(), DecisionHandleRequest.class);
-                            request.getRobotRequestDTO().setSource(RobotResult.SOURCE_2);
+                            request.getRobotRequestDTO().setSource(source);
                             AdmissionResultDTO record = this.verifyRobot(request, ruleDto);
                             log.debug("模型重跑结果：nid：{}，结果：{}", nid, JSONObject.toJSONString(record));
                         }
