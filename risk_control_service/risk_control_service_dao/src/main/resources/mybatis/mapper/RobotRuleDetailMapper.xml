@@ -11,7 +11,7 @@
         SELECT * from risk_robot_rule_detail WHERE enabled = 1
     </select>
     <update id="updateAllSetZero" parameterType="Long">
-        update risk_robot_rule_detail set total_cnt=0,good_cnt=0,overdue_cnt=0
+        update risk_robot_rule_detail set total_cnt=0,good_cnt=0,overdue_cnt=0,learn_good_percent=0,learn_overdue_percent=0
         <if test="null!=ruleId and 0!=ruleId">
             where rule_id = #{ruleId}
         </if>
@@ -35,14 +35,14 @@
             when #{item.id} then #{item.overdueCnt}
         </foreach>
 
-        good_percent=
+        learn_good_percent=
         <foreach collection="list" item="item" index="index" separator=" " open="case id" close="end,">
-            when #{item.id} then #{item.goodPercent}
+            when #{item.id} then #{item.learnGoodPercent}
         </foreach>
 
-        overdue_percent=
+        learn_overdue_percent=
         <foreach collection="list" item="item" index="index" separator=" " open="case id" close="end">
-            when #{item.id} then #{item.overduePercent}
+            when #{item.id} then #{item.learnOverduePercent}
         </foreach>
 
         where id in

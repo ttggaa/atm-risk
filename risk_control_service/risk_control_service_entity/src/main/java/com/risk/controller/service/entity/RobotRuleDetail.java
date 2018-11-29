@@ -12,6 +12,8 @@ public class RobotRuleDetail {
     private BigDecimal maxScope;//<范围最大值
     private BigDecimal goodPercent;//好户概率
     private BigDecimal overduePercent;//首逾概率
+    private BigDecimal learnGoodPercent;//训练好户概率
+    private BigDecimal learnOverduePercent;//训练坏户概率
     private Long enabled;//1启用，0停用
 
     private Long totalCnt;//总个数

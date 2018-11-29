@@ -82,19 +82,19 @@ public class RobotLearnHandler implements AdmissionHandler {
             // 1、计算比值
             for (RobotRuleDetail detail : ruleDetailsList) {
                 if (detail.getTotalCnt() == 0) {
-                    detail.setGoodPercent(BigDecimal.ZERO);
-                    detail.setOverduePercent(BigDecimal.ZERO);
+                    detail.setLearnGoodPercent(BigDecimal.ZERO);
+                    detail.setLearnOverduePercent(BigDecimal.ZERO);
                 } else {
                     if (detail.getGoodCnt() == 0) {
-                        detail.setGoodPercent(BigDecimal.ZERO);
+                        detail.setLearnGoodPercent(BigDecimal.ZERO);
                     } else {
-                        detail.setGoodPercent(new BigDecimal(detail.getGoodCnt()).divide(new BigDecimal(detail.getTotalCnt()), 4, BigDecimal.ROUND_HALF_UP));
+                        detail.setLearnGoodPercent(new BigDecimal(detail.getGoodCnt()).divide(new BigDecimal(detail.getTotalCnt()), 4, BigDecimal.ROUND_HALF_UP));
                     }
 
                     if (detail.getOverdueCnt() == 0) {
-                        detail.setOverduePercent(BigDecimal.ZERO);
+                        detail.setLearnOverduePercent(BigDecimal.ZERO);
                     } else {
-                        detail.setOverduePercent(new BigDecimal(detail.getOverdueCnt()).divide(new BigDecimal(detail.getTotalCnt()), 4, BigDecimal.ROUND_HALF_UP));
+                        detail.setLearnOverduePercent(new BigDecimal(detail.getOverdueCnt()).divide(new BigDecimal(detail.getTotalCnt()), 4, BigDecimal.ROUND_HALF_UP));
                     }
                 }
             }

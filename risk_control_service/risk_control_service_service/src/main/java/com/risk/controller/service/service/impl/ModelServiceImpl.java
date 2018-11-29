@@ -71,7 +71,6 @@ public class ModelServiceImpl implements ModelService {
     }
 
     @Override
-    @Async
     public void modelLearn(Long ruleId) {
         // 查询订单
         List<Map<String, Object>> list = robotResultDetailDao.queryRepayOrder();

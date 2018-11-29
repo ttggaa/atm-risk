@@ -542,7 +542,7 @@ public class RobotTest {
     @Test
     public void modelLearn() {
 //        modelService.modelLearn(23L);
-        modelService.modelLearn(null);
+        modelService.modelLearn(23L);
     }
     @Test
     public void runModelBySql() {
