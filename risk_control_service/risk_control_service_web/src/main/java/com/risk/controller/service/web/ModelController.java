@@ -74,7 +74,13 @@ public class ModelController {
 
     @ResponseBody
     @RequestMapping(value = "/runModelBySql", method = RequestMethod.POST)
-    public ResponseEntity runModelBySql(String sql,Integer source) {
+    public ResponseEntity runModelBySql(String sql, Integer source) {
+        if (null == source || 0 >= source || 4 <= source) {
+            return new ResponseEntity(ResponseEntity.STATUS_FAIL, "请输入模式。" +
+                    "source=1正式数据，查询生产模型区间；" +
+                    "source=2训练数据，查询训练模型区间；" +
+                    "source=3训练数据，查询生产模型区间");
+        }
         robotHandler.runModelBySql(sql, source);
         return new ResponseEntity(ResponseEntity.STATUS_OK);
     }
