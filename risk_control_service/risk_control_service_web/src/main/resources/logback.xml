@@ -10,7 +10,7 @@
     <property scope="context" name="GLOBAL_LEVEL" value="WARN"/>
     <property scope="context" name="SPRING_LEVEL" value="INFO"/>
     <property scope="context" name="PROJECT_LEVEL" value="DEBUG"/>
-    <property scope="context" name="maxFileSize" value="50M"/>
+    <property scope="context" name="maxFileSize" value="50MB"/>
     <property scope="context" name="maxHistory" value="30"/>
 
     <property name="CONSOLE_LOG_PATTERN" value="%red(%d{yyyy-MM-dd HH:mm:ss}) Console %green([%thread]) %highlight(%-5level) %boldMagenta(%logger{10}) - %cyan(%msg%n)"/>
