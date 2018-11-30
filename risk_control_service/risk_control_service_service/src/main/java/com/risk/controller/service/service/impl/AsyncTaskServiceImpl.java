@@ -18,6 +18,7 @@ import com.risk.controller.service.util.AdmissionHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -58,6 +59,7 @@ public class AsyncTaskServiceImpl {
     @Autowired
     private PaixuServiceImpl paixuServiceImpl;
 
+    @Async
     public void asyncHandler(DecisionHandleRequest request, AdmissionResult admissionResult, Long labelGroupId, AdmissionResultDTO ret) {
 
         // 决策结果汇总
@@ -418,6 +420,7 @@ public class AsyncTaskServiceImpl {
         return ret;
     }
 
+    @Async
     public void noticeBorrowResultHandle(DecisionHandleRequest request) {
         AdmissionResultDTO admResult = new AdmissionResultDTO();
         admResult.setResult(AdmissionResultDTO.RESULT_APPROVED);
