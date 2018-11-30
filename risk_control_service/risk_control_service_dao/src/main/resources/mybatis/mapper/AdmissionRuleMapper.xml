@@ -41,7 +41,7 @@
         a.enabled,
         a.`handler`,
         a.reject_reason_code,
-        a.setting,
+        c.setting,
         c.sort priority,
         a.max_suspend_timeout,
         a.max_suspend_cnt,
@@ -49,11 +49,10 @@
         b.robot_action
      FROM risk_decision_rule a
      JOIN risk_decision_label_group_rule_mapping b ON b.rule_id = a.id
-     JOIN risk_merchant_decision_rule c ON a.id = c.rule_id
+     JOIN risk_merchant_decision_rule c ON a.id = c.rule_id and b.merchant_code = c.merchant_code
     WHERE a.enabled = 1
       AND b.enabled = 1
       AND c.enabled = 1
-      AND b.merchant_code = c.merchant_code
       AND c.merchant_code = #{0}
       AND b.group_id = #{1}
       AND b.stage = #{2}
