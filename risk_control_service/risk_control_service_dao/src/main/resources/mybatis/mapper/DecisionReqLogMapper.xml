@@ -12,6 +12,6 @@
   </insert>
 
   <select id="getbyNid" resultMap="BaseResultMap" parameterType="string">
-    select * from risk_decision_req_log where nid = #{nid}
+    select * from risk_decision_req_log where nid = #{nid} order by id desc limit 1
   </select>
 </mapper>
