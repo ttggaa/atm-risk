@@ -14,6 +14,7 @@ import com.risk.controller.service.dto.AdmissionRuleDTO;
 import com.risk.controller.service.entity.*;
 import com.risk.controller.service.enums.CacheCfgType;
 import com.risk.controller.service.enums.GetCacheModel;
+import com.risk.controller.service.enums.LabelGroupId;
 import com.risk.controller.service.mongo.dao.MongoCollections;
 import com.risk.controller.service.request.DecisionHandleRequest;
 import com.risk.controller.service.service.*;
@@ -112,7 +113,7 @@ public class VerifyHandler implements AdmissionHandler {
             return result;
         }
 
-        JSONObject rs = this.thirdService.getDeviceUsedCount(request.getUserId());
+        JSONObject rs = this.thirdService.getDeviceUsedCount(request.getMerchantCode(), request.getUserId());
         if (null == rs || null == rs.get("data") || !"0".equals(rs.getString("code"))) {
             result.setResult(AdmissionResultDTO.RESULT_EXCEPTIONAL);
             result.setData("数据返回异常" + rs);
@@ -465,7 +466,7 @@ public class VerifyHandler implements AdmissionHandler {
 
             int maxDevices = Integer.valueOf(rule.getSetting().get("maxDevices"));
 
-            JSONObject rs = this.thirdService.getDeviceCount(request.getUserId());
+            JSONObject rs = this.thirdService.getDeviceCount(request.getMerchantCode(), request.getUserId());
             if (null == rs || null == rs.get("data") || !"0".equals(rs.getString("code"))) {
                 result.setResult(AdmissionResultDTO.RESULT_EXCEPTIONAL);
                 result.setData("数据返回异常" + rs);
@@ -827,7 +828,7 @@ public class VerifyHandler implements AdmissionHandler {
                     set.add(phone);
                 }
             }
-            JSONObject rs = this.thirdService.getRegisterCount(set);
+            JSONObject rs = this.thirdService.getRegisterCount(request.getMerchantCode(), set);
             if (null == rs || null == rs.get("data") || !"0".equals(rs.getString("code"))) {
                 result.setResult(AdmissionResultDTO.RESULT_EXCEPTIONAL);
                 result.setData("数据返回异常" + rs);
@@ -1286,6 +1287,7 @@ public class VerifyHandler implements AdmissionHandler {
     public AdmissionResultDTO verifyIdfaBlackList(DecisionHandleRequest request, AdmissionRuleDTO rule) {
         AdmissionResultDTO result = new AdmissionResultDTO();
         JSONObject rs = this.getUserDeviceInfo(request);
+
         if (null == rs || null == rs.get("data") || !"0".equals(rs.getString("code"))) {
             result.setResult(AdmissionResultDTO.RESULT_EXCEPTIONAL);
             result.setData("数据返回异常" + rs);
@@ -1333,12 +1335,8 @@ public class VerifyHandler implements AdmissionHandler {
                 return request.getRobotRequestDTO().getUserDeviceInfo();
             }
             if (null != request.getUserId() && 0L < request.getUserId()) {
-                String url = localCache.getLocalCache(GetCacheModel.NO_FLUSH, CacheCfgType.THIRDSERVICECFG, "atm.userInfo.url");
-                Map<String, String> params = new HashMap<>();
-                params.put("userId", String.valueOf(request.getUserId()));
                 try {
-                    String resultStr = HttpClientUtils.doPost(url, JSONObject.toJSONString(params), "application/json");
-                    JSONObject json = JSONObject.parseObject(resultStr);
+                    JSONObject json = thirdService.getUserInfo(request.getMerchantCode(),request.getUserId());
                     if (null != json && null != json.get("data") && "0".equals(json.getString("code"))) {
                         request.getRobotRequestDTO().setUserDeviceInfo(json);
                     }
@@ -2277,7 +2275,7 @@ public class VerifyHandler implements AdmissionHandler {
             }
 
             // 新户
-            if (DecisionHandleRequest.LABLEGROUPIDNEW_1.equals(request.getLabelGroupId())) {
+            if (LabelGroupId.NEW.value().equals(request.getLabelGroupId())) {
 
                 int ruleNewDays = Integer.valueOf(rule.getSetting().get("newDays"));//
                 int ruleNewCntPassNum = Integer.valueOf(rule.getSetting().get("newCntPassNum"));//
@@ -2320,7 +2318,7 @@ public class VerifyHandler implements AdmissionHandler {
                 }
             }
             // 老户
-            else if (DecisionHandleRequest.lableGroupIdOld.equals(request.getLabelGroupId())) {
+            else if (LabelGroupId.OLD.value().equals(request.getLabelGroupId())) {
                 int ruleOldDays = Integer.valueOf(rule.getSetting().get("oldDays"));//
                 int ruleOldPassNum = Integer.valueOf(rule.getSetting().get("oldPassNum"));//
                 int count = mongoHandler.getOptEachCallNum(request.getApplyTime(), ruleOldDays, operatorCallDetail);
@@ -2462,7 +2460,7 @@ public class VerifyHandler implements AdmissionHandler {
                 return result;
             }
 
-            JSONObject rs = this.thirdService.queryCntOptPhoneOverdueNum(phones, ruleOverdueDays);
+            JSONObject rs = this.thirdService.queryCntOptPhoneOverdueNum(request.getMerchantCode(), phones, ruleOverdueDays);
             if (null == rs || null == rs.get("data") || !"0".equals(rs.getString("code"))) {
                 result.setResult(AdmissionResultDTO.RESULT_EXCEPTIONAL);
                 result.setData("数据返回异常" + rs);

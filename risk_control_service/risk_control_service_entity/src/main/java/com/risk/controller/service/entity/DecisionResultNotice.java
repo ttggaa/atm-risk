@@ -11,6 +11,7 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = false)
 @ToString(callSuper = true)
 public class DecisionResultNotice extends BaseEntity {
+    private String merchantCode;
     private String nid;
     private Integer status;
     private Integer result;

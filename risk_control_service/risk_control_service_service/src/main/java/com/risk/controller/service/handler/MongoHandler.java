@@ -437,7 +437,6 @@ public class MongoHandler {
         return result;
     }
 
-
     /**
      * 查询运营商通话记录
      *
@@ -556,29 +555,6 @@ public class MongoHandler {
         List<JSONObject> list = new ArrayList<>();
         if (StringUtils.isNotBlank(clientNum)) {
             MongoQuery query = new MongoQuery("number", clientNum, MongoQuery.MongoQueryBaseType.eq);
-            List<MongoQuery> queries = new ArrayList<>();
-            queries.add(query);
-            list = mongoDao.find(queries, JSONObject.class, MongoCollections.DB_DEVICE_CONTACT, null);
-        }
-        return list;
-    }
-
-    /**
-     * 通过nid查询用户设备通讯录
-     *
-     * @param nid
-     * @return
-     */
-    public List<JSONObject> getUserContactByNid(String nid) {
-        DataOrderMapping mapping = dataOrderMappingService.getLastOneByNid(nid);
-
-        if (null == mapping) {
-            return null;
-        }
-
-        List<JSONObject> list = new ArrayList<>();
-        if (StringUtils.isNotBlank(mapping.getClientNum())) {
-            MongoQuery query = new MongoQuery("number", mapping.getClientNum(), MongoQuery.MongoQueryBaseType.eq);
             List<MongoQuery> queries = new ArrayList<>();
             queries.add(query);
             list = mongoDao.find(queries, JSONObject.class, MongoCollections.DB_DEVICE_CONTACT, null);

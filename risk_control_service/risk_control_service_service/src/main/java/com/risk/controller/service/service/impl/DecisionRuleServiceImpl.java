@@ -2,8 +2,6 @@ package com.risk.controller.service.service.impl;
 
 import com.risk.controller.service.dao.*;
 import com.risk.controller.service.dto.AdmissionResultDTO;
-import com.risk.controller.service.dto.AdmissionSuspendContextDTO;
-import com.risk.controller.service.dto.DecisionGroupLabelDTO;
 import com.risk.controller.service.entity.*;
 import com.risk.controller.service.enums.DecisionLabelCode;
 import com.risk.controller.service.request.DecisionHandleRequest;
@@ -44,108 +42,13 @@ public class DecisionRuleServiceImpl implements DecisionRuleService {
     private AdmissionResultDao admissionResultDao;
 
     @Override
-    public Set<DecisionResultLabel> getDecisionLabel(DecisionHandleRequest request) {
-        // 根据用户手机号和商户ID来判断是否新老用户 获取决策标签
-        Set<DecisionResultLabel> ret = new HashSet<>();//this.getDecisionLabel(request.getUserName(),request.getMerchantId());
-        if (request.getLabelGroupId() != null) {
-            Long lablelGroupId = request.getLabelGroupId();
-            if (DecisionHandleRequest.lableGroupIdNew.compareTo(lablelGroupId) == 0) {
-                // 新户
-                DecisionResultLabel label = DecisionResultLabel.fromDecisionLabel(this.getLabel(0L, DecisionLabelCode.NEWLABEL.toString()));
-                if (null != label) {
-                    label.setTimeCost(0L);
-                    ret.add(label);
-                }
-            } else if (DecisionHandleRequest.lableGroupIdSNew.compareTo(lablelGroupId) == 0) {
-                // 次用户
-                DecisionResultLabel label = DecisionResultLabel.fromDecisionLabel(this.getLabel(0L, DecisionLabelCode.SNEWLABEL.toString()));
-                if (null != label) {
-                    label.setTimeCost(0L);
-                    ret.add(label);
-                }
-            } else if (DecisionHandleRequest.lableGroupIdOld.compareTo(lablelGroupId) == 0) {
-                // 老用户
-                DecisionResultLabel label = DecisionResultLabel.fromDecisionLabel(this.getLabel(0L, DecisionLabelCode.OLDLABEL.toString()));
-                if (null != label) {
-                    label.setTimeCost(0L);
-                    ret.add(label);
-                }
-            } else if (DecisionHandleRequest.lableGroupIdPass.compareTo(lablelGroupId) == 0) {
-                // 老用户
-                DecisionResultLabel label = DecisionResultLabel.fromDecisionLabel(this.getLabel(0L, DecisionLabelCode.PASS.toString()));
-                if (null != label) {
-                    label.setTimeCost(0L);
-                    ret.add(label);
-                }
-            } else if (DecisionHandleRequest.lableGroupIdReject.compareTo(lablelGroupId) == 0) {
-                // 老用户
-                DecisionResultLabel label = DecisionResultLabel.fromDecisionLabel(this.getLabel(0L, DecisionLabelCode.REJECT.toString()));
-                if (null != label) {
-                    label.setTimeCost(0L);
-                    ret.add(label);
-                }
-            } else {
-                log.debug("not doing ");
-            }
-        }
-        // 判断是否有匹配到标签,如果没有则获取默认的
-        if (ret.isEmpty()) {
-            DecisionResultLabel label = DecisionResultLabel.fromDecisionLabel(this.getLabel(0L, DecisionLabelCode.DEFAULT.toString()));
-            if (null != label) {
-                label.setTimeCost(0L);
-                ret.add(label);
-            }
-        }
-        log.debug("getDecisionLabel, userName:{} return:{}", request.getUserName(), ret);
-        return ret;
-    }
-
-    @Override
-    public Long getDecisionLabelGroup(Set<Long> labelIdSet) {
-        if (log.isDebugEnabled()) {
-            log.debug("enter method, labelIdSet:{}", labelIdSet);
-        }
-        Long ret = 0L;
-        if (null == labelIdSet || labelIdSet.isEmpty()) {
-            log.warn("+++++++++ labelIdSet is empty, reutrn 0");
-            return ret;
-        }
-        DecisionLabelGroupMapping cond = new DecisionLabelGroupMapping();
-        cond.setEnabled(1);
-        // 获取所有的组 labelId以,分割
-        List<DecisionGroupLabelDTO> groupList = this.decisionLabelGroupMappingDao.getGroupLabelCsv(cond);
-        if (null != groupList) {
-            Set tmpSet = new HashSet<>();
-            for (DecisionGroupLabelDTO g : groupList) {
-                tmpSet.clear();
-                String labelIdCsv = g.getLabelIdCsv();
-                if (null != labelIdCsv && !labelIdCsv.isEmpty()) {
-                    String[] idArr = labelIdCsv.split(",");
-                    for (String id : idArr) {
-                        tmpSet.add(Long.valueOf(id));
-                    }
-                }
-                if (labelIdSet.equals(tmpSet)) { // 恰好相同
-                    ret = g.getGroupId();
-                    break;
-                }
-            }
-        }
-        log.debug("exit method, return:{}", ret);
-        return ret;
-    }
-
-    @Override
     public DecisionLabelGroup getLabelGroupById(Long labelGroupId) {
         return decisionLabelGroupDao.selectByPrimaryKey(labelGroupId);
     }
 
     @Override
-    public List<AdmissionRule> getAdmissionRule(Long labelGroupId, int stage) {
-        DecisionLabelGroupRuleMapping cond = new DecisionLabelGroupRuleMapping();
-        cond.setGroupId(labelGroupId);
-        cond.setStage(stage);
-        List<AdmissionRule> ret = admissionRuleDao.getEnabledRuleByGroup(cond);
+    public List<AdmissionRule> getAdmissionRule(String merchantCode, Long labelGroupId, int stage) {
+        List<AdmissionRule> ret = admissionRuleDao.getEnabledRuleByGroup(merchantCode, labelGroupId, stage);
         return ret;
     }
 
@@ -175,7 +78,7 @@ public class DecisionRuleServiceImpl implements DecisionRuleService {
     @Override
     public void getAdmissionSuspendContext(DecisionHandleRequest request) {
         if (null != request && StringUtils.isNotBlank(request.getNid())) {
-            AdmissionResult admissionResult = this.getLastAdmissionResult(request.getNid());
+            AdmissionResult admissionResult = this.admissionResultDao.getLastOneByNid(request.getNid(), request.getMerchantCode());
             if (null != admissionResult
                     && (AdmissionResultDTO.RESULT_SUSPEND == admissionResult.getResult()
                     || AdmissionResultDTO.RESULT_EXCEPTIONAL == admissionResult.getResult()
@@ -205,16 +108,6 @@ public class DecisionRuleServiceImpl implements DecisionRuleService {
             ret = admissionResultDetailDao.getByResultId(cond);
         }
         log.debug("exit method, return:{}", ret);
-        return ret;
-    }
-
-    private AdmissionResult getLastAdmissionResult(String nid) {
-        AdmissionResult ret = null;
-        if (null != nid && !nid.isEmpty()) {
-            AdmissionResult cond = new AdmissionResult();
-            cond.setNid(nid);
-            ret = admissionResultDao.getLastOneByNid(cond);
-        }
         return ret;
     }
 

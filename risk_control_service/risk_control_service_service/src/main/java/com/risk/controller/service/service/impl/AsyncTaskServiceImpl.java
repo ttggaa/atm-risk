@@ -2,32 +2,25 @@ package com.risk.controller.service.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.risk.controller.service.common.constans.ERROR;
 import com.risk.controller.service.common.utils.ContextUtils;
-import com.risk.controller.service.common.utils.ResponseEntity;
 import com.risk.controller.service.dao.AdmissionResultDao;
 import com.risk.controller.service.dao.DecisionReqLogDao;
 import com.risk.controller.service.dao.DecisionRobotNoticeDao;
 import com.risk.controller.service.dto.AdmissionResultDTO;
 import com.risk.controller.service.dto.AdmissionRuleDTO;
 import com.risk.controller.service.dto.DecisionConfigDTO;
-import com.risk.controller.service.dto.RobotScoreDTO;
 import com.risk.controller.service.entity.*;
-import com.risk.controller.service.enums.CacheCfgType;
-import com.risk.controller.service.enums.GetCacheModel;
 import com.risk.controller.service.request.DecisionHandleRequest;
 import com.risk.controller.service.service.DecisionRobotService;
 import com.risk.controller.service.service.DecisionRuleService;
 import com.risk.controller.service.service.DecisionService;
 import com.risk.controller.service.util.AdmissionHandler;
-import com.risk.controller.service.utils.CSVUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 
@@ -65,7 +58,6 @@ public class AsyncTaskServiceImpl {
     @Autowired
     private PaixuServiceImpl paixuServiceImpl;
 
-    @Async
     public void asyncHandler(DecisionHandleRequest request, AdmissionResult admissionResult, Long labelGroupId, AdmissionResultDTO ret) {
 
         // 决策结果汇总
@@ -80,7 +72,8 @@ public class AsyncTaskServiceImpl {
         else if (AdmissionResultDTO.RESULT_APPROVED == admResult.getResult()
                 || AdmissionResultDTO.RESULT_REJECTED == admResult.getResult()
                 || AdmissionResultDTO.RESULT_MANUAL == admResult.getResult()) {
-            decisionService.noticeBorrowResultHandle(request.getNid(), admResult);
+
+            decisionService.noticeBorrowResultHandle(request.getNid(),request.getMerchantCode(), admResult);
         }
 
         // 其他情况
@@ -109,9 +102,9 @@ public class AsyncTaskServiceImpl {
                 for (int stage = 1; stage <= stageCount; stage++) {
                     admissionResult.setStopStage(stage);
                     // 根据组id和步骤获取执行规则集
-                    List<AdmissionRule> ruleList = this.decisionRuleService.getAdmissionRule(labelGroupId, stage);  // 要执行的规则集
+                    List<AdmissionRule> ruleList = this.decisionRuleService.getAdmissionRule(admissionResult.getMerchantCode(), labelGroupId, stage);  // 要执行的规则集
 
-                    if (null == ruleList || ruleList.isEmpty()) {
+                    if (CollectionUtils.isEmpty(ruleList)) {
                         continue;
                     }
                     AdmissionResultDTO stageResult = this.handle(config, stage, request, ruleList);
@@ -151,7 +144,7 @@ public class AsyncTaskServiceImpl {
                 int suspentCount = 0;
                 for (int stage = 1; stage <= stageCount; stage++) { // 分阶段执行规则, 从1开始
                     admissionResult.setStopStage(stage);
-                    List<AdmissionRule> ruleList = this.decisionRuleService.getAdmissionRule(labelGroupId, stage);  // 要执行的规则集
+                    List<AdmissionRule> ruleList = this.decisionRuleService.getAdmissionRule(admissionResult.getMerchantCode(), labelGroupId, stage);  // 要执行的规则集
                     if (null == ruleList || ruleList.isEmpty()) {
                         continue;
                     }
@@ -188,6 +181,8 @@ public class AsyncTaskServiceImpl {
                 ret.setResultByRuleResult();
             }
         } catch (Exception e) {
+            e.printStackTrace();
+            log.error("分步执行决策规则异常：nid:{},param:{},error：", request.getNid(), JSONObject.toJSONString(request), e);
             ret.setResult(AdmissionResultDTO.RESULT_EXCEPTIONAL);
         }
         long endTime = System.currentTimeMillis();
@@ -423,10 +418,9 @@ public class AsyncTaskServiceImpl {
         return ret;
     }
 
-    @Async
     public void noticeBorrowResultHandle(DecisionHandleRequest request) {
         AdmissionResultDTO admResult = new AdmissionResultDTO();
         admResult.setResult(AdmissionResultDTO.RESULT_APPROVED);
-        this.decisionService.noticeBorrowResultHandle(request.getNid(), admResult);
+        this.decisionService.noticeBorrowResultHandle(request.getNid(), request.getMerchantCode(), admResult);
     }
 }

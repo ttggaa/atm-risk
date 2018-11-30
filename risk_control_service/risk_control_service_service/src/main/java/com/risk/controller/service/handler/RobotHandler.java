@@ -81,10 +81,11 @@ public class RobotHandler implements AdmissionHandler {
         AdmissionResultDTO result = new AdmissionResultDTO();
         try {
             // 训练数据不保存数据
-            if (RobotResult.SOURCE_2 != request.getRobotRequestDTO().getSource()
-                    && RobotResult.SOURCE_3 != request.getRobotRequestDTO().getSource()) {
+            if (RobotResult.SOURCE_2 != request.getSource()
+                    && RobotResult.SOURCE_3 != request.getSource()) {
                 modelDataService.saveData(request);
             }
+
         } catch (Exception e) {
             log.error("保存模型数据异常，nid:{}", request.getNid(), e);
             result.setResult(AdmissionResultDTO.RESULT_EXCEPTIONAL);
@@ -170,7 +171,7 @@ public class RobotHandler implements AdmissionHandler {
                 Long detailId;
 
                 // 查询方法返回值对应的规则明细
-                if (RobotResult.SOURCE_2.equals(request.getRobotRequestDTO().getSource())) {
+                if (RobotResult.SOURCE_2.equals(request.getSource())) {
                     RobotRuleDetailLearn detail = robotRuleDetailLearnDao.getDetailByCondition(robotRule.getId(), count);
                     if (null == detail) {
                         continue;
@@ -215,7 +216,7 @@ public class RobotHandler implements AdmissionHandler {
                 result.setResult(AdmissionResultDTO.RESULT_REJECTED);
             }
 
-            RobotResult robotResult = new RobotResult(request.getNid(), divideScore, result.getResult(), request.getRobotRequestDTO().getSource(), finalScore, totalScore);
+            RobotResult robotResult = new RobotResult(request.getNid(), divideScore, result.getResult(), request.getSource(), finalScore, totalScore);
             robotResultDao.insert(robotResult);
             if (listRobot.size() > 0) {
                 listRobot.forEach(robot -> robot.setResultId(robotResult.getId()));
@@ -3216,7 +3217,7 @@ public class RobotHandler implements AdmissionHandler {
                         DecisionReqLog reqLog = decisionReqLogDao.getbyNid(nid);
                         if (null != reqLog) {
                             DecisionHandleRequest request = JSONObject.parseObject(reqLog.getReqData(), DecisionHandleRequest.class);
-                            request.getRobotRequestDTO().setSource(source);
+                            request.setSource(source);
                             AdmissionResultDTO record = this.verifyRobot(request, ruleDto);
                             log.debug("模型重跑结果：nid：{}，结果：{}", nid, JSONObject.toJSONString(record));
                         }

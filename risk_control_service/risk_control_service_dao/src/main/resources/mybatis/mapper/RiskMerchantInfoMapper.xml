@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.risk.controller.service.dao.RiskMerchantInfoDao">
+    <resultMap id="BaseResultMap" type="com.risk.controller.service.entity.RiskMerchantInfo">
+    </resultMap>
+
+    <select id="getAll" resultMap="BaseResultMap">
+        select * from risk_merchant_info
+    </select>
+
+    <select id="getOneByKey" parameterType="string" resultMap="BaseResultMap">
+        select * from risk_merchant_info where code=#{code}
+    </select>
+</mapper>

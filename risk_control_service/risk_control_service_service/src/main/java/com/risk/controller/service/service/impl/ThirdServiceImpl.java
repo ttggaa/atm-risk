@@ -2,8 +2,7 @@ package com.risk.controller.service.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.risk.controller.service.common.httpclient.HttpClientUtils;
-import com.risk.controller.service.enums.CacheCfgType;
-import com.risk.controller.service.enums.GetCacheModel;
+import com.risk.controller.service.service.MerchantInfoService;
 import com.risk.controller.service.service.ThirdService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +20,8 @@ import java.util.Set;
 public class ThirdServiceImpl implements ThirdService {
     @Autowired
     private LocalCache localCache;
+    @Autowired
+    private MerchantInfoService merchantInfoService;
 
     /**
      * 查询用户的设备被多少个用户使用
@@ -29,9 +30,9 @@ public class ThirdServiceImpl implements ThirdService {
      * @return
      */
     @Override
-    public JSONObject getDeviceUsedCount(Long userId) {
+    public JSONObject getDeviceUsedCount(String merchantCode,Long userId) {
         if (null != userId && 0L != userId) {
-            String url = localCache.getLocalCache(GetCacheModel.NO_FLUSH, CacheCfgType.THIRDSERVICECFG, "atm.deviceUsage.url");
+            String url = merchantInfoService.getMerchantUrl(merchantCode, "device_used_num_url");
             Map<String, String> params = new HashMap<>();
             params.put("userId", String.valueOf(userId));
             try {
@@ -46,9 +47,9 @@ public class ThirdServiceImpl implements ThirdService {
     }
 
     @Override
-    public JSONObject getRegisterCount(Set<String> set) {
+    public JSONObject getRegisterCount(String merchantCode, Set<String> set) {
         if (null == set || set.size() > 0) {
-            String url = localCache.getLocalCache(GetCacheModel.NO_FLUSH, CacheCfgType.THIRDSERVICECFG, "atm.registerCount.url");
+            String url = merchantInfoService.getMerchantUrl(merchantCode, "register_num_url");
             try {
                 String resultStr = HttpClientUtils.doPost(url, JSONObject.toJSONString(set), "application/json");
                 JSONObject json = JSONObject.parseObject(resultStr);
@@ -67,9 +68,9 @@ public class ThirdServiceImpl implements ThirdService {
      * @return
      */
     @Override
-    public JSONObject getDeviceCount(Long userId) {
+    public JSONObject getDeviceCount(String merchantCode,Long userId) {
         if (null != userId && 0L != userId) {
-            String url = localCache.getLocalCache(GetCacheModel.NO_FLUSH, CacheCfgType.THIRDSERVICECFG, "atm.userDeviceUsage.url");
+            String url = merchantInfoService.getMerchantUrl(merchantCode, "user_device_num_url");
             Map<String, String> params = new HashMap<>();
             params.put("userId", String.valueOf(userId));
             try {
@@ -83,6 +84,23 @@ public class ThirdServiceImpl implements ThirdService {
         return null;
     }
 
+    @Override
+    public JSONObject getUserInfo(String merchantCode, Long userId) {
+        if (null != userId && 0L != userId) {
+            String url = merchantInfoService.getMerchantUrl(merchantCode, "user_info_url");
+            Map<String, String> params = new HashMap<>();
+            params.put("userId", String.valueOf(userId));
+            try {
+                String resultStr = HttpClientUtils.doPost(url, JSONObject.toJSONString(params), "application/json");
+                JSONObject json = JSONObject.parseObject(resultStr);
+                return json;
+            } catch (Throwable e) {
+                log.error("查询用户的设备被多少个用户使用异常，userId:{},e:{}", userId, e);
+            }
+        }
+        return null;
+    }
+
     /**
      * 查询用户的通讯录、最近90天通话记录的手机号码，逾期个数
      * @param phones
@@ -90,9 +108,10 @@ public class ThirdServiceImpl implements ThirdService {
      * @return
      */
     @Override
-    public JSONObject queryCntOptPhoneOverdueNum(Set<String> phones, Integer overdueDay) {
+    public JSONObject queryCntOptPhoneOverdueNum(String merchantCode,Set<String> phones, Integer overdueDay) {
         if (null == phones || phones.size() > 0) {
-            String url = localCache.getLocalCache(GetCacheModel.NO_FLUSH, CacheCfgType.THIRDSERVICECFG, "atm.queryCntOptPhoneOverdueNum.url");
+            String url = merchantInfoService.getMerchantUrl(merchantCode, "overdue_num_url");
+
             Map<String,Object> param = new HashMap<>();
             param.put("phones",phones);
             param.put("overdueDay",overdueDay);

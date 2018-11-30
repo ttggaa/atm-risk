@@ -43,8 +43,8 @@ public class RiskControlServiceController {
             return riskControlServiceService.decisionHandle(request);
         } catch (Exception e) {
             log.error("decision 执行异常，result：{}，error", request, e);
+            return new ResponseEntity(ResponseEntity.STATUS_FAIL, null, "程序异常", null);
         }
-        return new ResponseEntity(ResponseEntity.STATUS_FAIL, null, "程序异常", null);
     }
 
     /**

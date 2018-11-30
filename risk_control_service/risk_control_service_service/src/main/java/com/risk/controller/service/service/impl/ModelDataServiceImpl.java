@@ -380,7 +380,7 @@ public class ModelDataServiceImpl implements ModelDataService {
         if (null != request && null != request.getRobotRequestDTO().getUserDeviceContactRegisterCount()) {
             userBaseinfo.setCntRegisterNum(request.getRobotRequestDTO().getUserDeviceContactRegisterCount());
         } else {
-            JSONObject rs = this.thirdService.getRegisterCount(contactSet);
+            JSONObject rs = this.thirdService.getRegisterCount(request.getMerchantCode(), contactSet);
             if (null == rs || null == rs.get("data") || !"0".equals(rs.getString("code"))) {
                 userBaseinfo.setCntRegisterNum(0);
             } else {
@@ -401,7 +401,7 @@ public class ModelDataServiceImpl implements ModelDataService {
         });
 
         userBaseinfo.setOptShortNum(callShortSet.size());
-        JSONObject rs = this.thirdService.getRegisterCount(callSet);
+        JSONObject rs = this.thirdService.getRegisterCount(request.getMerchantCode(), callSet);
         if (null == rs || null == rs.get("data") || !"0".equals(rs.getString("code"))) {
             userBaseinfo.setOptCallsRegisterNum(0);
         } else {
@@ -411,7 +411,7 @@ public class ModelDataServiceImpl implements ModelDataService {
         if (null != request && null != request.getRobotRequestDTO().getDeviceUsedCount()) {
             userBaseinfo.setUserDeviceUsedNum(request.getRobotRequestDTO().getDeviceUsedCount());
         } else {
-            rs = this.thirdService.getDeviceUsedCount(request.getUserId());
+            rs = this.thirdService.getDeviceUsedCount(request.getMerchantCode(), request.getUserId());
             if (null == rs || null == rs.get("data") || !"0".equals(rs.getString("code"))) {
                 userBaseinfo.setUserDeviceUsedNum(0);
             } else {
@@ -422,7 +422,7 @@ public class ModelDataServiceImpl implements ModelDataService {
         if (null != request && null != request.getRobotRequestDTO().getUserDeviceCount()) {
             userBaseinfo.setUserDeviceNum(request.getRobotRequestDTO().getUserDeviceCount());
         } else {
-            rs = this.thirdService.getDeviceCount(request.getUserId());
+            rs = this.thirdService.getDeviceCount(request.getMerchantCode(), request.getUserId());
             if (null == rs || null == rs.get("data") || !"0".equals(rs.getString("code"))) {
                 userBaseinfo.setUserDeviceNum(0);
             } else {

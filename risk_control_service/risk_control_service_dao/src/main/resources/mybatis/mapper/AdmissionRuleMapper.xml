@@ -32,35 +32,35 @@
   </select>
 
 
-  <select id="getEnabledRuleByGroup" parameterType="com.risk.controller.service.entity.DecisionLabelGroupRuleMapping" resultMap="BaseResultMap">
-    select  a.id,
-    a.name,
-    a.category,
-    a.description,
-    a.enabled,
-    a.handler,
-    a.reject_reason_code,
-    a.setting,
-    a.add_time,
-    a.add_user,
-    a.update_time,
-    a.update_user,
-    b.priority,
-    a.max_suspend_timeout,
-    a.max_suspend_cnt,
-    a.suspend_result,
-    b.robot_action
-    from risk_decision_rule a
-    join risk_decision_label_group_rule_mapping b on b.rule_id = a.id
-    <where>
-      a.enabled = 1
-      and b.enabled = 1
-      and b.group_id = #{groupId}
-      <if test="null != stage">
-        and b.stage = #{stage}
-      </if>
-    </where>
-    ORDER BY b.stage ASC,a.priority DESC,a.id ASC
+  <select id="getEnabledRuleByGroup" resultMap="BaseResultMap">
+    SELECT
+        a.id,
+        a.`name`,
+        a.category,
+        a.description,
+        a.enabled,
+        a.`handler`,
+        a.reject_reason_code,
+        a.setting,
+        c.sort priority,
+        a.max_suspend_timeout,
+        a.max_suspend_cnt,
+        a.suspend_result,
+        b.robot_action
+     FROM risk_decision_rule a
+     JOIN risk_decision_label_group_rule_mapping b ON b.rule_id = a.id
+     JOIN risk_merchant_decision_rule c ON a.id = c.rule_id
+    WHERE a.enabled = 1
+      AND b.enabled = 1
+      AND c.enabled = 1
+      AND b.merchant_code = c.merchant_code
+      AND c.merchant_code = #{0}
+      AND b.group_id = #{1}
+      AND b.stage = #{2}
+    ORDER BY
+      b.stage ASC,
+      c.sort DESC,
+      a.id ASC
   </select>
 
 

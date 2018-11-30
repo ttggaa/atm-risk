@@ -60,18 +60,8 @@ public class RobotRequestDTO {
     private Integer userCallAndCalledPercent60;		//60天内通话时长和次数比值-手机
 
     private Integer modelNum;//1排序模型（），2:本地模型
-    private Integer source;//1生产数据，2训练数据
 
     private StaUserBaseinfo staUserBaseinfo; //用户基础信息
     private StaSmBorrows staSmBorrows; //树美多头信息
     private List<StaOperatorCalls> listOperatorCalls; //用户运营商通话信息
-
-    public Integer getSource() {
-        if (null == this.source || this.source <= 0) {
-            return RobotResult.SOURCE_1;
-        } else {
-            return this.source;
-        }
-    }
-
 }
