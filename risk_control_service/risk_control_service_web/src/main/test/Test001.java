@@ -130,10 +130,14 @@ public class Test001 {
     }
 
 
+    /**
+     * {"KeyWord":"","KeyWordCount":"1","days":"60"}
+     * {"SensitiveWord":"","SensitiveWordCount":"6","NotSensitiveWord":"交警,电费,水费,水电费,物业费,如已还款,若已还款,已结清","days":"60"}
+     */
     @Test
     public void t5() {
-        String key = "欠款,欠债,拖欠,已逾期,已经逾期,吸毒,贩毒,抽大烟,麻古,麻果,k粉,冰妹,过不下去,活不下去,赌徒,赌输,输完,输光,飞叶子,溜冰,上门催收,滞纳金,逾期未还,还钱,扣款失败";
-        key = "法催部,严重逾期,恶意透支,逃避欠款,逃避还款,催收录音,大耳窿,涉嫌违法,婊子,起诉,委外";
+        String key = "欠款,欠债,拖欠,已逾期,已经逾期,过不下去,活不下去,输完,输光,飞叶子,溜冰,上门催收,滞纳金,逾期未还,还钱,扣款失败,合同超期,已发生逾期,多次提醒仍未还款,严重超期";
+        key = "法催部,严重逾期,恶意透支,逃避欠款,逃避还款,催收录音,大耳窿,涉嫌违法,婊子,起诉,委外,吸毒,贩毒,抽大烟,麻古,麻果,k粉,冰妹,赌徒,赌输";
         String[] keys = key.split(",");
         File file = new File("C:\\Users\\Administrator\\Desktop\\1.log");
         BufferedReader reader = null;

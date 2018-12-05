@@ -939,7 +939,7 @@ public class VerifyHandler implements AdmissionHandler {
                 return result;
             }
             // 保存基础数据
-            operatorService.saveAllOperator(request.getNid());
+//            operatorService.saveAllOperator(request.getNid());
 
             List<JSONObject> contacts = this.mongoHandler.getUserDeviceContact(request);
             List<JSONObject> callRecords = this.mongoHandler.getUserDeviceCallRecord(request);
