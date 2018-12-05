@@ -931,6 +931,9 @@ public class VerifyHandler implements AdmissionHandler {
         }
 
         try {
+            Long newDays = Long.valueOf(rule.getSetting().get("new"));
+            Long oldDays = Long.valueOf(rule.getSetting().get("old"));
+            int old110 = Integer.valueOf(rule.getSetting().get("old110"));
 
             List<JSONObject> operatorCallDetail = this.mongoHandler.getUserOperatorCallDetail(request);
             if (null == operatorCallDetail || operatorCallDetail.size() <= 0) {
@@ -949,7 +952,7 @@ public class VerifyHandler implements AdmissionHandler {
                 for (JSONObject json : contacts) {
                     String phone = json.getString("contactsPhone");
                     phone = PhoneUtils.cleanTel(phone);
-                    if (StringUtils.isNotBlank(phone) && phone.length() == 3) {
+                    if (StringUtils.isNotBlank(phone) && phone.length() == 3 && !phone.equals("110")) {
                         phones.add(phone);
                     }
                 }
@@ -959,7 +962,7 @@ public class VerifyHandler implements AdmissionHandler {
                 for (JSONObject json : callRecords) {
                     String phone = json.getString("contactsPhone");
                     phone = PhoneUtils.cleanTel(phone);
-                    if (StringUtils.isNotBlank(phone) && phone.length() == 3) {
+                    if (StringUtils.isNotBlank(phone) && phone.length() == 3 && !phone.equals("110")) {
                         phones.add(phone);
                     }
                 }
@@ -969,10 +972,20 @@ public class VerifyHandler implements AdmissionHandler {
 
             for (JSONObject jsonObject : operatorCallDetail) {
                 String peerNumber = jsonObject.getString("peer_number");//通话手机号码
-                if ("110".equals(peerNumber)) {
-                    count110++;
+                String strTime = jsonObject.getString("time");// 通话时间
+                if(StringUtils.isNotBlank(strTime)){
+                    Long diffDays = Math.abs(DateTools.getDayDiff(new Date(request.getApplyTime()), DateTools.convert(strTime)));
+                    if (LabelGroupId.OLD.value().equals(request.getLabelGroupId())) {
+                        if ("110".equals(peerNumber) && diffDays.compareTo(oldDays) <= 0) {
+                            count110++;
+                        }
+                    } else if (LabelGroupId.NEW.value().equals(request.getLabelGroupId())) {
+                        if ("110".equals(peerNumber) && diffDays.compareTo(newDays) <= 0) {
+                            count110++;
+                        }
+                    }
                 }
-                if (StringUtils.isNotBlank(peerNumber) && peerNumber.length() == 3) {
+                if (StringUtils.isNotBlank(peerNumber) && peerNumber.length() == 3 && !peerNumber.equals("110")) {
                     phones.add(peerNumber);
                 }
             }
@@ -983,11 +996,18 @@ public class VerifyHandler implements AdmissionHandler {
             String[] shorts = shortNos.split(",");
             Integer ruleCount110 = Integer.valueOf(rule.getSetting().get("count110"));
 
-
-            if (count110 >= ruleCount110) {
-                result.setResult(AdmissionResultDTO.RESULT_REJECTED);
-                result.setData(110 + ":" + count110);
-                return result;
+            if (LabelGroupId.OLD.value().equals(request.getLabelGroupId())) {
+                if (count110 >= old110) {
+                    result.setResult(AdmissionResultDTO.RESULT_REJECTED);
+                    result.setData(110 + ":" + count110);
+                    return result;
+                }
+            } else if (LabelGroupId.NEW.value().equals(request.getLabelGroupId())) {
+                if (count110 >= ruleCount110) {
+                    result.setResult(AdmissionResultDTO.RESULT_REJECTED);
+                    result.setData(110 + ":" + count110);
+                    return result;
+                }
             }
 
             phones.removeAll(Arrays.asList(shorts));
