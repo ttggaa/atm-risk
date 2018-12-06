@@ -44,4 +44,13 @@ public interface ThirdService {
      * @return data:逾期ruleOverdueDays的手机号码个数
      */
     JSONObject queryCntOptPhoneOverdueNum(String merchantCode,Set<String> phones,Integer overdueDay);
+
+    /**
+     * 重新拉取运营商数据
+     *
+     * @param merchantCode
+     * @param nid
+     * @return
+     */
+    void repeatAddOperator(String merchantCode, String nid);
 }

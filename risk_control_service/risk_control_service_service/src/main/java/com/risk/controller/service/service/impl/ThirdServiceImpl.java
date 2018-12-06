@@ -5,6 +5,7 @@ import com.risk.controller.service.common.httpclient.HttpClientUtils;
 import com.risk.controller.service.service.MerchantInfoService;
 import com.risk.controller.service.service.ThirdService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -124,5 +125,23 @@ public class ThirdServiceImpl implements ThirdService {
             }
         }
         return null;
+    }
+
+    @Override
+    public void repeatAddOperator(String merchantCode, String nid) {
+        if (StringUtils.isNotBlank(nid)) {
+            String url = merchantInfoService.getMerchantUrl(merchantCode, "repeat_operator_url");
+
+            Map<String, String> param = new HashMap<>();
+            param.put("nids", nid);
+            try {
+                String resultStr = HttpClientUtils.doPost(url, param);
+                if (StringUtils.isBlank(resultStr)) {
+                    log.error("调用重新拉取运营商数据失败");
+                }
+            } catch (Throwable e) {
+                log.error("调用重新拉取运营商数据异常，phones:{},e:{}", param, e);
+            }
+        }
     }
 }

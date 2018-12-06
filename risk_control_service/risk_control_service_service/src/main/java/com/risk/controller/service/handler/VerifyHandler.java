@@ -2440,14 +2440,14 @@ public class VerifyHandler implements AdmissionHandler {
 
 
             List<JSONObject> operatorCallDetail = this.mongoHandler.getUserOperatorCallDetail(request);
-            if (null == operatorCallDetail || operatorCallDetail.size() <= 0) {
+            if (CollectionUtils.isEmpty(operatorCallDetail)) {
                 result.setResult(AdmissionResultDTO.RESULT_SUSPEND);
                 result.setData("未查询到运营商通话记录");
                 return result;
             }
 
             List<JSONObject> contacts = this.mongoHandler.getUserDeviceContact(request);
-            if (null == contacts || contacts.size() <= 0) {
+            if (CollectionUtils.isEmpty(contacts)) {
                 result.setResult(AdmissionResultDTO.RESULT_SUSPEND);
                 result.setData("未查询到手机通讯录");
                 return result;
@@ -2474,7 +2474,7 @@ public class VerifyHandler implements AdmissionHandler {
                     }
                 }
             });
-            if (phones.size() == 0) {
+            if (CollectionUtils.isEmpty(phones)) {
                 result.setResult(AdmissionResultDTO.RESULT_REJECTED);
                 result.setData(0);
                 return result;

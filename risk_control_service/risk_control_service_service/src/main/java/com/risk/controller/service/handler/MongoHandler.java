@@ -9,6 +9,7 @@ import com.risk.controller.service.mongo.dao.MongoDao;
 import com.risk.controller.service.mongo.dao.MongoQuery;
 import com.risk.controller.service.request.DecisionHandleRequest;
 import com.risk.controller.service.service.DataOrderMappingService;
+import com.risk.controller.service.service.ThirdService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,8 @@ public class MongoHandler {
     private MongoDao mongoDao;
     @Resource
     private DataOrderMappingService dataOrderMappingService;
+    @Resource
+    private ThirdService thirdService;
 
     /**
      * 通过订单号查询通话记录
@@ -471,34 +474,9 @@ public class MongoHandler {
             request.getRobotRequestDTO().setOperatorCallRecords(list);
             return list;
         } else {
-            return this.getUserOperatorCallDetailV1(request);
+            this.thirdService.repeatAddOperator(request.getMerchantCode(), request.getNid());
+            return null;
         }
-    }
-
-    private List<JSONObject> getUserOperatorCallDetailV1(DecisionHandleRequest request) {
-        List<JSONObject> list = new ArrayList<>();
-        try {
-            // 缓存numbser
-            if (StringUtils.isBlank(request.getRobotRequestDTO().getNumber())) {
-                MongoQuery query = new MongoQuery("orderNo", request.getNid(), MongoQuery.MongoQueryBaseType.eq);
-                List<MongoQuery> queries = new ArrayList<>();
-                queries.add(query);
-                JSONObject json = mongoDao.findOne(queries, JSONObject.class, MongoCollections.DB_DEVICE_INFO);
-                if (null != json && StringUtils.isNotBlank(json.getString("number"))) {
-                    request.getRobotRequestDTO().setNumber(json.getString("number"));
-                }
-            }
-
-            if (StringUtils.isNotBlank(request.getRobotRequestDTO().getNumber())) {
-                MongoQuery query = new MongoQuery("number", request.getRobotRequestDTO().getNumber(), MongoQuery.MongoQueryBaseType.eq);
-                List<MongoQuery> queries = new ArrayList<>();
-                queries.add(query);
-                list = mongoDao.find(queries, JSONObject.class, MongoCollections.DB_OPERATOR_CALLS_DETAIL, null);
-            }
-        } catch (Exception e) {
-            log.error("查询mongo异常：", e);
-        }
-        return list;
     }
 
     /**
