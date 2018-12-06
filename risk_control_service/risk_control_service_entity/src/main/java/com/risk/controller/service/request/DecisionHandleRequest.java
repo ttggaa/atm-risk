@@ -38,7 +38,7 @@ public class DecisionHandleRequest {
     private String nid;
     @NotNull(message = "是否快速失败标记不能为空")
     private Integer failFast; // 快速失败标识, 1-快速失败
-    private Integer isRobot = 1; // 是否走模型, 9：不走模型 1：走模型
+    private Integer isRobot = 1; // 1生产数据，0测试数据
     private String name; // 用户真实姓名
     private Long userId;
     private String devicePlatform; // 设备类型，ios,android

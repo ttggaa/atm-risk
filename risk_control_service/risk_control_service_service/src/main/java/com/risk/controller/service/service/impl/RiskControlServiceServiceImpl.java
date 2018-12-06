@@ -5,17 +5,17 @@ import com.risk.controller.service.common.constans.ERROR;
 import com.risk.controller.service.common.utils.ResponseEntity;
 import com.risk.controller.service.dao.*;
 import com.risk.controller.service.dto.AdmissionResultDTO;
-import com.risk.controller.service.entity.AdmissionResult;
-import com.risk.controller.service.entity.AdmissionResultDetail;
-import com.risk.controller.service.entity.DecisionReqLog;
-import com.risk.controller.service.entity.DecisionResultLabel;
+import com.risk.controller.service.dto.AdmissionRuleDTO;
+import com.risk.controller.service.entity.*;
 import com.risk.controller.service.request.DecisionHandleRequest;
 import com.risk.controller.service.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -52,6 +52,8 @@ public class RiskControlServiceServiceImpl implements RiskControlServiceService 
     private DecisionWhiteListDao decisionWhiteListDao;
     @Autowired
     private MerchantInfoService merchantInfoService;
+    @Autowired
+    private ModelService modelService;
 
     @Override
     public void reRunDecision() {
@@ -159,7 +161,7 @@ public class RiskControlServiceServiceImpl implements RiskControlServiceService 
             admissionResult.setSuspendCnt(0);
             admissionResult.setSuspendStage(0);
             admissionResult.setSuspendTime(System.currentTimeMillis());
-            admissionResult.setRobotAction(AdmissionResultDTO.ROBOT_ACTION_SCORE); // 模型动作评分
+            admissionResult.setRobotAction(request.getIsRobot()); //
             admissionResult.setAddTime(System.currentTimeMillis());
             admissionResult.setUpdateTime(System.currentTimeMillis());
             this.admissionResultDao.insertSelective(admissionResult); //生成id
@@ -175,5 +177,27 @@ public class RiskControlServiceServiceImpl implements RiskControlServiceService 
         ret.setId(admissionResult.getId());
         ret.setLabelGroupId(labelGroupId);
         return admissionResult;
+    }
+
+    @Override
+    @Async
+    public void decisionBysql(String sql) {
+        List<Map<String, Object>> list = this.modelService.runModelBySql(sql);
+        if (!CollectionUtils.isEmpty(list)) {
+            for (Map<String, Object> map : list) {
+                Object nidObject = map.get("nid");
+                if (null != nidObject) {
+                    String nid = (String) nidObject;
+                    DecisionReqLog reqLog = decisionReqLogDao.getbyNid(nid);
+                    if (null != reqLog) {
+                        DecisionHandleRequest request = JSONObject.parseObject(reqLog.getReqData(), DecisionHandleRequest.class);
+                        request.setFailFast(0);
+                        request.setIsRobot(0);
+                        this.decisionHandle(request);
+                        log.debug("重跑决策：nid：{}，结果：{}", nid, JSONObject.toJSONString(request));
+                    }
+                }
+            }
+        }
     }
 }

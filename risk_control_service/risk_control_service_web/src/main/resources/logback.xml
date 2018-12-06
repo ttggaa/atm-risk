@@ -121,7 +121,7 @@
     <root level="${PROJECT_LEVEL}">
         <appender-ref ref="console"/>
         <appender-ref ref="file-info"/>
-        <!--<appender-ref ref="file-debug"/>-->
+        <appender-ref ref="file-debug"/>
         <appender-ref ref="file-warn"/>
         <appender-ref ref="file-error"/>
     </root>

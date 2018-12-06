@@ -24,4 +24,10 @@ public interface RiskControlServiceService {
      * @return
      */
     ResponseEntity getDecisionDetail(String nid);
+
+    /**
+     * 通过sql跑重跑决策
+     * @param sql
+     */
+    void decisionBysql(String sql);
 }

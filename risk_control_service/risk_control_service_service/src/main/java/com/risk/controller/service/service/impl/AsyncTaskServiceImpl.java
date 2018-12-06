@@ -65,8 +65,10 @@ public class AsyncTaskServiceImpl {
         // 决策结果汇总
         AdmissionResultDTO admResult = this.handle(request, admissionResult, labelGroupId, ret);
 
-        // 如果是挂起，或者异常，重跑决策
-        if (AdmissionResultDTO.RESULT_SUSPEND == admResult.getResult() || AdmissionResultDTO.RESULT_EXCEPTIONAL == admResult.getResult()) {
+        // 如果是挂起，或者异常、 人工跑决策不把决策结果发送给业务端
+        if (AdmissionResultDTO.RESULT_SUSPEND == admResult.getResult()
+                || AdmissionResultDTO.RESULT_EXCEPTIONAL == admResult.getResult()
+                || (request.getFailFast() == 0 && request.getIsRobot() == 0)) {
             return;
         }
 
@@ -160,11 +162,6 @@ public class AsyncTaskServiceImpl {
                     manualCount += stageResult.getManualCount();
                     suspentCount += stageResult.getSuspendCount();
 
-                    int stageRobotAction = (stageResult.getRobotAction() == null) ? AdmissionResultDTO.ROBOT_ACTION_SCORE : stageResult.getRobotAction();
-                    if (AdmissionResultDTO.ROBOT_ACTION_SKIP == stageRobotAction) {
-                        ret.setRobotAction(AdmissionResultDTO.ROBOT_ACTION_SKIP);
-                    }
-
                     if (stageResult.getSuspendCount() > 0) {
                         admissionResult.setSuspendStage(stage);
                         ret.setSuspendDetail(stageResult.getSuspendDetail());
@@ -189,7 +186,7 @@ public class AsyncTaskServiceImpl {
         }
         long endTime = System.currentTimeMillis();
         admissionResult.setResult(ret.getResult());
-        admissionResult.setRobotAction(ret.getRobotAction());
+        admissionResult.setRobotAction(request.getIsRobot());
         long preCost = (null == admissionResult.getTimeCost()) ? 0 : admissionResult.getTimeCost().longValue();
         admissionResult.setTimeCost(endTime - admissionResult.getSuspendTime() + preCost);
 

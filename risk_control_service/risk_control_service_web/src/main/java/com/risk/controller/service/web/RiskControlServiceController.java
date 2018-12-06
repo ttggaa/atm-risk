@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.risk.controller.service.common.utils.ResponseEntity;
 import com.risk.controller.service.request.DecisionHandleRequest;
 import com.risk.controller.service.service.DecisionService;
+import com.risk.controller.service.service.ModelService;
 import com.risk.controller.service.service.RiskControlServiceService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,7 @@ public class RiskControlServiceController {
 
     @Autowired
     private DecisionService decisionService;
+
 
     /**
      * 决策处理入口
@@ -81,5 +83,11 @@ public class RiskControlServiceController {
     @RequestMapping(value = "pushRiskResult", method = RequestMethod.GET)
     public ResponseEntity pushRiskResult(String nid, Integer noticeNum) {
         return decisionService.pushRiskResult(nid, noticeNum);
+    }
+
+    @RequestMapping(value = "/decisionBysql", method = RequestMethod.POST)
+    public ResponseEntity decisionBysql(String sql) {
+        riskControlServiceService.decisionBysql(sql);
+        return new ResponseEntity(ResponseEntity.STATUS_OK);
     }
 }
