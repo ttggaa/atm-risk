@@ -137,7 +137,7 @@ public class ThirdServiceImpl implements ThirdService {
             try {
                 String resultStr = HttpClientUtils.doPost(url, param);
                 if (StringUtils.isBlank(resultStr)) {
-                    log.error("调用重新拉取运营商数据失败");
+                    log.error("调用重新拉取运营商数据失败，nid:{},url:{}",nid,url);
                 }
             } catch (Throwable e) {
                 log.error("调用重新拉取运营商数据异常，phones:{},e:{}", param, e);
