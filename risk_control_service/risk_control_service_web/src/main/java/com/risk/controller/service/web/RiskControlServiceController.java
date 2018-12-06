@@ -1,13 +1,12 @@
 package com.risk.controller.service.web;
 
-import com.risk.controller.service.common.constans.ERROR;
+import com.alibaba.fastjson.JSONObject;
 import com.risk.controller.service.common.utils.ResponseEntity;
 import com.risk.controller.service.request.DecisionHandleRequest;
 import com.risk.controller.service.service.DecisionService;
 import com.risk.controller.service.service.RiskControlServiceService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -40,11 +39,12 @@ public class RiskControlServiceController {
     @RequestMapping(value = "/decision", method = RequestMethod.POST)
     public ResponseEntity decision(@Validated DecisionHandleRequest request) {
         try {
+            log.info("执行风控决策。入参：{}", JSONObject.toJSONString(request));
             return riskControlServiceService.decisionHandle(request);
         } catch (Exception e) {
             log.error("decision 执行异常，result：{}，error", request, e);
+            return new ResponseEntity(ResponseEntity.STATUS_FAIL, null, "程序异常", null);
         }
-        return new ResponseEntity(ResponseEntity.STATUS_FAIL, null, "程序异常", null);
     }
 
     /**

@@ -10,10 +10,7 @@ import com.risk.controller.service.entity.AdmissionResultDetail;
 import com.risk.controller.service.entity.DecisionReqLog;
 import com.risk.controller.service.entity.DecisionResultLabel;
 import com.risk.controller.service.request.DecisionHandleRequest;
-import com.risk.controller.service.service.DecisionRobotService;
-import com.risk.controller.service.service.DecisionRuleService;
-import com.risk.controller.service.service.DecisionService;
-import com.risk.controller.service.service.RiskControlServiceService;
+import com.risk.controller.service.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,15 +50,12 @@ public class RiskControlServiceServiceImpl implements RiskControlServiceService 
     private DecisionService decisionService;
     @Autowired
     private DecisionWhiteListDao decisionWhiteListDao;
-
-    private final static Integer ONE = 1;
+    @Autowired
+    private MerchantInfoService merchantInfoService;
 
     @Override
-    @Scheduled(cron = "0 0/3 * * * ? ")
     public void reRunDecision() {
-        log.warn("定时任务：重跑风控");
         List<String> result = admissionResultDao.queryNeedReRun();
-        // 2、重跑
         if (null != result && result.size() > 0) {
             for (String nid : result) {
                 if (StringUtils.isBlank(nid)) {
@@ -95,30 +89,35 @@ public class RiskControlServiceServiceImpl implements RiskControlServiceService 
     @Override
     public ResponseEntity decisionHandle(DecisionHandleRequest request) {
 
-        // 保存请求参数到数据库
+        request.setDefaultValue(request);
+        String enabled = merchantInfoService.getBymerchantCode(request.getMerchantCode());
+        if (!"1".equals(enabled)) {
+            log.error("商户号不存在,请求参数：{}", JSONObject.toJSONString(request));
+            return new ResponseEntity(ResponseEntity.STATUS_FAIL, null, null, "商户号不存在");
+        }
+
         this.saveDecisionRequest(request);
+
         int count = this.decisionWhiteListDao.getByPhone(request.getUserName());
         if (count > 0) {
             asyncTaskService.noticeBorrowResultHandle(request);
+            log.warn("白名单跳过风控，【{}:{}】。请求参数：{}", request.getName(), request.getUserName(), JSONObject.toJSONString(request));
             return new ResponseEntity(ResponseEntity.STATUS_OK);
         }
 
-        // 接收到数据存入数据库中
         AdmissionResultDTO ret = new AdmissionResultDTO(); // 决策最终结果
         ret.setResult(AdmissionResultDTO.RESULT_APPROVED); // 默认结果状态
         ret.setRobotAction(AdmissionResultDTO.ROBOT_ACTION_SCORE);
         ret.setRejectReason(new LinkedHashSet<>());
 
-        // 查询订单是否需要重跑 设置AdmissionResult、ResultDetailMap
         decisionRuleService.getAdmissionSuspendContext(request);
         AdmissionResult admissionResult = this.getAdmissionResult(request, ret);
-        Long labelGroupId = admissionResult.getLabelGroupId();
 
         if (null == admissionResult || null == admissionResult.getLabelGroupId() || admissionResult.getLabelGroupId() < 1) {
             return new ResponseEntity(ResponseEntity.STATUS_FAIL, null, ERROR.ErrorMsg.NOT_GROUP, null);
         }
-        // 异步处理决策
-        asyncTaskService.asyncHandler(request, admissionResult, labelGroupId, ret);
+
+        asyncTaskService.asyncHandler(request, admissionResult, admissionResult.getLabelGroupId(), ret);
         return new ResponseEntity(ResponseEntity.STATUS_OK);
     }
 
@@ -129,7 +128,9 @@ public class RiskControlServiceServiceImpl implements RiskControlServiceService 
      */
     private void saveDecisionRequest(DecisionHandleRequest request) {
         try {
-            DecisionReqLog log = new DecisionReqLog(request.getNid(), JSONObject.toJSONString(request));
+            JSONObject js = JSONObject.parseObject(JSONObject.toJSONString(request));
+            js.remove("robotRequestDTO");
+            DecisionReqLog log = new DecisionReqLog(request.getNid(), request.getMerchantCode(), JSONObject.toJSONString(js));
             decisionReqLogDao.saveOrUpdate(log);
         } catch (Exception e) {
             log.error("保存请求数据异常，request：{}", JSONObject.toJSONString(request), e);
@@ -148,7 +149,7 @@ public class RiskControlServiceServiceImpl implements RiskControlServiceService 
         Long labelGroupId = null;
         if (request.getAdmissionResult() == null) {
             admissionResult = new AdmissionResult();
-
+            admissionResult.setMerchantCode(request.getMerchantCode());
             admissionResult.setNid(request.getNid());
             admissionResult.setResult(0);
             admissionResult.setTimeCost(0L);
@@ -165,25 +166,8 @@ public class RiskControlServiceServiceImpl implements RiskControlServiceService 
         } else {
             admissionResult = request.getAdmissionResult();
         }
-
-
         if (admissionResult.getLabelGroupId() == null || 0L == admissionResult.getLabelGroupId()) {
-            // 定义存储标签Id的集合
-            Set<Long> labelIdSet = new HashSet<>();
-
-            // 打标签开始时间
-            long labelTimeBegin = System.currentTimeMillis();
-            // 获取决策标签decisionLabel信息
-            Set<DecisionResultLabel> labelSet = this.decisionRuleService.getDecisionLabel(request);
-            // 设置打标签时长
-            admissionResult.setLabelTimeCost(System.currentTimeMillis() - labelTimeBegin);
-
-            if (null != labelSet && !labelSet.isEmpty()) {
-                labelSet.stream().forEach(o -> labelIdSet.add(o.getLabelId()));
-                // 根据labelIds获取组Id
-                labelGroupId = this.decisionRuleService.getDecisionLabelGroup(labelIdSet);
-                ret.setLabels(labelSet);
-            }
+            labelGroupId = request.getLabelGroupId();
         } else {
             labelGroupId = admissionResult.getLabelGroupId();
         }

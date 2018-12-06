@@ -7,17 +7,12 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 public interface DecisionResultNoticeDao {
-    int deleteByPrimaryKey(Long id);
 
     int insert(DecisionResultNotice record);
 
-    DecisionResultNotice selectByPrimaryKey(Long id);
-
-    int updateByPrimaryKey(DecisionRobotNotice record);
-
     int updateByPrimaryKeySelective(DecisionResultNotice record);
 
-    DecisionResultNotice getByNid(@Param("nid") String nid);
+    DecisionResultNotice selectByCondition(DecisionResultNotice notice);
 
     List<DecisionResultNotice> pushRiskResult(@Param("nid")String nid,@Param("noticeNum") Integer noticeNum);
 }

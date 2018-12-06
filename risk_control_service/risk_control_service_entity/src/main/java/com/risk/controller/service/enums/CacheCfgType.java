@@ -6,6 +6,7 @@ package com.risk.controller.service.enums;
 public enum CacheCfgType {
     THIRDSERVICECFG("第三方服务配置"),
     SYSTEMCFG("系统配置"),
+    MERCHANT_INFO("商信息"),
     ;
 
     private String type;

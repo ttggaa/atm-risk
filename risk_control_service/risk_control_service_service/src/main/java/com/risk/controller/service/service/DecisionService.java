@@ -13,28 +13,15 @@ import com.risk.controller.service.dto.RobotScoreDTO;
  */
 public interface DecisionService {
 
-    /**
-     * 模型执行结果通知
-     * @param request
-     * @param robotScore
-     * @param isModelNotice
-     */
-    ResponseEntity robotResultNotice(RobotResultRequest request, RobotScoreDTO robotScore, boolean isModelNotice);
-
-    /**
-     * 根据nid获取对应的数据
-     * @param nid
-     * @return
-     */
-    ResponseEntity getAllDataByNid(String nid);
 
     /**
      * 通知业务系统风控结果
      * @param nid
+     * @param merchantCode
      * @param admResult
      * @return
      */
-    ResponseEntity noticeBorrowResultHandle(String nid, AdmissionResultDTO admResult);
+    ResponseEntity noticeBorrowResultHandle(String nid, String merchantCode, AdmissionResultDTO admResult);
 
     /**
      * 重复通知业务系统风控结果
@@ -43,11 +30,4 @@ public interface DecisionService {
      * @return
      */
     ResponseEntity pushRiskResult(String nid,Integer noticeNum);
-
-
-    /**
-     * 定时任务重复通知业务系统风控结果
-     * @return
-     */
-    ResponseEntity pushRiskResult();
 }

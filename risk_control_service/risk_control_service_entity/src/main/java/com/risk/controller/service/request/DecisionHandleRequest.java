@@ -4,12 +4,13 @@ import com.alibaba.fastjson.JSONObject;
 import com.risk.controller.service.dto.RobotRequestDTO;
 import com.risk.controller.service.entity.AdmissionResult;
 import com.risk.controller.service.entity.AdmissionResultDetail;
+import com.risk.controller.service.entity.RobotResult;
 import lombok.Data;
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -23,16 +24,7 @@ public class DecisionHandleRequest {
 
     public static String DEVICE_IOS = "ios"; //设备类型
     public static String DEVICE_ANDROID = "android";//设备类型
-
     public static final Integer USER_GOOD = 2;//正常还款
-
-    public static final Long LABLEGROUPIDNEW_1 = 1000L;//新户
-    public static final Long lableGroupIdOld = 1009L;//老户
-
-    public static final Long lableGroupIdNew = 1005L; //新用户
-    public static final Long lableGroupIdSNew = 1007L;// 次新户
-    public static final Long lableGroupIdPass = 1001L;//老户
-    public static final Long lableGroupIdReject = 1002L;//老户
 
     /**
      * 入参
@@ -66,23 +58,8 @@ public class DecisionHandleRequest {
     private BigDecimal zmScore;//芝麻分
     private Integer maxOverdueDay;//最大逾期天数
     private Integer successRepayNum;//成功还款次数
-
-
-    public Integer getProductId() {
-        if (null == this.productId || this.productId <= 0) {
-            return 1;
-        } else {
-            return this.productId;
-        }
-    }
-
-    public BigDecimal getAmount() {
-        if (null == this.amount || BigDecimal.ZERO.compareTo(this.amount) >= 0) {
-            return new BigDecimal(720);
-        } else {
-            return this.amount;
-        }
-    }
+    private String merchantCode;//商户代码
+    private Integer source;//1生产数据，2训练数据
 
     /**
      * 入参结束
@@ -95,4 +72,29 @@ public class DecisionHandleRequest {
      * 缓存数据
      **/
     private RobotRequestDTO robotRequestDTO = new RobotRequestDTO();
+
+
+    /**
+     * 设置默认值
+     *
+     * @param request
+     */
+    public void setDefaultValue(DecisionHandleRequest request) {
+        // 默认产品id为1
+        if (null == request.getProductId() || request.getProductId() <= 0) {
+            request.setProductId(1);
+        }
+        // 默认借款金额为1
+        if (null == request.getAmount() || BigDecimal.ZERO.compareTo(request.getAmount()) >= 0) {
+            request.setAmount(new BigDecimal(720));
+        }
+        // 默认商户号为征信商户号
+        if (StringUtils.isBlank(request.getMerchantCode())) {
+            request.setMerchantCode("ZX00001");
+        }
+        // 设置是否保存数据
+        if (null == request.getSource() || request.getSource() <= 0) {
+            request.setSource(RobotResult.SOURCE_1);
+        }
+    }
 }

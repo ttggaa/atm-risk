@@ -9,6 +9,7 @@ import lombok.ToString;
 @ToString(callSuper = true)
 public class AdmissionResult extends BaseEntity {
     private String nid;//借款单号
+    private String merchantCode;//借款单号
     private Integer result;//执行结果
     private Long timeCost;//耗时
     private Long labelGroupId;//标签组Id

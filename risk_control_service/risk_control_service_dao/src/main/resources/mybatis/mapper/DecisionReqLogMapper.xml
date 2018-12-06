@@ -5,13 +5,13 @@
   </resultMap>
 
   <insert id="saveOrUpdate" parameterType="com.risk.controller.service.entity.DecisionReqLog">
-    insert into risk_decision_req_log (nid,req_data,add_time,update_time)
-    values (#{nid} ,#{reqData},#{addTime},0  )
+    insert into risk_decision_req_log (nid,req_data,add_time,update_time,merchant_code)
+    values (#{nid} ,#{reqData},#{addTime},0,#{merchantCode})
     on duplicate key update
-    req_data = VALUES(req_data), update_time = #{updateTime}
+    req_data = VALUES(req_data), update_time = #{updateTime},merchant_code=#{merchantCode}
   </insert>
 
   <select id="getbyNid" resultMap="BaseResultMap" parameterType="string">
-    select * from risk_decision_req_log where nid = #{nid}
+    select * from risk_decision_req_log where nid = #{nid} order by id desc limit 1
   </select>
 </mapper>

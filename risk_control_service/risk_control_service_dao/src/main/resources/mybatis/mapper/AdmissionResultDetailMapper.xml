@@ -42,11 +42,8 @@
     delete from risk_decision_result_detail
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.risk.controller.service.entity.AdmissionResultDetail" >
-    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
-      SELECT LAST_INSERT_ID()
-    </selectKey>
-    insert into risk_decision_result_detail (result_id, rule_id, data, 
+  <insert id="insert" parameterType="com.risk.controller.service.entity.AdmissionResultDetail"  useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+    insert into risk_decision_result_detail (result_id, rule_id, data,
       data_type, result, add_time, 
       add_user, update_time, update_user, 
       time_cost, stage, reject_reason_code, 

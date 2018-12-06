@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.risk.controller.service.dao.RiskMerchantUrlDao">
+    <resultMap id="BaseResultMap" type="com.risk.controller.service.entity.RiskMerchantUrl">
+    </resultMap>
+
+    <select id="getEnableAll" resultMap="BaseResultMap">
+        SELECT b.* from risk_merchant_info a, risk_merchant_url b where a.`code` = b.merchant_code AND a.enabled = 1
+    </select>
+</mapper>

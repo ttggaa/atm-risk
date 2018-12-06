@@ -18,12 +18,12 @@ public interface AdmissionRuleDao {
 
     int updateByPrimaryKey(AdmissionRule record);
 
-    List<AdmissionRule> getEnabledRuleByGroup(DecisionLabelGroupRuleMapping cond);
-
     /**
      * 通过ruleId查询规则
      * @param ruleId
      * @return
      */
     AdmissionRule getByRuleId(long ruleId);
+
+    List<AdmissionRule> getEnabledRuleByGroup(String merchantCode, Long labelGroupId, int stage);
 }

@@ -11,10 +11,12 @@ import java.util.regex.Pattern;
 @Data
 public class DecisionReqLog extends BaseEntity {
     private String nid;//借款单号
+    private String merchantCode;//商户code
     private String reqData;//执行结果
 
-    public DecisionReqLog(String nid, String reqData) {
+    public DecisionReqLog(String nid, String code, String reqData) {
         this.nid = nid;
+        this.merchantCode = code;
         if (StringUtils.isNotBlank(reqData)) {
             if (reqData.length() > 4000) {
                 reqData = reqData.substring(0, 4000);
