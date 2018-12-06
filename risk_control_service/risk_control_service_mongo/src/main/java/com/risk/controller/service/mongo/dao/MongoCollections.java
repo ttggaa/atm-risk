@@ -33,6 +33,7 @@ public class MongoCollections {
         TRIP_INFO("trip_info"),
         CALL_DURATION_DETAIL("call_duration_detail"),
         BEHAVIOR_CHECK("behavior_check"),
+        ACTIVE_DEGREE("active_degree"),
         ;
 
         private final String value;

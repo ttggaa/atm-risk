@@ -103,6 +103,23 @@
         )
     </insert>
 
+    <insert id="saveActiveDegree" parameterType="com.alibaba.fastjson.JSONObject" >
+        replace into `sta_active_degree` (
+        `nid`, `phone`, `avg_call_time_item_1m`, `avg_call_time_item_3m`, `avg_call_time_item_6m`, `avg_call_time_avg_item_3m`, `avg_call_time_avg_item_6m`, `no_dial_day_item_1m`, `no_dial_day_item_3m`, `no_dial_day_item_6m`, `no_dial_day_avg_item_3m`, `no_dial_day_avg_item_6m`, `no_dial_day_pct_item_1m`, `no_dial_day_pct_item_3m`, `no_dial_day_pct_item_6m`, `no_dial_day_pct_avg_item_3m`, `no_dial_day_pct_avg_item_6m`, `no_call_day_item_1m`, `no_call_day_item_3m`, `no_call_day_item_6m`, `no_call_day_avg_item_3m`, `no_call_day_avg_item_6m`, `no_call_day_pct_item_1m`, `no_call_day_pct_item_3m`, `no_call_day_pct_item_6m`, `no_call_day_pct_avg_item_3m`, `no_call_day_pct_avg_item_6m`, `max_power_on_day_item_1m`, `max_power_on_day_item_3m`, `max_power_on_day_item_6m`, `max_power_on_day_avg_item_3m`, `max_power_on_day_avg_item_6m`, `power_off_day_item_1m`, `power_off_day_item_3m`, `power_off_day_item_6m`, `power_off_day_avg_item_3m`, `power_off_day_avg_item_6m`, `power_off_day_pct_item_1m`, `power_off_day_pct_item_3m`, `power_off_day_pct_item_6m`, `power_off_day_pct_avg_item_3m`, `power_off_day_pct_avg_item_6m`, `continue_power_off_cnt_item_1m`, `continue_power_off_cnt_item_3m`, `continue_power_off_cnt_item_6m`, `continue_power_off_cnt_avg_item_3m`, `continue_power_off_cnt_avg_item_6m`       )
+        values(
+            #{nid},#{phone},#{avg_call_time_item_1m},#{avg_call_time_item_3m},#{avg_call_time_item_6m},#{avg_call_time_avg_item_3m},#{avg_call_time_avg_item_6m},#{no_dial_day_item_1m},#{no_dial_day_item_3m},#{no_dial_day_item_6m},#{no_dial_day_avg_item_3m},#{no_dial_day_avg_item_6m},#{no_dial_day_pct_item_1m},#{no_dial_day_pct_item_3m},#{no_dial_day_pct_item_6m},#{no_dial_day_pct_avg_item_3m},#{no_dial_day_pct_avg_item_6m},#{no_call_day_item_1m},#{no_call_day_item_3m},#{no_call_day_item_6m},#{no_call_day_avg_item_3m},#{no_call_day_avg_item_6m},#{no_call_day_pct_item_1m},#{no_call_day_pct_item_3m},#{no_call_day_pct_item_6m},#{no_call_day_pct_avg_item_3m},#{no_call_day_pct_avg_item_6m},#{max_power_on_day_item_1m},#{max_power_on_day_item_3m},#{max_power_on_day_item_6m},#{max_power_on_day_avg_item_3m},#{max_power_on_day_avg_item_6m},#{power_off_day_item_1m},#{power_off_day_item_3m},#{power_off_day_item_6m},#{power_off_day_avg_item_3m},#{power_off_day_avg_item_6m},#{power_off_day_pct_item_1m},#{power_off_day_pct_item_3m},#{power_off_day_pct_item_6m},#{power_off_day_pct_avg_item_3m},#{power_off_day_pct_avg_item_6m},#{continue_power_off_cnt_item_1m},#{continue_power_off_cnt_item_3m},#{continue_power_off_cnt_item_6m},#{continue_power_off_cnt_avg_item_3m},#{continue_power_off_cnt_avg_item_6m}
+        )
+    </insert>
+
+    <select id="getActiveDegreeNid" parameterType="String" resultType="String">
+        SELECT DISTINCT r.order_no AS nid FROM zx_atm.zx_repay_order r
+        WHERE NOT EXISTS (SELECT 1 FROM zx_risk.`sta_active_degree` WHERE r.order_no = nid)
+    </select>
+
+    <delete id="deleteDegree" >
+        delete from sta_active_degree
+    </delete>
+
     <select id="getAllReqNid" parameterType="String" resultType="String">
         SELECT DISTINCT r.nid FROM risk_decision_req_log r
     </select>

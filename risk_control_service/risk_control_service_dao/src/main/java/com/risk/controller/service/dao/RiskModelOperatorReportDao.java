@@ -26,6 +26,12 @@ public interface RiskModelOperatorReportDao {
 
     int saveCallSilentAreas (JSONObject params);
 
+    int saveActiveDegree (JSONObject params);
+
+    int deleteDegree ();
+
+    List<String> getActiveDegreeNid();
+
     List<String> getAllReqNid();
 
     List<String> getSmBorrow();

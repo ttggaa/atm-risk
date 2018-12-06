@@ -37,7 +37,7 @@ import java.util.concurrent.Callable;
  */
 @Slf4j
 @Service
-public class ModelDataServiceImpl implements ModelDataService {
+public class ModelDataServiceImpl extends com.risk.controller.service.service.impl.ModelDataService {
 
     @Autowired
     private LocalCache localCache;
@@ -792,11 +792,67 @@ public class ModelDataServiceImpl implements ModelDataService {
     }
 
     /**
-     * 保存树美多头借贷信息
+     * 无呼出情况统计
      *
      * @param request
-     * @throws Exception
      */
+    public void genActiveDegree(DecisionHandleRequest request) {
+        JSONObject operatorReport = this.getOperatorReport(request);
+
+        JSONObject params = new JSONObject();
+        params.put("nid", request.getNid());
+        params.put("phone", request.getUserName());
+        Date date = new Date();
+        params.put("add_time", date);
+        params.put("update_time", date);
+        JSONArray activeDegree = operatorReport.getJSONArray(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.ACTIVE_DEGREE.getValue());
+
+        int i = 0;
+        for (Object item : activeDegree) {
+            JSONObject itemJson = (JSONObject) item;
+            if (i >= 16) {
+                JSONObject object = itemJson.getJSONObject("item");
+                for(Map.Entry entry : object.entrySet()){
+                    params.put(itemJson.getString("app_point") + "_" + entry.getKey(), entry.getValue());
+                }
+            }
+            i++;
+        }
+
+        try {
+            riskModelOperatorReportDao.saveActiveDegree(params);
+        } catch (Exception e) {
+            log.error("[模型数据-生成]：genCallSilentAreas插入数据出错,nid:{}", request.getNid(), e);
+        }
+    }
+
+    public void genActiveDegree(String nid) {
+        List<String> orderNos = null;
+        if (StringUtils.isEmpty(nid)) {
+            riskModelOperatorReportDao.deleteDegree();
+            orderNos = riskModelOperatorReportDao.getActiveDegreeNid();
+        } else {
+            orderNos = new ArrayList<>();
+            orderNos.add(nid);
+        }
+        for (String orderNo : orderNos) {
+            DecisionHandleRequest request = new DecisionHandleRequest();
+            request.setNid(orderNo);
+            try {
+                genActiveDegree(request);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+        /**
+         * 保存树美多头借贷信息
+         *
+         * @param request
+         * @throws Exception
+         */
     private void saveSmBorrow(DecisionHandleRequest request) throws Exception {
         JSONObject operatorInfo = mongoHandler.getShumeiMultipoint(request);
         if (null == operatorInfo || !operatorInfo.containsKey("detail")) {

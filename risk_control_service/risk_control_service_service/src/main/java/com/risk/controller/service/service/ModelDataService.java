@@ -54,4 +54,6 @@ public interface ModelDataService {
      */
     JSONObject getOperatorReport(DecisionHandleRequest request);
 
+    void genActiveDegree(String nid);
+
 }
