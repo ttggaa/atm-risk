@@ -29,9 +29,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.client.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.ThreadPoolExecutor;
 
 @Slf4j
 @Service
@@ -68,6 +71,29 @@ public class OperatorServiceImpl implements OperatorService {
                     log.error("保存数据异常，nid:{},error:{}", nid, e);
                     throw new Exception("保存数据异常");
                 }
+            }
+        }
+    }
+
+    public void saveAllOperator() {
+        ThreadPoolTaskExecutor genExecutor = new ThreadPoolTaskExecutor();
+//        genExecutor.setCorePoolSize(3);
+//        genExecutor.setMaxPoolSize(5);
+//        genExecutor.setQueueCapacity(10000);
+//        genExecutor.setThreadNamePrefix("GenBorrowExecutorThread-");
+//        genExecutor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+//        genExecutor.initialize();
+
+        List<String> orders = operatorCallRecordDao.getOrders(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+        if (null != orders && orders.size() > 0) {
+            for (String order : orders) {
+//                genExecutor.execute(() -> {
+                    try {
+                        this.saveAllOperator(order);
+                    } catch (Exception e) {
+                        log.error("插入运营商数据出错，订单号：{}", order, e);
+                    }
+//                });
             }
         }
     }

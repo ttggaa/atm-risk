@@ -15,4 +15,15 @@
         on duplicate key update
         location_type = VALUES(location_type), duration = VALUES(duration)
     </insert>
+
+    <select id="getOrders" resultType="String" parameterType="String">
+        SELECT order_no FROM zx_atm.`zx_repay_order`
+        WHERE order_no NOT IN(
+        SELECT  DISTINCT nid FROM `operator_call_record`)
+        and  expiration_time
+        <![CDATA[
+            <
+        ]]>
+        #{date}
+    </select>
 </mapper>

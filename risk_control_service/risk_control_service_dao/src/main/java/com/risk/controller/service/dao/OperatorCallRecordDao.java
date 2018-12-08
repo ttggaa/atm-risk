@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface OperatorCallRecordDao {
     void saveBatch(List<OperatorCallRecord> list);
+
+    List<String> getOrders(String date);
 }

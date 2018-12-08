@@ -5,7 +5,9 @@ import com.alibaba.fastjson.JSONObject;
 import java.util.List;
 import java.util.Map;
 
-
+/**
+ *  模型校验数据存储
+ */
 public interface RiskModelOperatorReportDao {
 
     int saveRwTime(Map<?, ?> param);

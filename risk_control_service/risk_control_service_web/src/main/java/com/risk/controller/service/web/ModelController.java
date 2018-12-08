@@ -73,6 +73,18 @@ public class ModelController {
     }
 
     @ResponseBody
+    @RequestMapping(value = "/saveAllOperator2", method = RequestMethod.GET)
+    public ResponseEntity saveAllOperator() {
+        try {
+            operatorService.saveAllOperator();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity(ResponseEntity.STATUS_FAIL);
+        }
+        return new ResponseEntity(ResponseEntity.STATUS_OK);
+    }
+
+    @ResponseBody
     @RequestMapping(value = "/runModelBySql", method = RequestMethod.POST)
     public ResponseEntity runModelBySql(String sql, Integer source) {
         if (null == source || 0 >= source || 4 <= source) {
