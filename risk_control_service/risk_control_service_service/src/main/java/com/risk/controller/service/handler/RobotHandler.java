@@ -3200,6 +3200,7 @@ public class RobotHandler implements AdmissionHandler {
      * @param sql
      * @param source 生产训练、还是测试训练
      */
+    @Async
     public void runModelBySql(String sql, Integer source) {
         List<Map<String, Object>> list = this.modelService.runModelBySql(sql);
 

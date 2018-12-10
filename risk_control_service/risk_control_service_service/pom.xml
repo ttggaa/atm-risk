@@ -13,6 +13,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.zxsh.merchant</groupId>
+            <artifactId>merchant-rocketmq-starter</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>com.miaobt.risk.control.service.parent</groupId>
             <artifactId>risk_control_service_dao</artifactId>
             <version>1.0.0-SNAPSHOT</version>

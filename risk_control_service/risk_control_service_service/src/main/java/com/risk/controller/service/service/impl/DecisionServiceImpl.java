@@ -1,34 +1,26 @@
 package com.risk.controller.service.service.impl;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.risk.controller.service.common.constans.ERROR;
 import com.risk.controller.service.common.httpclient.HttpClientUtils;
 import com.risk.controller.service.common.utils.ResponseEntity;
-import com.risk.controller.service.dao.*;
-import com.risk.controller.service.dto.*;
-import com.risk.controller.service.entity.*;
-import com.risk.controller.service.enums.CacheCfgType;
-import com.risk.controller.service.enums.GetCacheModel;
-import com.risk.controller.service.mongo.dao.MongoDao;
-import com.risk.controller.service.mongo.dao.MongoQuery;
-import com.risk.controller.service.service.DecisionRobotService;
+import com.risk.controller.service.dao.AdmissionResultDetailDao;
+import com.risk.controller.service.dao.DecisionReqLogDao;
+import com.risk.controller.service.dao.DecisionResultNoticeDao;
+import com.risk.controller.service.dao.RejectReasonDao;
+import com.risk.controller.service.dto.AdmissionResultDTO;
+import com.risk.controller.service.entity.DecisionReqLog;
+import com.risk.controller.service.entity.DecisionResultNotice;
+import com.risk.controller.service.enums.LabelGroupId;
+import com.risk.controller.service.request.DecisionHandleRequest;
 import com.risk.controller.service.service.DecisionService;
 import com.risk.controller.service.service.MerchantInfoService;
-import com.risk.controller.service.utils.DataBaseUtils;
+import com.risk.controller.service.service.RocketMqService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
-import java.io.IOException;
-import java.math.BigDecimal;
+import javax.annotation.Resource;
 import java.util.*;
 
 /**
@@ -48,6 +40,10 @@ public class DecisionServiceImpl implements DecisionService {
     private RejectReasonDao rejectReasonDao;
     @Autowired
     private MerchantInfoService merchantInfoService;
+    @Autowired
+    private RocketMqService rocketMqService;
+    @Autowired
+    private DecisionReqLogDao decisionReqLogDao;
 
     /**
      * 通知业务系统风控结果
@@ -177,7 +173,7 @@ public class DecisionServiceImpl implements DecisionService {
      * @param status
      */
     public void saveErrorNoticeSaas(String merchantCode, String nid, String msg, AdmissionResultDTO admResult, Integer status) {
-        DecisionResultNotice notice =new DecisionResultNotice();
+        DecisionResultNotice notice = new DecisionResultNotice();
         notice.setMerchantCode(merchantCode);
         notice.setNid(nid);
         notice = decisionResultNoticeDao.selectByCondition(notice);
@@ -201,10 +197,36 @@ public class DecisionServiceImpl implements DecisionService {
                 notice.setRejectReasons(admResult.getRejectReason() == null ? "" : StringUtils.join(admResult.getRejectReason(), ","));
                 notice.setAddTime(System.currentTimeMillis());
                 notice.setMsg(msg);
-                decisionResultNoticeDao.insert(notice);
+                int count = decisionResultNoticeDao.insert(notice);
+                if (count >= 1) { //插入成功，表示走了决策
+                    this.sendDecisionMq(nid, admResult.getResult());
+                }
             }
         } catch (Exception e) {
             log.error("通知更新异常：{}", e);
+        }
+    }
+
+    /**
+     * 发送决策mq
+     *  @param nid
+     * @param status 1:表示通过，2表示拒绝，5表示挂起
+     */
+    private void sendDecisionMq(String nid, Integer status) {
+        try {
+            DecisionReqLog decisionReqLog = decisionReqLogDao.getbyNid(nid);
+            if (null != decisionReqLog) {
+                DecisionHandleRequest request = JSONObject.parseObject(decisionReqLog.getReqData(), DecisionHandleRequest.class);
+                if (null != request) {
+                    rocketMqService.decisionEngine(request.getAppId(), request.getUserName());
+                    // 如果决策最终结果是通过，并且是新户，那么就是走了模型
+                    if (1 == status && LabelGroupId.NEW.value().equals(request.getLabelGroupId())) {
+                        rocketMqService.zxmodel(request.getAppId(), request.getUserName());
+                    }
+                }
+            }
+        } catch (Exception e) {
+            log.error("发送决策MQ异常，nid:{},error:", nid, e);
         }
     }
 }

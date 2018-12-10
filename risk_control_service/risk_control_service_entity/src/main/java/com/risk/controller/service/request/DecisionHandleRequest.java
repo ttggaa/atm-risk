@@ -60,6 +60,7 @@ public class DecisionHandleRequest {
     private Integer successRepayNum;//成功还款次数
     private String merchantCode;//商户代码
     private Integer source;//1生产数据，2训练数据
+    private String appId;//产品id
 
     /**
      * 入参结束
