@@ -190,6 +190,7 @@
         WHERE result in (0,3,99)
         AND add_time <![CDATA[ <= ]]> UNIX_TIMESTAMP()*1000-300000
         AND add_time >= UNIX_TIMESTAMP()*1000-172800000
+        AND fail_fast = 1
         order by id asc
         limit 30
     </select>
