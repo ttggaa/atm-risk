@@ -43,8 +43,8 @@ public class SpringBootStart extends SpringBootServletInitializer {
     @Bean
     public AsyncTaskExecutor taskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(30);
-        executor.setMaxPoolSize(100);
+        executor.setCorePoolSize(8);
+        executor.setMaxPoolSize(8);
         executor.setQueueCapacity(1000000);
         executor.setKeepAliveSeconds(300);
         // 设置拒绝策略
