@@ -10,6 +10,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.risk.controller.service.utils.paixu.JsonResponseHandler;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.client.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -483,6 +484,45 @@ public class PaixuServiceImpl implements PaixuService {
 		return new ResponseEntity(ResponseEntity.STATUS_OK, null, "运营商原始信息为空", list);
 	}
 
+    public ResponseEntity getUserUergent(String nids) throws ParseException {
+        String[] nidArr = nids.split(",");
+        List list = new ArrayList<>();
+        for (String nid : nidArr) {
+            nid = nid.trim();
+            DataOrderMapping dataOrderMapping = dataOrderMappingService.getLastOneByNid(nid);
+
+            Map<String, Object> queryMap = new HashMap<String, Object>();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+            if (null != dataOrderMapping) {
+                RiskDecisionReqLog riskDecisionReqLog = riskDecisionReqLogDao.getLastBynid(nid);
+                JSONObject reqObject = null;
+                if (null != riskDecisionReqLog && StringUtils.isNotEmpty(riskDecisionReqLog.getReqData())) {
+                    reqObject = JSON.parseObject(riskDecisionReqLog.getReqData());
+                }
+
+                queryMap.put("number", dataOrderMapping.getClientNum());
+                queryMap.put("clientId", dataOrderMapping.getUserId());
+                List<JSONObject> urgContact = this.getEqMongoData(queryMap, MongoCollections.DB_USER_MAIN_CONTACT);
+
+                if ( null != urgContact && urgContact.size() > 0) {
+                    JSONObject obj = new JSONObject();
+                    obj.put("nid", nid);
+                    int i = 1;
+                    for (JSONObject json : urgContact) {
+                        for (Map.Entry entry : json.entrySet()) {
+                            obj.put(i + entry.getKey().toString(), entry.getValue());
+                        }
+                        i++;
+                    }
+                    list.add(obj);
+                }
+
+            }
+        }
+        return new ResponseEntity(ResponseEntity.STATUS_OK, null, "运营商原始信息为空", list);
+    }
+
 	/**
 	 * 获取riskData数据
 	 * 
@@ -834,10 +874,10 @@ public class PaixuServiceImpl implements PaixuService {
 		if (StringUtils.isNotEmpty(nids)) {
 			String[] nidsArr = nids.split(",");
 
-			if (nidsArr.length > 10) {
-				return new ResponseEntity(ResponseEntity.STATUS_FAIL, null, "最多只能发10单！", null);
-
-			}
+//			if (nidsArr.length > 10) {
+//				return new ResponseEntity(ResponseEntity.STATUS_FAIL, null, "最多只能发10单！", null);
+//
+//			}
 
 			for (String nid : nidsArr) {
 				try {

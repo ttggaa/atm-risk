@@ -1,9 +1,6 @@
 package com.risk.controller.service.web;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -72,7 +69,7 @@ public class PaixuController {
     }
     
     @RequestMapping(value = "/getExcel")
-    public void getExcel(DecisionHandleRequest req, String nids, HttpServletResponse response, HttpServletRequest request) throws Exception {
+	public void getExcel(DecisionHandleRequest req, String nids, HttpServletResponse response, HttpServletRequest request) throws Exception {
     	
     	ResponseEntity responseEntity = paixuServiceImpl.getContactCount(nids);
     	
@@ -438,6 +435,60 @@ public class PaixuController {
 		}
 
     }
+
+	@RequestMapping(value = "/getUserUergent")
+	public void getUserUergent(DecisionHandleRequest req, String nids, HttpServletResponse response, HttpServletRequest request) throws Exception {
+
+		ResponseEntity responseEntity = paixuServiceImpl.getUserUergent(nids);
+
+		List<JSONObject> list = (List<JSONObject>) responseEntity.getData();
+
+		HSSFWorkbook wb = new HSSFWorkbook();
+		Sheet sheet = wb.createSheet("紧急联系人");
+
+		int rowIdx = 0;
+		for (JSONObject object : list) {
+			Row row = sheet.createRow(rowIdx++);
+
+
+			int i = 0;
+			for (Map.Entry entry : object.entrySet()) {
+				Cell cellOne = row.createCell(i++);
+				cellOne.setCellValue(entry.getValue().toString());
+			}
+		}
+
+		OutputStream fos = null;
+		try {
+			fos = response.getOutputStream();
+			String userAgent = request.getHeader("USER-AGENT");
+			String fileName = "紧急联系人统计";
+			try {
+				if(StringUtils.contains(userAgent, "Mozilla")){
+					fileName = new String(fileName.getBytes(), "ISO8859-1");
+				}else {
+					fileName = URLEncoder.encode(fileName, "utf8");
+				}
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+
+//			response.setCharacterEncoding("UTF-8");
+//			response.setContentType("application/vnd.ms-excel;charset=utf-8");// 设置contentType为excel格式
+//			response.setHeader("Content-Disposition", "Attachment;Filename="+ fileName+".xls");
+//			wb.write(fos);
+//			fos.close();
+
+			OutputStream out = new FileOutputStream("/data/www/project/zx_education/risk_control_service/Usergent.xls");
+			wb.write(out);
+			out.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
     
     @RequestMapping(value = "/test")
     @ResponseBody
