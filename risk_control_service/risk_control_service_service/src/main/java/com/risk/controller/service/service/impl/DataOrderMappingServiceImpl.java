@@ -14,17 +14,6 @@ public class DataOrderMappingServiceImpl implements DataOrderMappingService {
     private DataOrderMappingDao dataOrderMappingDao;
 
     @Override
-    public DataOrderMapping getLastOneByUserIdAndNid(Long userId, String nid) {
-        if (null == userId || 0L == userId || StringUtils.isBlank(nid)) {
-            return null;
-        }
-        DataOrderMapping mapping = new DataOrderMapping();
-        mapping.setUserId(userId);
-        mapping.setNid(nid);
-        return dataOrderMappingDao.queryLastOne(mapping);
-    }
-
-    @Override
     public DataOrderMapping getLastOneByNid(String nid) {
         return dataOrderMappingDao.queryLastOneByNid(nid);
     }

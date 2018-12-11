@@ -112,14 +112,19 @@ public class VerifyHandler implements AdmissionHandler {
             result.setData("规则为空，跳过");
             return result;
         }
-
-        JSONObject rs = this.thirdService.getDeviceUsedCount(request.getMerchantCode(), request.getUserId());
-        if (null == rs || null == rs.get("data") || !"0".equals(rs.getString("code"))) {
-            result.setResult(AdmissionResultDTO.RESULT_EXCEPTIONAL);
-            result.setData("数据返回异常" + rs);
-            return result;
+        Integer count = 0;
+        if (null == request.getDeviceUsedNum()) {
+            JSONObject rs = this.thirdService.getDeviceUsedCount(request.getMerchantCode(), request.getUserId());
+            if (null == rs || null == rs.get("data") || !"0".equals(rs.getString("code"))) {
+                result.setResult(AdmissionResultDTO.RESULT_EXCEPTIONAL);
+                result.setData("数据返回异常" + rs);
+                return result;
+            }
+            count = rs.getInteger("data");
+        } else {
+            count = request.getDeviceUsedNum();
         }
-        Integer count = rs.getInteger("data");
+
         request.getRobotRequestDTO().setDeviceUsedCount(count);
 
         int maxCount = Integer.valueOf(rule.getSetting().get("maxCount"));
@@ -465,14 +470,20 @@ public class VerifyHandler implements AdmissionHandler {
         try {
 
             int maxDevices = Integer.valueOf(rule.getSetting().get("maxDevices"));
-
-            JSONObject rs = this.thirdService.getDeviceCount(request.getMerchantCode(), request.getUserId());
-            if (null == rs || null == rs.get("data") || !"0".equals(rs.getString("code"))) {
-                result.setResult(AdmissionResultDTO.RESULT_EXCEPTIONAL);
-                result.setData("数据返回异常" + rs);
-                return result;
+            Integer count = 0;
+            if (null == request.getUserDeviceNum()) {
+                JSONObject rs = this.thirdService.getDeviceCount(request.getMerchantCode(), request.getUserId());
+                if (null == rs || null == rs.get("data") || !"0".equals(rs.getString("code"))) {
+                    result.setResult(AdmissionResultDTO.RESULT_EXCEPTIONAL);
+                    result.setData("数据返回异常" + rs);
+                    return result;
+                } else {
+                    count = rs.getInteger("data");
+                }
+            } else {
+                count = request.getUserDeviceNum();
             }
-            Integer count = rs.getInteger("data");
+
             request.getRobotRequestDTO().setUserDeviceCount(count);
             if (count >= maxDevices) {
                 result.setResult(AdmissionResultDTO.RESULT_REJECTED);
@@ -828,15 +839,22 @@ public class VerifyHandler implements AdmissionHandler {
                     set.add(phone);
                 }
             }
-            JSONObject rs = this.thirdService.getRegisterCount(request.getMerchantCode(), set);
-            if (null == rs || null == rs.get("data") || !"0".equals(rs.getString("code"))) {
-                result.setResult(AdmissionResultDTO.RESULT_EXCEPTIONAL);
-                result.setData("数据返回异常" + rs);
-                return result;
+            int count = 0;
+            if (null == request.getCntRegisterNum()) {
+                JSONObject rs = this.thirdService.getRegisterCount(request.getMerchantCode(), set);
+                if (null == rs || null == rs.get("data") || !"0".equals(rs.getString("code"))) {
+                    result.setResult(AdmissionResultDTO.RESULT_EXCEPTIONAL);
+                    result.setData("数据返回异常" + rs);
+                    return result;
+                }
+                rs.getInteger("data");
+            } else {
+                count = request.getCntRegisterNum();
             }
+
             int warningCount = Integer.valueOf(rule.getSetting().get("warningCount"));
             int dangerCount = Integer.valueOf(rule.getSetting().get("dangerCount"));
-            int count = rs.getInteger("data");
+
             result.setData(count);
             request.getRobotRequestDTO().setUserDeviceContactRegisterCount(count);
 
@@ -1306,15 +1324,21 @@ public class VerifyHandler implements AdmissionHandler {
      */
     public AdmissionResultDTO verifyIdfaBlackList(DecisionHandleRequest request, AdmissionRuleDTO rule) {
         AdmissionResultDTO result = new AdmissionResultDTO();
-        JSONObject rs = this.getUserDeviceInfo(request);
-
-        if (null == rs || null == rs.get("data") || !"0".equals(rs.getString("code"))) {
-            result.setResult(AdmissionResultDTO.RESULT_EXCEPTIONAL);
-            result.setData("数据返回异常" + rs);
-            return result;
+        JSONArray idfa = null;
+        if (StringUtils.isBlank(request.getUserInfo())) {
+            JSONObject rs = this.getUserDeviceInfo(request);
+            if (null == rs || null == rs.get("data") || !"0".equals(rs.getString("code"))) {
+                result.setResult(AdmissionResultDTO.RESULT_EXCEPTIONAL);
+                result.setData("数据返回异常" + rs);
+                return result;
+            }
+            JSONObject data = rs.getJSONObject("data");
+            idfa = data.getJSONArray("idfa");
+        } else {
+            JSONObject data = JSONObject.parseObject(request.getUserInfo());
+            idfa = data.getJSONArray("idfa");
         }
-        JSONObject data = rs.getJSONObject("data");
-        JSONArray idfa = data.getJSONArray("idfa");
+
         if (null == idfa || idfa.size() <= 0) {
             result.setResult(AdmissionResultDTO.RESULT_APPROVED);
             result.setData(-1);
@@ -1379,14 +1403,22 @@ public class VerifyHandler implements AdmissionHandler {
      */
     public AdmissionResultDTO verifyMacBlackList(DecisionHandleRequest request, AdmissionRuleDTO rule) {
         AdmissionResultDTO result = new AdmissionResultDTO();
-        JSONObject rs = this.getUserDeviceInfo(request);
-        if (null == rs || null == rs.get("data") || !"0".equals(rs.getString("code"))) {
-            result.setResult(AdmissionResultDTO.RESULT_EXCEPTIONAL);
-            result.setData("数据返回异常" + rs);
-            return result;
+
+        JSONArray mac = null;
+        if (StringUtils.isBlank(request.getUserInfo())) {
+            JSONObject rs = this.getUserDeviceInfo(request);
+            if (null == rs || null == rs.get("data") || !"0".equals(rs.getString("code"))) {
+                result.setResult(AdmissionResultDTO.RESULT_EXCEPTIONAL);
+                result.setData("数据返回异常" + rs);
+                return result;
+            }
+            JSONObject data = rs.getJSONObject("data");
+            mac = data.getJSONArray("mac");
+        } else {
+            JSONObject data = JSONObject.parseObject(request.getUserInfo());
+            mac = data.getJSONArray("mac");
         }
-        JSONObject data = rs.getJSONObject("data");
-        JSONArray mac = data.getJSONArray("mac");
+
         if (null == mac || mac.size() <= 0) {
             result.setResult(AdmissionResultDTO.RESULT_APPROVED);
             result.setData(-1);
@@ -1427,14 +1459,22 @@ public class VerifyHandler implements AdmissionHandler {
      */
     public AdmissionResultDTO verifyImeiBlackList(DecisionHandleRequest request, AdmissionRuleDTO rule) {
         AdmissionResultDTO result = new AdmissionResultDTO();
-        JSONObject rs = this.getUserDeviceInfo(request);
-        if (null == rs || null == rs.get("data") || !"0".equals(rs.getString("code"))) {
-            result.setResult(AdmissionResultDTO.RESULT_EXCEPTIONAL);
-            result.setData("数据返回异常" + rs);
-            return result;
+
+        JSONArray imei = null;
+        if (StringUtils.isBlank(request.getUserInfo())) {
+            JSONObject rs = this.getUserDeviceInfo(request);
+            if (null == rs || null == rs.get("data") || !"0".equals(rs.getString("code"))) {
+                result.setResult(AdmissionResultDTO.RESULT_EXCEPTIONAL);
+                result.setData("数据返回异常" + rs);
+                return result;
+            }
+            JSONObject data = rs.getJSONObject("data");
+            imei = data.getJSONArray("imei");
+        } else {
+            JSONObject data = JSONObject.parseObject(request.getUserInfo());
+            imei = data.getJSONArray("imei");
         }
-        JSONObject data = rs.getJSONObject("data");
-        JSONArray imei = data.getJSONArray("imei");
+
         if (null == imei || imei.size() <= 0) {
             result.setResult(AdmissionResultDTO.RESULT_APPROVED);
             result.setData(-1);
@@ -2438,7 +2478,6 @@ public class VerifyHandler implements AdmissionHandler {
                 return result;
             }
 
-
             List<JSONObject> operatorCallDetail = this.mongoHandler.getUserOperatorCallDetail(request);
             if (CollectionUtils.isEmpty(operatorCallDetail)) {
                 result.setResult(AdmissionResultDTO.RESULT_SUSPEND);
@@ -2479,15 +2518,19 @@ public class VerifyHandler implements AdmissionHandler {
                 result.setData(0);
                 return result;
             }
-
-            JSONObject rs = this.thirdService.queryCntOptPhoneOverdueNum(request.getMerchantCode(), phones, ruleOverdueDays);
-            if (null == rs || null == rs.get("data") || !"0".equals(rs.getString("code"))) {
-                result.setResult(AdmissionResultDTO.RESULT_EXCEPTIONAL);
-                result.setData("数据返回异常" + rs);
-                return result;
+            Integer overdueNum = 0;
+            if (null == request.getOverdueNum()) {
+                JSONObject rs = this.thirdService.queryCntOptPhoneOverdueNum(request.getMerchantCode(), phones, ruleOverdueDays);
+                if (null == rs || null == rs.get("data") || !"0".equals(rs.getString("code"))) {
+                    result.setResult(AdmissionResultDTO.RESULT_EXCEPTIONAL);
+                    result.setData("数据返回异常" + rs);
+                    return result;
+                }
+                overdueNum = rs.getInteger("data"); //逾期ruleOverdueDays的手机号码个数
+            } else {
+                overdueNum = request.getOverdueNum();
             }
 
-            Integer overdueNum = rs.getInteger("data"); //逾期ruleOverdueDays的手机号码个数
             result.setData(overdueNum);
             if (overdueNum >= ruleRejectNum) {
                 result.setResult(AdmissionResultDTO.RESULT_REJECTED);

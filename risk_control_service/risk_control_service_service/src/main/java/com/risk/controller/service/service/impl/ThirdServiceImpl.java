@@ -129,15 +129,14 @@ public class ThirdServiceImpl implements ThirdService {
 
     @Override
     public void repeatAddOperator(String merchantCode, String nid) {
-        if (StringUtils.isNotBlank(nid)) {
-            String url = merchantInfoService.getMerchantUrl(merchantCode, "repeat_operator_url");
-
+        String url = merchantInfoService.getMerchantUrl(merchantCode, "repeat_operator_url");
+        if (StringUtils.isNotBlank(nid) && StringUtils.isNotBlank(url)) {
             Map<String, String> param = new HashMap<>();
             param.put("nids", nid);
             try {
                 String resultStr = HttpClientUtils.doPost(url, param);
                 if (StringUtils.isBlank(resultStr)) {
-                    log.error("调用重新拉取运营商数据失败，nid:{},url:{}",nid,url);
+                    log.error("调用重新拉取运营商数据失败，nid:{},url:{}", nid, url);
                 }
             } catch (Throwable e) {
                 log.error("调用重新拉取运营商数据异常，phones:{},e:{}", param, e);

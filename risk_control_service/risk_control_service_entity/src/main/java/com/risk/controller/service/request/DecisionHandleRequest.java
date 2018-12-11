@@ -62,6 +62,13 @@ public class DecisionHandleRequest {
     private Integer source;//1生产数据，2训练数据
     private String appId;//产品id
 
+    private Integer deviceUsedNum;// 用户的设备被其他用户使用的人次
+    private Integer userDeviceNum;// 用户使用设备个数
+    private Integer cntRegisterNum;  //通讯录 注册个数
+    private Integer optRegisterNum;  //运营商通话记录 注册个数
+    private String userInfo;     // 用户设备信息:{"idfa":["766A3455-DFF9-4FC2-B2D5-A79FD90786A9","B1D5A066-AC70-4E1E-BF73-196FE48F8D6B","C6CCE840-9949-4663-B521-749F690BD809"],"imei":["863127038832439","866571039620540"],"mac":["020000000000","A80C6317708C"]}
+    private Integer overdueNum;   //运营商通话记录手机在平台逾期个数
+
     /**
      * 入参结束
      **/
