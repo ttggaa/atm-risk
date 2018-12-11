@@ -37,7 +37,9 @@ public class VerifyServiceNewTest {
     @Test
     public void verifyDevice() {
         DecisionHandleRequest request = new DecisionHandleRequest();
-        request.setUserId(999L);
+        request.setUserId(22242L);
+        request.setMerchantCode("ZX00001");
+        request.setDeviceUsedNum(10);
         AdmissionRuleDTO rule = new AdmissionRuleDTO();
         HashMap<String, String> map = new HashMap<>();
         map.put("maxCount", "2");
@@ -148,7 +150,9 @@ public class VerifyServiceNewTest {
     @Test
     public void verifyDeviceCount() {
         DecisionHandleRequest request = new DecisionHandleRequest();
-        request.setUserId(37L);
+        request.setUserId(22242L);
+        request.setMerchantCode("ZX00001");
+        request.setUserDeviceNum(10);
         AdmissionRuleDTO rule = new AdmissionRuleDTO();
         HashMap<String, String> map = new HashMap<>();
         map.put("maxDevices", "2");
@@ -253,7 +257,10 @@ public class VerifyServiceNewTest {
     @Test
     public void testverifyContactIsRegister() {
         DecisionHandleRequest request = new DecisionHandleRequest();
-        request.setNid("118083113503887209");
+        request.setNid("218121022281266149");
+        request.setUserId(22242L);
+        request.setMerchantCode("ZX00001");
+        request.setCntRegisterNum(10);
 
         AdmissionRuleDTO rule = new AdmissionRuleDTO();
         Map<String, String> set = new HashMap<>();
@@ -405,7 +412,10 @@ public class VerifyServiceNewTest {
     public void verifyIdfaBlackList() {
 
         DecisionHandleRequest request = new DecisionHandleRequest();
-        request.setUserId(37L);
+        request.setUserId(22242L);
+        request.setMerchantCode("ZX00001");
+        String str = "{\"idCard\":\"411323199002083436\",\"idfa\":[\"766A3455-DFF9-4FC2-B2D5-A79FD90786A9\",\"B1D5A066-AC70-4E1E-BF73-196FE48F8D6B\",\"C6CCE840-9949-4663-B521-749F690BD809\"],\"imei\":[\"863127038832439\",\"866571039620540\"],\"mac\":[\"020000000000\",\"A80C6317708C\",\"acbc328e1cf9\",\"B808D7DE1BB4\"],\"phone\":\"13817440080\"}";
+        request.setUserInfo(str);
 
         AdmissionRuleDTO rule = new AdmissionRuleDTO();
 
@@ -585,6 +595,11 @@ public class VerifyServiceNewTest {
 
         DecisionHandleRequest request = this.getRequest();
         request.setSuccessRepayNum(2);
+        request.setNid("218121022281266149");
+        request.setUserId(22242L);
+        request.setMerchantCode("ZX00001");
+        request.setOverdueNum(10);
+
         AdmissionRuleDTO rule = new AdmissionRuleDTO();
         Map<String, String> set = new HashMap<>();
         set.put("successRepayNum", "3");

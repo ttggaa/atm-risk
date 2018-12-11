@@ -380,11 +380,15 @@ public class ModelDataServiceImpl extends com.risk.controller.service.service.im
         if (null != request && null != request.getRobotRequestDTO().getUserDeviceContactRegisterCount()) {
             userBaseinfo.setCntRegisterNum(request.getRobotRequestDTO().getUserDeviceContactRegisterCount());
         } else {
-            JSONObject rs = this.thirdService.getRegisterCount(request.getMerchantCode(), contactSet);
-            if (null == rs || null == rs.get("data") || !"0".equals(rs.getString("code"))) {
-                userBaseinfo.setCntRegisterNum(0);
+            if (null == request.getCntRegisterNum()) {
+                JSONObject rs = this.thirdService.getRegisterCount(request.getMerchantCode(), contactSet);
+                if (null == rs || null == rs.get("data") || !"0".equals(rs.getString("code"))) {
+                    userBaseinfo.setCntRegisterNum(0);
+                } else {
+                    userBaseinfo.setCntRegisterNum(rs.getInteger("data"));
+                }
             } else {
-                userBaseinfo.setCntRegisterNum(rs.getInteger("data"));
+                userBaseinfo.setCntRegisterNum(request.getCntRegisterNum());
             }
         }
 
@@ -401,32 +405,46 @@ public class ModelDataServiceImpl extends com.risk.controller.service.service.im
         });
 
         userBaseinfo.setOptShortNum(callShortSet.size());
-        JSONObject rs = this.thirdService.getRegisterCount(request.getMerchantCode(), callSet);
-        if (null == rs || null == rs.get("data") || !"0".equals(rs.getString("code"))) {
-            userBaseinfo.setOptCallsRegisterNum(0);
+        if (null == request.getOptRegisterNum()) {
+            JSONObject rs = this.thirdService.getRegisterCount(request.getMerchantCode(), callSet);
+            if (null == rs || null == rs.get("data") || !"0".equals(rs.getString("code"))) {
+                userBaseinfo.setOptCallsRegisterNum(0);
+            } else {
+                userBaseinfo.setOptCallsRegisterNum(rs.getInteger("data"));
+            }
         } else {
-            userBaseinfo.setOptCallsRegisterNum(rs.getInteger("data"));
+            userBaseinfo.setOptCallsRegisterNum(request.getOptRegisterNum());
         }
 
         if (null != request && null != request.getRobotRequestDTO().getDeviceUsedCount()) {
             userBaseinfo.setUserDeviceUsedNum(request.getRobotRequestDTO().getDeviceUsedCount());
         } else {
-            rs = this.thirdService.getDeviceUsedCount(request.getMerchantCode(), request.getUserId());
-            if (null == rs || null == rs.get("data") || !"0".equals(rs.getString("code"))) {
-                userBaseinfo.setUserDeviceUsedNum(0);
+            if (null == request.getDeviceUsedNum()) {
+                JSONObject rs = this.thirdService.getDeviceUsedCount(request.getMerchantCode(), request.getUserId());
+                if (null == rs || null == rs.get("data") || !"0".equals(rs.getString("code"))) {
+                    userBaseinfo.setUserDeviceUsedNum(0);
+
+                } else {
+                    userBaseinfo.setUserDeviceUsedNum(rs.getInteger("data"));
+                }
             } else {
-                userBaseinfo.setUserDeviceUsedNum(rs.getInteger("data"));
+                userBaseinfo.setUserDeviceUsedNum(request.getDeviceUsedNum());
             }
         }
 
         if (null != request && null != request.getRobotRequestDTO().getUserDeviceCount()) {
             userBaseinfo.setUserDeviceNum(request.getRobotRequestDTO().getUserDeviceCount());
         } else {
-            rs = this.thirdService.getDeviceCount(request.getMerchantCode(), request.getUserId());
-            if (null == rs || null == rs.get("data") || !"0".equals(rs.getString("code"))) {
-                userBaseinfo.setUserDeviceNum(0);
+            if (null == request.getUserDeviceNum()) {
+                JSONObject rs = this.thirdService.getDeviceCount(request.getMerchantCode(), request.getUserId());
+                if (null == rs || null == rs.get("data") || !"0".equals(rs.getString("code"))) {
+                    userBaseinfo.setUserDeviceNum(0);
+
+                } else {
+                    userBaseinfo.setUserDeviceNum(rs.getInteger("data"));
+                }
             } else {
-                userBaseinfo.setUserDeviceNum(rs.getInteger("data"));
+                userBaseinfo.setUserDeviceNum( request.getUserDeviceNum());
             }
         }
         return userBaseinfo;
