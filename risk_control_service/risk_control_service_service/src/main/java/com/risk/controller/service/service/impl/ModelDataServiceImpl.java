@@ -474,6 +474,7 @@ public class ModelDataServiceImpl extends com.risk.controller.service.service.im
             report = JSON.parseObject(object.getString("clientReport"), JSONObject.class);
             request.getRobotRequestDTO().setOperatorReport(report);
         } else {
+            this.thirdService.repeatAddOperator(request.getMerchantCode(), request.getNid());
             return null;
         }
 
