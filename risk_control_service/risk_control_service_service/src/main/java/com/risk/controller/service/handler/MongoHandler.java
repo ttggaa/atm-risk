@@ -40,7 +40,7 @@ public class MongoHandler {
         }
 
         if (StringUtils.isBlank(request.getRobotRequestDTO().getClientNum())) {
-            DataOrderMapping mapping = dataOrderMappingService.getLastOneByUserIdAndNid(request.getUserId(), request.getNid());
+            DataOrderMapping mapping = dataOrderMappingService.getLastOneByNid(request.getNid());
             if (null != mapping) {
                 if (StringUtils.isNotBlank(mapping.getClientNum())) {
                     request.getRobotRequestDTO().setClientNum(mapping.getClientNum());
@@ -111,7 +111,7 @@ public class MongoHandler {
         }
 
         if (StringUtils.isBlank(request.getRobotRequestDTO().getClientNum())) {
-            DataOrderMapping mapping = dataOrderMappingService.getLastOneByUserIdAndNid(request.getUserId(), request.getNid());
+            DataOrderMapping mapping = dataOrderMappingService.getLastOneByNid(request.getNid());
             if (null != mapping) {
                 if (StringUtils.isNotBlank(mapping.getClientNum())) {
                     request.getRobotRequestDTO().setClientNum(mapping.getClientNum());
@@ -181,7 +181,7 @@ public class MongoHandler {
         }
 
         if (StringUtils.isBlank(request.getRobotRequestDTO().getClientNum())) {
-            DataOrderMapping mapping = dataOrderMappingService.getLastOneByUserIdAndNid(request.getUserId(), request.getNid());
+            DataOrderMapping mapping = dataOrderMappingService.getLastOneByNid(request.getNid());
             if (null != mapping) {
                 if (StringUtils.isNotBlank(mapping.getClientNum())) {
                     request.getRobotRequestDTO().setClientNum(mapping.getClientNum());
@@ -248,7 +248,7 @@ public class MongoHandler {
     public List<JSONObject> getUserOperatorSms(DecisionHandleRequest request) {
 
         if (StringUtils.isBlank(request.getRobotRequestDTO().getOperatorNum())) {
-            DataOrderMapping mapping = dataOrderMappingService.getLastOneByUserIdAndNid(request.getUserId(), request.getNid());
+            DataOrderMapping mapping = dataOrderMappingService.getLastOneByNid(request.getNid());
             if (null != mapping) {
                 if (StringUtils.isNotBlank(mapping.getClientNum())) {
                     request.getRobotRequestDTO().setClientNum(mapping.getClientNum());
@@ -312,7 +312,7 @@ public class MongoHandler {
         }
 
         if (StringUtils.isBlank(request.getRobotRequestDTO().getClientNum())) {
-            DataOrderMapping mapping = dataOrderMappingService.getLastOneByUserIdAndNid(request.getUserId(), request.getNid());
+            DataOrderMapping mapping = dataOrderMappingService.getLastOneByNid(request.getNid());
             if (null != mapping) {
                 if (StringUtils.isNotBlank(mapping.getClientNum())) {
                     request.getRobotRequestDTO().setClientNum(mapping.getClientNum());
@@ -388,7 +388,7 @@ public class MongoHandler {
             return request.getRobotRequestDTO().getOperatorInfo();
         }
         if (StringUtils.isBlank(request.getRobotRequestDTO().getOperatorNum())) {
-            DataOrderMapping mapping = dataOrderMappingService.getLastOneByUserIdAndNid(request.getUserId(), request.getNid());
+            DataOrderMapping mapping = dataOrderMappingService.getLastOneByNid(request.getNid());
             if (null != mapping) {
                 if (StringUtils.isNotBlank(mapping.getClientNum())) {
                     request.getRobotRequestDTO().setClientNum(mapping.getClientNum());
@@ -452,7 +452,7 @@ public class MongoHandler {
             return request.getRobotRequestDTO().getOperatorCallRecords();
         }
         if (StringUtils.isBlank(request.getRobotRequestDTO().getClientNum())) {
-            DataOrderMapping mapping = dataOrderMappingService.getLastOneByUserIdAndNid(request.getUserId(), request.getNid());
+            DataOrderMapping mapping = dataOrderMappingService.getLastOneByNid(request.getNid());
             if (null != mapping) {
                 if (StringUtils.isNotBlank(mapping.getClientNum())) {
                     request.getRobotRequestDTO().setClientNum(mapping.getClientNum());

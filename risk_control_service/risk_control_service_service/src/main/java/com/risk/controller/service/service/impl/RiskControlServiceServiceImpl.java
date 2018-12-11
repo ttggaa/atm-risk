@@ -95,7 +95,7 @@ public class RiskControlServiceServiceImpl implements RiskControlServiceService 
         String enabled = merchantInfoService.getBymerchantCode(request.getMerchantCode());
         if (!"1".equals(enabled)) {
             log.error("商户号不存在,请求参数：{}", JSONObject.toJSONString(request));
-            return new ResponseEntity(ResponseEntity.STATUS_FAIL, null, null, "商户号不存在");
+            return new ResponseEntity(ResponseEntity.STATUS_FAIL, null, "商户号不存在", null);
         }
 
         this.saveDecisionRequest(request);

@@ -559,8 +559,7 @@ public class PaixuServiceImpl implements PaixuService {
 			operatorNum = request.getRobotRequestDTO().getOperatorNum();
 			clientNum = request.getRobotRequestDTO().getClientNum();
 		} else {
-			DataOrderMapping dataOrderMapping = dataOrderMappingService.getLastOneByUserIdAndNid(request.getUserId(),
-					request.getNid());
+			DataOrderMapping dataOrderMapping = dataOrderMappingService.getLastOneByNid(request.getNid());
 			if (null == dataOrderMapping) {
 				return new ResponseEntity(ResponseEntity.STATUS_FAIL, null, "没有查询到映射借款单与三方数据映射信息", null);
 			}
