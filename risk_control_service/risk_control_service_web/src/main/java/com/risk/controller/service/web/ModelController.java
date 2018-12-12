@@ -1,25 +1,16 @@
 package com.risk.controller.service.web;
 
 import com.risk.controller.service.common.utils.ResponseEntity;
-import com.risk.controller.service.dto.AdmissionResultDTO;
-import com.risk.controller.service.dto.AdmissionRuleDTO;
-import com.risk.controller.service.dto.RobotResultRequest;
 import com.risk.controller.service.handler.RobotHandler;
-import com.risk.controller.service.handler.VerifyHandler;
-import com.risk.controller.service.request.DecisionHandleRequest;
 import com.risk.controller.service.service.ModelDataService;
 import com.risk.controller.service.service.ModelService;
 import com.risk.controller.service.service.OperatorService;
-import com.risk.controller.service.service.impl.PaixuServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @RequestMapping("model")
 @Controller
@@ -67,18 +58,6 @@ public class ModelController {
         try {
             operatorService.saveAllOperator(nid);
         } catch (Exception e) {
-            return new ResponseEntity(ResponseEntity.STATUS_FAIL);
-        }
-        return new ResponseEntity(ResponseEntity.STATUS_OK);
-    }
-
-    @ResponseBody
-    @RequestMapping(value = "/saveAllOperator2", method = RequestMethod.GET)
-    public ResponseEntity saveAllOperator() {
-        try {
-            operatorService.saveAllOperator();
-        } catch (Exception e) {
-            e.printStackTrace();
             return new ResponseEntity(ResponseEntity.STATUS_FAIL);
         }
         return new ResponseEntity(ResponseEntity.STATUS_OK);
