@@ -133,6 +133,7 @@ public class ThirdServiceImpl implements ThirdService {
         if (StringUtils.isNotBlank(nid) && StringUtils.isNotBlank(url)) {
             Map<String, String> param = new HashMap<>();
             param.put("nids", nid);
+            param.put("isManual", "1");
             try {
                 String resultStr = HttpClientUtils.doPost(url, param);
                 if (StringUtils.isBlank(resultStr)) {
