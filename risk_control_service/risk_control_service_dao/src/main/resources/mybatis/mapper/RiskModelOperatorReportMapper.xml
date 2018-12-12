@@ -111,6 +111,16 @@
         )
     </insert>
 
+    <insert id="saveCellPhone" parameterType="com.alibaba.fastjson.JSONObject" >
+        replace into `sta_report_cell_phone` (`nid`, `phone`, `mobile`, `carrier_name`, `carrier_idcard`, `reg_time`, `in_time`, `email`, `address`, `reliability`, `phone_attribution`, `live_address`, `available_balance`, `package_name`, `bill_certification_day`, `add_time`, `update_time`)
+        values(#{nid},#{phone},#{mobile},#{carrier_name},#{carrier_idcard},#{reg_time},#{in_time},#{email},#{address},#{reliability},#{phone_attribution},#{live_address},#{available_balance},#{package_name},#{bill_certification_day},#{add_time},#{update_time})
+    </insert>
+
+    <select id="getCellPhoneByNid" parameterType="String" resultType="String">
+        SELECT DISTINCT r.order_no AS nid FROM zx_atm.zx_repay_order r
+        WHERE NOT EXISTS (SELECT 1 FROM zx_risk.`sta_report_cell_phone` WHERE r.order_no = nid)
+    </select>
+
     <select id="getActiveDegreeNid" parameterType="String" resultType="String">
         SELECT DISTINCT r.order_no AS nid FROM zx_atm.zx_repay_order r
         WHERE NOT EXISTS (SELECT 1 FROM zx_risk.`sta_active_degree` WHERE r.order_no = nid)

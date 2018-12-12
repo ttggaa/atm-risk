@@ -104,6 +104,7 @@ public class ModelDataServiceImpl extends com.risk.controller.service.service.im
         this.genCallRiskAnalysis(request);
         this.genCallSilentAreas(request);
         this.genUserInfoCheck(request);
+        this.genCellPhone(request);
     }
 
     @Override
@@ -811,7 +812,100 @@ public class ModelDataServiceImpl extends com.risk.controller.service.service.im
     }
 
     /**
-     * 无呼出情况统计
+     * 手机号基本信息
+     *
+     * @param request
+     */
+    public void genCellPhone(DecisionHandleRequest request) {
+        JSONObject operatorReport = this.getOperatorReport(request);
+
+        JSONObject params = new JSONObject();
+        params.put("nid", request.getNid());
+        params.put("phone", request.getUserName());
+        Date date = new Date();
+        params.put("add_time", date);
+        params.put("update_time", date);
+        JSONArray cellPhone = operatorReport.getJSONArray(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CELL_PHONE.getValue());
+        // 手机静默情况
+        for (Object item : cellPhone) {
+            JSONObject itemJson = (JSONObject) item;
+            String key = itemJson.getString("key");
+            String value = itemJson.getString("value");
+
+            switch (key) {
+                case "mobile" :
+                    params.put("mobile", value);
+                    break;
+                case "carrier_name" :
+                    params.put("carrier_name", value);
+                    break;
+                case "carrier_idcard" :
+                    params.put("carrier_idcard", value);
+                    break;
+                case "reg_time" :
+                    params.put("reg_time", value);
+                    break;
+                case "in_time" :
+                    params.put("in_time", value);
+                    break;
+                case "email" :
+                    params.put("email", value);
+                    break;
+                case "address" :
+                    params.put("address", value);
+                    break;
+                case "reliability" :
+                    params.put("reliability", value);
+                    break;
+                case "phone_attribution" :
+                    params.put("phone_attribution", value);
+                    break;
+                case "live_address" :
+                    params.put("live_address", value);
+                    break;
+                case "available_balance" :
+                    params.put("available_balance", value);
+                    break;
+                case "package_name" :
+                    params.put("package_name", value);
+                    break;
+                case "bill_certification_day" :
+                    params.put("bill_certification_day", value);
+                    break;
+            }
+        }
+        try {
+            riskModelOperatorReportDao.saveCellPhone(params);
+        } catch (Exception e) {
+            log.error("[模型数据-生成]：genCallSilentAreas插入数据出错,nid:{}", request.getNid(), e);
+        }
+    }
+
+    /**
+     * 活跃度数据生成
+     * @param nid
+     */
+    public void genCellPhone(String nid) {
+        List<String> orderNos = null;
+        if (StringUtils.isEmpty(nid)) {
+            orderNos = riskModelOperatorReportDao.getCellPhoneByNid();
+        } else {
+            orderNos = new ArrayList<>();
+            orderNos.add(nid);
+        }
+        for (String orderNo : orderNos) {
+            DecisionHandleRequest request = new DecisionHandleRequest();
+            request.setNid(orderNo);
+            try {
+                genCellPhone(request);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * 活跃度
      *
      * @param request
      */
@@ -845,6 +939,10 @@ public class ModelDataServiceImpl extends com.risk.controller.service.service.im
         }
     }
 
+    /**
+     * 活跃度数据生成
+     * @param nid
+     */
     public void genActiveDegree(String nid) {
         List<String> orderNos = null;
         if (StringUtils.isEmpty(nid)) {
@@ -866,12 +964,12 @@ public class ModelDataServiceImpl extends com.risk.controller.service.service.im
     }
 
 
-        /**
-         * 保存树美多头借贷信息
-         *
-         * @param request
-         * @throws Exception
-         */
+    /**
+     * 保存树美多头借贷信息
+     *
+     * @param request
+     * @throws Exception
+     */
     private void saveSmBorrow(DecisionHandleRequest request) throws Exception {
         JSONObject operatorInfo = mongoHandler.getShumeiMultipoint(request);
         if (null == operatorInfo || !operatorInfo.containsKey("detail")) {

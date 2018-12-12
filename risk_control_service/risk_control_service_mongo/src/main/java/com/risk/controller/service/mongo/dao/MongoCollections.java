@@ -34,6 +34,7 @@ public class MongoCollections {
         CALL_DURATION_DETAIL("call_duration_detail"),
         BEHAVIOR_CHECK("behavior_check"),
         ACTIVE_DEGREE("active_degree"),
+        CELL_PHONE("cell_phone"),
         ;
 
         private final String value;
