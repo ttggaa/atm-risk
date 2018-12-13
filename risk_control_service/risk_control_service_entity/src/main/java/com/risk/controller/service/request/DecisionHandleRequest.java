@@ -46,8 +46,6 @@ public class DecisionHandleRequest {
     @NotNull(message = "申请时间不能为空")
     private Long applyTime;
     private String userNation;// 用户名族
-    // "present": {"province": 身份,  "city": 城市, "liveAddr": 详细地址  }
-    private JSONObject present;// 居住地信息
 
     private String longitude; // 经度
     private String latitude; // 纬度
@@ -80,6 +78,8 @@ public class DecisionHandleRequest {
      **/
     private RobotRequestDTO robotRequestDTO = new RobotRequestDTO();
 
+    // "present": {"province": 身份,  "city": 城市, "liveAddr": 详细地址  }
+    private JSONObject present;// 居住地信息
 
     /**
      * 设置默认值
