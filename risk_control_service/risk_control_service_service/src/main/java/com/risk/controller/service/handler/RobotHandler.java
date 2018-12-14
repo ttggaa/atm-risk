@@ -204,11 +204,11 @@ public class RobotHandler implements AdmissionHandler {
                 listRobot.add(robotResultDetail);
             }
 
-//            BigDecimal finalScore = totalScore.subtract(divideScore)
-//                    .divide(totalScore, 8, BigDecimal.ROUND_HALF_UP)
-//                    .multiply(new BigDecimal(10000))
-//                    .subtract(new BigDecimal(6000)).setScale(4, BigDecimal.ROUND_HALF_UP);
-            BigDecimal finalScore = totalScore.subtract(divideScore).multiply(new BigDecimal(1000)).divide(totalScore, 4, BigDecimal.ROUND_HALF_UP);
+            BigDecimal finalScore = totalScore.subtract(divideScore)
+                    .divide(totalScore, 8, BigDecimal.ROUND_HALF_UP)
+                    .multiply(new BigDecimal(10000))
+                    .subtract(new BigDecimal(6000)).setScale(4, BigDecimal.ROUND_HALF_UP);
+//            BigDecimal finalScore = totalScore.subtract(divideScore).multiply(new BigDecimal(1000)).divide(totalScore, 4, BigDecimal.ROUND_HALF_UP);
 
             result.setData(finalScore.setScale(0, BigDecimal.ROUND_DOWN));
 
