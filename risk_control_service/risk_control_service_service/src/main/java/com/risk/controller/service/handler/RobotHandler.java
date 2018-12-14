@@ -3,6 +3,7 @@ package com.risk.controller.service.handler;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.risk.controller.service.common.utils.ContextUtils;
+import com.risk.controller.service.common.utils.ResponseEntity;
 import com.risk.controller.service.dao.*;
 import com.risk.controller.service.dto.AdmissionResultDTO;
 import com.risk.controller.service.dto.AdmissionRuleDTO;
@@ -18,7 +19,6 @@ import com.risk.controller.service.util.AdmissionHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -114,6 +114,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * {"randomNum":"0","minScore":"450","maxScore":"560","totalScore":"110.8"}
+     *
      * @param request
      * @param rule
      * @return
@@ -141,7 +142,7 @@ public class RobotHandler implements AdmissionHandler {
             List<RobotResultDetail> listRobot = new ArrayList<>();
 
             // 查询所有模型规则
-            List<RobotRule> ruleList = robotRuleDao.getAllrobotRule(null,1);
+            List<RobotRule> ruleList = robotRuleDao.getAllrobotRule(null, 1);
             for (RobotRule robotRule : ruleList) {
                 totalScore = totalScore.add(robotRule.getPercent());
                 if (StringUtils.isBlank(robotRule.getHandler())) {
@@ -203,12 +204,13 @@ public class RobotHandler implements AdmissionHandler {
                 listRobot.add(robotResultDetail);
             }
 
-            BigDecimal finalScore = totalScore.subtract(divideScore)
-                    .divide(totalScore, 8, BigDecimal.ROUND_HALF_UP)
-                    .multiply(new BigDecimal(10000))
-                    .subtract(new BigDecimal(6000)).setScale(4, BigDecimal.ROUND_HALF_UP);
+//            BigDecimal finalScore = totalScore.subtract(divideScore)
+//                    .divide(totalScore, 8, BigDecimal.ROUND_HALF_UP)
+//                    .multiply(new BigDecimal(10000))
+//                    .subtract(new BigDecimal(6000)).setScale(4, BigDecimal.ROUND_HALF_UP);
+            BigDecimal finalScore = totalScore.subtract(divideScore).multiply(new BigDecimal(1000)).divide(totalScore, 4, BigDecimal.ROUND_HALF_UP);
 
-            result.setData(finalScore.setScale(0,BigDecimal.ROUND_DOWN));
+            result.setData(finalScore.setScale(0, BigDecimal.ROUND_DOWN));
 
             if (finalScore.compareTo(ruleMaxScore) >= 0) {
                 result.setResult(AdmissionResultDTO.RESULT_APPROVED);
@@ -227,7 +229,7 @@ public class RobotHandler implements AdmissionHandler {
             return result;
         } catch (Exception e) {
             e.printStackTrace();
-            log.error("模型异常，nid;{},error", request.getNid(),e);
+            log.error("模型异常，nid;{},error", request.getNid(), e);
             result.setResult(AdmissionResultDTO.RESULT_EXCEPTIONAL);
             result.setData("模型异常");
             return result;
@@ -339,6 +341,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 通讯录中注册人数
+     *
      * @param request
      * @return
      */
@@ -450,6 +453,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 运营商通话记录注册人个数
+     *
      * @param request
      * @return
      */
@@ -1226,6 +1230,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 10天运营商主叫次数-手机
+     *
      * @param request
      * @return
      */
@@ -1249,6 +1254,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 10天运营商主叫时长-手机
+     *
      * @param request
      * @return
      */
@@ -1272,6 +1278,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 10天运营商主叫人次-手机
+     *
      * @param request
      * @return
      */
@@ -1295,6 +1302,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 10天运营商被叫次数-手机
+     *
      * @param request
      * @return
      */
@@ -1318,6 +1326,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 10天运营商被叫时长-手机
+     *
      * @param request
      * @return
      */
@@ -1341,6 +1350,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 10天运营商被叫人次-手机
+     *
      * @param request
      * @return
      */
@@ -1364,6 +1374,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 10天运营商总通话次数-手机
+     *
      * @param request
      * @return
      */
@@ -1387,6 +1398,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 10天运营商总通话时长-手机
+     *
      * @param request
      * @return
      */
@@ -1410,6 +1422,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 10天运营商总通话人次-手机
+     *
      * @param request
      * @return
      */
@@ -1433,6 +1446,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 10天运营商短信发送个数-手机
+     *
      * @param request
      * @return
      */
@@ -1456,6 +1470,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 10天运营商短信接收个数-手机
+     *
      * @param request
      * @return
      */
@@ -1479,6 +1494,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 10天运营商短信通讯人次
+     *
      * @param request
      * @return
      */
@@ -1502,6 +1518,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 10天通讯录有效通话次数-手机（主叫+被叫）
+     *
      * @param request
      * @return
      */
@@ -1525,6 +1542,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 110天通讯录有效通话时长-手机（主叫+被叫）
+     *
      * @param request
      * @return
      */
@@ -1548,6 +1566,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 10天通讯录有效通话人次-手机
+     *
      * @param request
      * @return
      */
@@ -1571,6 +1590,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 10天通讯录有效通话时长/次数比值-手机
+     *
      * @param request
      * @return
      */
@@ -1599,6 +1619,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 30天运营商主叫次数-手机
+     *
      * @param request
      * @return
      */
@@ -1622,6 +1643,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 30天运营商主叫时长-手机
+     *
      * @param request
      * @return
      */
@@ -1645,6 +1667,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 30天运营商主叫人次-手机
+     *
      * @param request
      * @return
      */
@@ -1668,6 +1691,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 30天运营商被叫次数-手机
+     *
      * @param request
      * @return
      */
@@ -1691,6 +1715,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 30天运营商被叫时长-手机
+     *
      * @param request
      * @return
      */
@@ -1714,6 +1739,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 30天运营商被叫人次-手机
+     *
      * @param request
      * @return
      */
@@ -1737,6 +1763,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 30天运营商总通话次数-手机
+     *
      * @param request
      * @return
      */
@@ -1760,6 +1787,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 30天运营商总通话时长-手机
+     *
      * @param request
      * @return
      */
@@ -1783,6 +1811,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 30天运营商总通话人次-手机
+     *
      * @param request
      * @return
      */
@@ -1806,6 +1835,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 30天运营商短信发送个数-手机
+     *
      * @param request
      * @return
      */
@@ -1829,6 +1859,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 30天运营商短信接收个数-手机
+     *
      * @param request
      * @return
      */
@@ -1852,6 +1883,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 30天运营商短信通讯人次
+     *
      * @param request
      * @return
      */
@@ -1875,6 +1907,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 30天通讯录有效通话次数-手机（主叫+被叫）
+     *
      * @param request
      * @return
      */
@@ -1898,6 +1931,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 130天通讯录有效通话时长-手机（主叫+被叫）
+     *
      * @param request
      * @return
      */
@@ -1921,6 +1955,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 30天通讯录有效通话人次-手机
+     *
      * @param request
      * @return
      */
@@ -1944,6 +1979,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 30天通讯录有效通话时长/次数比值-手机
+     *
      * @param request
      * @return
      */
@@ -1972,6 +2008,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 60天运营商主叫次数-手机
+     *
      * @param request
      * @return
      */
@@ -1995,6 +2032,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 60天运营商主叫时长-手机
+     *
      * @param request
      * @return
      */
@@ -2018,6 +2056,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 60天运营商主叫人次-手机
+     *
      * @param request
      * @return
      */
@@ -2041,6 +2080,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 60天运营商被叫次数-手机
+     *
      * @param request
      * @return
      */
@@ -2064,6 +2104,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 60天运营商被叫时长-手机
+     *
      * @param request
      * @return
      */
@@ -2087,6 +2128,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 60天运营商被叫人次-手机
+     *
      * @param request
      * @return
      */
@@ -2110,6 +2152,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 60天运营商总通话次数-手机
+     *
      * @param request
      * @return
      */
@@ -2133,6 +2176,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 60天运营商总通话时长-手机
+     *
      * @param request
      * @return
      */
@@ -2156,6 +2200,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 60天运营商总通话人次-手机
+     *
      * @param request
      * @return
      */
@@ -2179,6 +2224,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 60天运营商短信发送个数-手机
+     *
      * @param request
      * @return
      */
@@ -2202,6 +2248,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 60天运营商短信接收个数-手机
+     *
      * @param request
      * @return
      */
@@ -2225,6 +2272,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 60天运营商短信通讯人次
+     *
      * @param request
      * @return
      */
@@ -2248,6 +2296,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 60天通讯录有效通话次数-手机（主叫+被叫）
+     *
      * @param request
      * @return
      */
@@ -2271,6 +2320,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 160天通讯录有效通话时长-手机（主叫+被叫）
+     *
      * @param request
      * @return
      */
@@ -2294,6 +2344,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 60天通讯录有效通话人次-手机
+     *
      * @param request
      * @return
      */
@@ -2317,6 +2368,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 60天通讯录有效通话时长/次数比值-手机
+     *
      * @param request
      * @return
      */
@@ -2567,6 +2619,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 90天运营商主叫次数-手机
+     *
      * @param request
      * @return
      */
@@ -2590,6 +2643,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 90天运营商主叫时长-手机
+     *
      * @param request
      * @return
      */
@@ -2613,6 +2667,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 90天运营商主叫人次-手机
+     *
      * @param request
      * @return
      */
@@ -2636,6 +2691,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 90天运营商被叫次数-手机
+     *
      * @param request
      * @return
      */
@@ -2659,6 +2715,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 90天运营商被叫时长-手机
+     *
      * @param request
      * @return
      */
@@ -2682,6 +2739,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 90天运营商被叫人次-手机
+     *
      * @param request
      * @return
      */
@@ -2705,6 +2763,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 90天运营商总通话次数-手机
+     *
      * @param request
      * @return
      */
@@ -2728,6 +2787,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 90天运营商总通话时长-手机
+     *
      * @param request
      * @return
      */
@@ -2751,6 +2811,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 90天运营商总通话人次-手机
+     *
      * @param request
      * @return
      */
@@ -2774,6 +2835,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 90天运营商短信发送个数-手机
+     *
      * @param request
      * @return
      */
@@ -2797,6 +2859,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 90天运营商短信接收个数-手机
+     *
      * @param request
      * @return
      */
@@ -2820,6 +2883,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 90天运营商短信通讯人次
+     *
      * @param request
      * @return
      */
@@ -2843,6 +2907,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 90天通讯录有效通话次数-手机（主叫+被叫）
+     *
      * @param request
      * @return
      */
@@ -2866,6 +2931,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 190天通讯录有效通话时长-手机（主叫+被叫）
+     *
      * @param request
      * @return
      */
@@ -2889,6 +2955,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 90天通讯录有效通话人次-手机
+     *
      * @param request
      * @return
      */
@@ -2912,6 +2979,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 90天通讯录有效通话时长/次数比值-手机
+     *
      * @param request
      * @return
      */
@@ -3163,6 +3231,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 180天运营商主叫次数-手机
+     *
      * @param request
      * @return
      */
@@ -3186,6 +3255,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 180天运营商主叫时长-手机
+     *
      * @param request
      * @return
      */
@@ -3209,6 +3279,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 180天运营商主叫人次-手机
+     *
      * @param request
      * @return
      */
@@ -3232,6 +3303,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 180天运营商被叫次数-手机
+     *
      * @param request
      * @return
      */
@@ -3255,6 +3327,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 180天运营商被叫时长-手机
+     *
      * @param request
      * @return
      */
@@ -3278,6 +3351,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 180天运营商被叫人次-手机
+     *
      * @param request
      * @return
      */
@@ -3301,6 +3375,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 180天运营商总通话次数-手机
+     *
      * @param request
      * @return
      */
@@ -3324,6 +3399,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 180天运营商总通话时长-手机
+     *
      * @param request
      * @return
      */
@@ -3347,6 +3423,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 180天运营商总通话人次-手机
+     *
      * @param request
      * @return
      */
@@ -3370,6 +3447,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 180天运营商短信发送个数-手机
+     *
      * @param request
      * @return
      */
@@ -3393,6 +3471,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 180天运营商短信接收个数-手机
+     *
      * @param request
      * @return
      */
@@ -3416,6 +3495,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 180天运营商短信通讯人次
+     *
      * @param request
      * @return
      */
@@ -3439,6 +3519,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 180天通讯录有效通话次数-手机（主叫+被叫）
+     *
      * @param request
      * @return
      */
@@ -3462,6 +3543,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 1180天通讯录有效通话时长-手机（主叫+被叫）
+     *
      * @param request
      * @return
      */
@@ -3485,6 +3567,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 180天通讯录有效通话人次-手机
+     *
      * @param request
      * @return
      */
@@ -3508,6 +3591,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /**
      * 180天通讯录有效通话时长/次数比值-手机
+     *
      * @param request
      * @return
      */
@@ -3535,7 +3619,7 @@ public class RobotHandler implements AdmissionHandler {
 
     /*****************************华丽分割线*****************************/
     /**
-     *  通话风险分析-与催收类号码联系情况次数（3个月总次数）
+     * 通话风险分析-与催收类号码联系情况次数（3个月总次数）
      */
     public Integer robotCallRiskAnalysisCollection(DecisionHandleRequest request) {
         Integer count = 0;
@@ -3553,7 +3637,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
                 // 催收公司
                 if ("collection".equals(itemJson.getString(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.ANALYSIS_ITEM.getValue()))) {
-                    JSONObject analysis_point =  itemJson.getJSONObject(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.ANALYSIS_POINT.getValue());
+                    JSONObject analysis_point = itemJson.getJSONObject(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.ANALYSIS_POINT.getValue());
                     count = analysis_point.getInteger(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CALL_CNT_3M.getValue());
                 }
             }
@@ -3565,7 +3649,7 @@ public class RobotHandler implements AdmissionHandler {
     }
 
     /**
-     *  通话风险分析-与信用卡号码联系情况次数（3个月总次数）
+     * 通话风险分析-与信用卡号码联系情况次数（3个月总次数）
      */
     public Integer robotCallRiskAnalysisCreditCard(DecisionHandleRequest request) {
         Integer count = 0;
@@ -3584,7 +3668,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
                 // 信用卡
                 if ("credit_card".equals(itemJson.getString(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.ANALYSIS_ITEM.getValue()))) {
-                    JSONObject analysis_point =  itemJson.getJSONObject(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.ANALYSIS_POINT.getValue());
+                    JSONObject analysis_point = itemJson.getJSONObject(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.ANALYSIS_POINT.getValue());
                     count = analysis_point.getInteger(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CALL_CNT_3M.getValue());
                 }
             }
@@ -3596,7 +3680,7 @@ public class RobotHandler implements AdmissionHandler {
     }
 
     /**
-     *  通话风险分析-与贷款类号码联系情况次数（3个月总次数）
+     * 通话风险分析-与贷款类号码联系情况次数（3个月总次数）
      */
     public Integer robotCallRiskAnalysisLoan(DecisionHandleRequest request) {
         Integer count = 0;
@@ -3614,7 +3698,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
                 // loan
                 if ("loan".equals(itemJson.getString(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.ANALYSIS_ITEM.getValue()))) {
-                    JSONObject analysis_point =  itemJson.getJSONObject(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.ANALYSIS_POINT.getValue());
+                    JSONObject analysis_point = itemJson.getJSONObject(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.ANALYSIS_POINT.getValue());
                     count = analysis_point.getInteger(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CALL_CNT_3M.getValue());
                 }
             }
@@ -3626,7 +3710,7 @@ public class RobotHandler implements AdmissionHandler {
     }
 
     /**
-     *  通话风险分析-110，120，律师、法院等通话次数（3个月总次数）
+     * 通话风险分析-110，120，律师、法院等通话次数（3个月总次数）
      */
     public Integer robotCallRiskAnalysisGov(DecisionHandleRequest request) {
         Integer count = 0;
@@ -3644,7 +3728,7 @@ public class RobotHandler implements AdmissionHandler {
                 }
                 // 110
                 if ("110".equals(itemJson.getString(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.ANALYSIS_ITEM.getValue()))) {
-                    JSONObject analysis_point =  itemJson.getJSONObject(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.ANALYSIS_POINT.getValue());
+                    JSONObject analysis_point = itemJson.getJSONObject(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.ANALYSIS_POINT.getValue());
                     Integer call_cnt_3m = analysis_point.getInteger(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CALL_CNT_3M.getValue());
                     call_cnt_3m = call_cnt_3m == null ? 0 : call_cnt_3m;
                     count = count + call_cnt_3m;
@@ -3652,7 +3736,7 @@ public class RobotHandler implements AdmissionHandler {
 
                 // 120
                 if ("120".equals(itemJson.getString(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.ANALYSIS_ITEM.getValue()))) {
-                    JSONObject analysis_point =  itemJson.getJSONObject(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.ANALYSIS_POINT.getValue());
+                    JSONObject analysis_point = itemJson.getJSONObject(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.ANALYSIS_POINT.getValue());
                     Integer call_cnt_3m = analysis_point.getInteger(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CALL_CNT_3M.getValue());
                     call_cnt_3m = call_cnt_3m == null ? 0 : call_cnt_3m;
                     count = count + call_cnt_3m;
@@ -3660,7 +3744,7 @@ public class RobotHandler implements AdmissionHandler {
 
                 // lawyer
                 if ("lawyer".equals(itemJson.getString(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.ANALYSIS_ITEM.getValue()))) {
-                    JSONObject analysis_point =  itemJson.getJSONObject(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.ANALYSIS_POINT.getValue());
+                    JSONObject analysis_point = itemJson.getJSONObject(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.ANALYSIS_POINT.getValue());
                     Integer call_cnt_3m = analysis_point.getInteger(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CALL_CNT_3M.getValue());
                     call_cnt_3m = call_cnt_3m == null ? 0 : call_cnt_3m;
                     count = count + call_cnt_3m;
@@ -3668,7 +3752,7 @@ public class RobotHandler implements AdmissionHandler {
 
                 // court
                 if ("court".equals(itemJson.getString(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.ANALYSIS_ITEM.getValue()))) {
-                    JSONObject analysis_point =  itemJson.getJSONObject(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.ANALYSIS_POINT.getValue());
+                    JSONObject analysis_point = itemJson.getJSONObject(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.ANALYSIS_POINT.getValue());
                     Integer call_cnt_3m = analysis_point.getInteger(MongoCollections.OPERATOR_MOJIE_INFO_ELEMENT.CALL_CNT_3M.getValue());
                     call_cnt_3m = call_cnt_3m == null ? 0 : call_cnt_3m;
                     count = count + call_cnt_3m;
@@ -3682,7 +3766,7 @@ public class RobotHandler implements AdmissionHandler {
     }
 
     /**
-     *  通话风险分析-用户号码联系黑中介分数（分数范围0-100，参考分为10，分数越低关系越紧密
+     * 通话风险分析-用户号码联系黑中介分数（分数范围0-100，参考分为10，分数越低关系越紧密
      */
     public Integer robotCallCheckBlackInfoScore(DecisionHandleRequest request) {
         Integer count = 0;
@@ -3706,7 +3790,7 @@ public class RobotHandler implements AdmissionHandler {
     }
 
     /**
-     *  通话风险分析-引起间接黑名单人数
+     * 通话风险分析-引起间接黑名单人数
      */
     public Integer robotCallCheckBlackInfoRouter(DecisionHandleRequest request) {
         Integer count = 0;
@@ -3731,7 +3815,7 @@ public class RobotHandler implements AdmissionHandler {
     }
 
     /**
-     *  通话风险分析-间接联系人中黑名单人数
+     * 通话风险分析-间接联系人中黑名单人数
      */
     public Integer robotCallCheckBlackInfoClass2Cnt(DecisionHandleRequest request) {
         Integer count = 0;
@@ -3756,7 +3840,7 @@ public class RobotHandler implements AdmissionHandler {
     }
 
     /**
-     *  通话风险分析-查询过该用户的相关企业数量（姓名+身份证+电话号码）
+     * 通话风险分析-查询过该用户的相关企业数量（姓名+身份证+电话号码）
      */
     public Integer robotCallSearchedOrgCnt(DecisionHandleRequest request) {
         Integer count = 0;
@@ -3781,7 +3865,7 @@ public class RobotHandler implements AdmissionHandler {
     }
 
     /**
-     *  通话风险分析-身份证组合过的其他姓名(返回了匹配数量)
+     * 通话风险分析-身份证组合过的其他姓名(返回了匹配数量)
      */
     public Integer robotCallIdcardWithOtherNames(DecisionHandleRequest request) {
         Integer count = 0;
@@ -3810,7 +3894,7 @@ public class RobotHandler implements AdmissionHandler {
     }
 
     /**
-     *  通话风险分析-身份证组合过其他电话(返回了匹配数量)
+     * 通话风险分析-身份证组合过其他电话(返回了匹配数量)
      */
     public Integer robotCallIdcardWithOtherPhones(DecisionHandleRequest request) {
         Integer count = 0;
@@ -3839,7 +3923,7 @@ public class RobotHandler implements AdmissionHandler {
     }
 
     /**
-     *  通话风险分析-电话号码组合过其他姓名(返回了匹配数量)
+     * 通话风险分析-电话号码组合过其他姓名(返回了匹配数量)
      */
     public Integer robotCallPhoneWithOtherNames(DecisionHandleRequest request) {
         Integer count = 0;
@@ -3868,7 +3952,7 @@ public class RobotHandler implements AdmissionHandler {
     }
 
     /**
-     *  通话风险分析-电话号码组合过其他身份证(返回了匹配数量)
+     * 通话风险分析-电话号码组合过其他身份证(返回了匹配数量)
      */
     public Integer robotCallPhoneWithOtherIdcards(DecisionHandleRequest request) {
         Integer count = 0;
@@ -3896,7 +3980,7 @@ public class RobotHandler implements AdmissionHandler {
     }
 
     /**
-     *  104 出行分析-联系人所在区域个数汇总
+     * 104 出行分析-联系人所在区域个数汇总
      */
     public Integer robotCallContactRegion(DecisionHandleRequest request) {
         Integer count = 0;
@@ -3928,7 +4012,7 @@ public class RobotHandler implements AdmissionHandler {
     }
 
     /**
-     *  105 出行分析（外出不同城市的个数，曾在那些城市打过电话）
+     * 105 出行分析（外出不同城市的个数，曾在那些城市打过电话）
      */
     public Integer robotCallTripInfo(DecisionHandleRequest request) {
         Integer count = 0;
@@ -3965,7 +4049,7 @@ public class RobotHandler implements AdmissionHandler {
     }
 
     /**
-     *  106 深夜[1:30-5:30]通话总时间,近三个月
+     * 106 深夜[1:30-5:30]通话总时间,近三个月
      */
     public Integer robotCallDurationDetail(DecisionHandleRequest request) {
         Integer count = 0;
@@ -3998,7 +4082,7 @@ public class RobotHandler implements AdmissionHandler {
     }
 
     /**
-     *  107 深夜[1:30-5:30]通话数，近三个月
+     * 107 深夜[1:30-5:30]通话数，近三个月
      */
     public Integer robotCallMidnightTotalCnt(DecisionHandleRequest request) {
         Integer count = 0;
@@ -4034,7 +4118,7 @@ public class RobotHandler implements AdmissionHandler {
     }
 
     /**
-     *  108 深夜[1:30-5:30]通话号码数，近三个月
+     * 108 深夜[1:30-5:30]通话号码数，近三个月
      */
     public Integer robotCallMidnightUniqNumCnt(DecisionHandleRequest request) {
         Integer count = 0;
@@ -4070,7 +4154,7 @@ public class RobotHandler implements AdmissionHandler {
     }
 
     /**
-     *  109 深夜[1:30-5:30]主叫数，近三个月
+     * 109 深夜[1:30-5:30]主叫数，近三个月
      */
     public Integer robotCallMidnightDialCnt(DecisionHandleRequest request) {
         Integer count = 0;
@@ -4103,7 +4187,7 @@ public class RobotHandler implements AdmissionHandler {
     }
 
     /**
-     *  110 深夜[1:30-5:30]被叫数，近三个月
+     * 110 深夜[1:30-5:30]被叫数，近三个月
      */
     public Integer robotCallMidnightDialedCnt(DecisionHandleRequest request) {
         Integer count = 0;
@@ -4137,7 +4221,7 @@ public class RobotHandler implements AdmissionHandler {
     }
 
     /**
-     *  111 行为分析-手机静默情况
+     * 111 行为分析-手机静默情况
      */
     public Integer robotCallPhoneSilent(DecisionHandleRequest request) {
         Integer count = 0;
@@ -4385,6 +4469,7 @@ public class RobotHandler implements AdmissionHandler {
         }
         return count;
     }
+
     /**
      * 通过sql注入批量跑模型数据(必须包含nid)
      * select nid from table
@@ -4392,7 +4477,7 @@ public class RobotHandler implements AdmissionHandler {
      * @param sql
      * @param source 生产训练、还是测试训练
      */
-    public void runModelBySql(String sql, Integer source) {
+    public ResponseEntity runModelBySql(String sql, Integer source) {
         List<Map<String, Object>> list = this.modelService.runModelBySql(sql);
 
         if (!CollectionUtils.isEmpty(list)) {
@@ -4404,11 +4489,9 @@ public class RobotHandler implements AdmissionHandler {
             if (null != ruleDto) {
                 for (Map<String, Object> map : list) {
                     Object nidObject = map.get("nid");
-                    Object codeObject = map.get("merchantCode");
-                    if (null != nidObject && null != codeObject) {
+                    if (null != nidObject) {
                         String nid = (String) nidObject;
-                        String merchantCode = (String) codeObject;
-                        DecisionReqLog reqLog = decisionReqLogDao.getByNidAndMerchantCode(nid, merchantCode);
+                        DecisionReqLog reqLog = decisionReqLogDao.getbyNid(nid);
                         if (null != reqLog) {
                             DecisionHandleRequest request = JSONObject.parseObject(reqLog.getReqData(), DecisionHandleRequest.class);
                             request.setSource(source);
@@ -4416,9 +4499,12 @@ public class RobotHandler implements AdmissionHandler {
                             AdmissionResultDTO record = this.verifyRobot(request, ruleDto);
                             log.debug("模型重跑结果：nid：{}，结果：{}", nid, JSONObject.toJSONString(record));
                         }
+                    } else {
+                        return new ResponseEntity(ResponseEntity.STATUS_FAIL, "沒有查到订单号nid");
                     }
                 }
             }
         }
+        return new ResponseEntity(ResponseEntity.STATUS_OK);
     }
 }

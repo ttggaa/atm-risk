@@ -72,8 +72,7 @@ public class ModelController {
                     "source=2训练数据，查询训练模型区间；" +
                     "source=3训练数据，查询生产模型区间");
         }
-        robotHandler.runModelBySql(sql, source);
-        return new ResponseEntity(ResponseEntity.STATUS_OK);
+        return robotHandler.runModelBySql(sql, source);
     }
 
     @ResponseBody
