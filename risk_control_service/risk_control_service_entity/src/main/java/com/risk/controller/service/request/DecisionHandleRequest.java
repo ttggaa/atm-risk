@@ -83,25 +83,23 @@ public class DecisionHandleRequest {
 
     /**
      * 设置默认值
-     *
-     * @param request
      */
-    public void setDefaultValue(DecisionHandleRequest request) {
+    public void setDefaultValue() {
         // 默认产品id为1
-        if (null == request.getProductId() || request.getProductId() <= 0) {
-            request.setProductId(1);
+        if (null == productId || productId <= 0) {
+            productId = 1;
         }
         // 默认借款金额为1
-        if (null == request.getAmount() || BigDecimal.ZERO.compareTo(request.getAmount()) >= 0) {
-            request.setAmount(new BigDecimal(720));
+        if (null == amount || BigDecimal.ZERO.compareTo(amount) >= 0) {
+            amount = new BigDecimal(720);
         }
         // 默认商户号为征信商户号
-        if (StringUtils.isBlank(request.getMerchantCode())) {
-            request.setMerchantCode("ZX00001");
+        if (StringUtils.isBlank(merchantCode)) {
+            merchantCode = "ZX00001";
         }
         // 设置是否保存数据
-        if (null == request.getSource() || request.getSource() <= 0) {
-            request.setSource(RobotResult.SOURCE_1);
+        if (null == source || source <= 0) {
+            source = RobotResult.SOURCE_1;
         }
     }
 }

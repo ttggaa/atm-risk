@@ -81,7 +81,7 @@ public class RiskControlServiceServiceImpl implements RiskControlServiceService 
     @Override
     public ResponseEntity decisionHandle(DecisionHandleRequest request) {
 
-        request.setDefaultValue(request);
+        request.setDefaultValue();
         String enabled = merchantInfoService.getBymerchantCode(request.getMerchantCode());
         if (!"1".equals(enabled)) {
             log.error("商户号不存在,请求参数：{}", JSONObject.toJSONString(request));

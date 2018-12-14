@@ -4412,6 +4412,7 @@ public class RobotHandler implements AdmissionHandler {
                         if (null != reqLog) {
                             DecisionHandleRequest request = JSONObject.parseObject(reqLog.getReqData(), DecisionHandleRequest.class);
                             request.setSource(source);
+                            request.setDefaultValue();
                             AdmissionResultDTO record = this.verifyRobot(request, ruleDto);
                             log.debug("模型重跑结果：nid：{}，结果：{}", nid, JSONObject.toJSONString(record));
                         }
