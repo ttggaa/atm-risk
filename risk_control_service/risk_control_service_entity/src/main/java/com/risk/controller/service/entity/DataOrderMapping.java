@@ -50,4 +50,6 @@ public class DataOrderMapping {
     
     private Long updateUser;
 
+    private String merchantCode;
+
 }

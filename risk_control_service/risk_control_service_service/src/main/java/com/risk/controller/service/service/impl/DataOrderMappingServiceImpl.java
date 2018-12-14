@@ -17,4 +17,9 @@ public class DataOrderMappingServiceImpl implements DataOrderMappingService {
     public DataOrderMapping getLastOneByNid(String nid) {
         return dataOrderMappingDao.queryLastOneByNid(nid);
     }
+
+    @Override
+    public DataOrderMapping getByMerchantCodeAndNid(String nid, String merchantCode) {
+        return dataOrderMappingDao.getByMerchantCodeAndNid(nid, merchantCode);
+    }
 }

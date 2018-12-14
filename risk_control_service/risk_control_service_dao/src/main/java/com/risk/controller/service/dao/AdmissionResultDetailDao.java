@@ -22,5 +22,5 @@ public interface AdmissionResultDetailDao {
 
     AdmissionResultDetail getLastDetailByResultId(String nid);
 
-    List<Map<String, Object>> getDecisionDetail(String nid);
+    List<Map<String, Object>> getDecisionDetail(String nid, String merchantCode);
 }

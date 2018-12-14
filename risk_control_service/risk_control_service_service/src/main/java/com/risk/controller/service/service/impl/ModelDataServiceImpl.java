@@ -465,7 +465,7 @@ public class ModelDataServiceImpl extends com.risk.controller.service.service.im
             return request.getRobotRequestDTO().getOperatorReport();
         }
 
-        DataOrderMapping dataOrderMapping = dataOrderMappingService.getLastOneByNid(request.getNid());
+        DataOrderMapping dataOrderMapping = dataOrderMappingService.getByMerchantCodeAndNid(request.getNid(), request.getMerchantCode());
         Map<String, Object> queryMap = new HashMap<String, Object>();
         queryMap.put("number", dataOrderMapping.getOperatorNum());
 

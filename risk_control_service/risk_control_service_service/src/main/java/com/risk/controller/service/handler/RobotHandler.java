@@ -4404,9 +4404,11 @@ public class RobotHandler implements AdmissionHandler {
             if (null != ruleDto) {
                 for (Map<String, Object> map : list) {
                     Object nidObject = map.get("nid");
-                    if (null != nidObject) {
+                    Object codeObject = map.get("merchantCode");
+                    if (null != nidObject && null != codeObject) {
                         String nid = (String) nidObject;
-                        DecisionReqLog reqLog = decisionReqLogDao.getbyNid(nid);
+                        String merchantCode = (String) codeObject;
+                        DecisionReqLog reqLog = decisionReqLogDao.getByNidAndMerchantCode(nid, merchantCode);
                         if (null != reqLog) {
                             DecisionHandleRequest request = JSONObject.parseObject(reqLog.getReqData(), DecisionHandleRequest.class);
                             request.setSource(source);

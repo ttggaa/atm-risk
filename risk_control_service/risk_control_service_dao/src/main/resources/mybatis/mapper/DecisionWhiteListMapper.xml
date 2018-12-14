@@ -5,6 +5,6 @@
     </resultMap>
 
     <select id="getByPhone" resultType="int">
-        select count(1) cnt from risk_decision_white_list where phone = #{0} and enabled=1
+        select count(1) cnt from risk_decision_white_list where merchant_code = #{0} and phone = #{1} and enabled=1
     </select>
 </mapper>

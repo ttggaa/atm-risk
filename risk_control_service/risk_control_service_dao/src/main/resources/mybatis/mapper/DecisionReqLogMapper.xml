@@ -14,4 +14,24 @@
   <select id="getbyNid" resultMap="BaseResultMap" parameterType="string">
     select * from risk_decision_req_log where nid = #{nid} order by id desc limit 1
   </select>
+
+  <select id="getByNidAndMerchantCode" resultMap="BaseResultMap" >
+    select * from risk_decision_req_log where nid = #{0} and merchant_code=#{1} order by id desc limit 1
+  </select>
+
+  <select id="queryNeedReRun" resultMap="BaseResultMap">
+    SELECT DISTINCT b.*
+    FROM
+      risk_decision_result a,
+      risk_decision_req_log b
+    WHERE
+      a.nid = b.nid
+      AND a.merchant_code = b.merchant_code
+      AND a.result IN (0, 3, 99)
+      AND a.add_time <![CDATA[ <= ]]> UNIX_TIMESTAMP() * 1000 - 300000
+      AND a.add_time >= UNIX_TIMESTAMP() * 1000 - 172800000
+      AND a.fail_fast = 1
+    ORDER BY a.id ASC
+    LIMIT 30
+  </select>
 </mapper>

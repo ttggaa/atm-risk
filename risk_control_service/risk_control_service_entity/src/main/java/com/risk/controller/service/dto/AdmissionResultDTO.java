@@ -54,8 +54,8 @@ public class AdmissionResultDTO extends BaseDto {
 
     private Integer robotAction; // 1-执行评分，9-跳过，
 
-    public void populate(AdmissionResultDTO other){
-        if(null == other){
+    public void populate(AdmissionResultDTO other) {
+        if (null == other) {
             return;
         }
 
@@ -75,10 +75,10 @@ public class AdmissionResultDTO extends BaseDto {
     /**
      * 根据approvedCount, rejectedCount, exceptionalCount, finalApprovedCount, manualCount 设置result
      */
-    public void setResultByRuleResult(){
-        if (suspendCount > 0){
+    public void setResultByRuleResult() {
+        if (suspendCount > 0) {
             this.setResult(AdmissionResultDTO.RESULT_SUSPEND);
-        }else {
+        } else {
             if (rejectedCount > 0) { //拒绝
                 this.setResult(AdmissionResultDTO.RESULT_REJECTED);
             } else {

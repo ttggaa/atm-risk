@@ -244,7 +244,7 @@
       risk_decision_result_detail b
     WHERE
       a.id = b.rule_id
-      AND b.result_id = ( SELECT max(id) FROM risk_decision_result WHERE nid = #{0})
+      AND b.result_id = ( SELECT max(id) FROM risk_decision_result WHERE nid = #{0} and merchant_code=#{1})
       ORDER BY b.id
   </select>
 </mapper>
