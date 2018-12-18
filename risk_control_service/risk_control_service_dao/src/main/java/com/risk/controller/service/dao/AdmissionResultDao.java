@@ -4,6 +4,7 @@ import com.risk.controller.service.entity.AdmissionResult;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 public interface AdmissionResultDao {
 
@@ -17,12 +18,6 @@ public interface AdmissionResultDao {
      * @return
      */
     AdmissionResult getLastOneByNid(@Param("nid") String nid, @Param("merchartCode") String merchartCode);
-
-    /**
-     * 查询1个小时之前挂起的数据查询30条
-     * @return
-     */
-    List<String> queryNeedReRun();
 
     List<String> getAllByCondition(AdmissionResult result);
 }

@@ -32,6 +32,10 @@ public interface RiskModelOperatorReportDao {
 
     int deleteDegree ();
 
+    int saveCellPhone (JSONObject params);
+
+    List<String> getCellPhoneByNid();
+
     List<String> getActiveDegreeNid();
 
     List<String> getAllReqNid();

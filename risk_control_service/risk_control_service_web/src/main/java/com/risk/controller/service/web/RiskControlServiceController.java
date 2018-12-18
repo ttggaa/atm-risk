@@ -7,6 +7,7 @@ import com.risk.controller.service.service.DecisionService;
 import com.risk.controller.service.service.ModelService;
 import com.risk.controller.service.service.RiskControlServiceService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -52,11 +53,15 @@ public class RiskControlServiceController {
     /**
      * 查询决策通过或者拒绝具体原因
      * @param nid
+     * @param merchantCode 商户号
      * @return
      */
     @RequestMapping(value = "/decisionDetail", method = RequestMethod.GET)
-    public ResponseEntity decisionDetail(String nid) {
-        return riskControlServiceService.getDecisionDetail(nid);
+    public ResponseEntity decisionDetail(String nid, String merchantCode) {
+        if (StringUtils.isBlank(nid) || StringUtils.isBlank(merchantCode)) {
+            return new ResponseEntity(ResponseEntity.STATUS_FAIL, "订单号或者商户号不能为空");
+        }
+        return riskControlServiceService.getDecisionDetail(nid, merchantCode);
     }
 
 

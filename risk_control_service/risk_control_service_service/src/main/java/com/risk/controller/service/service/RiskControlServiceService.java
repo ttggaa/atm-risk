@@ -21,9 +21,10 @@ public interface RiskControlServiceService {
     /**
      * 查询决策通过或者拒绝具体原因
      * @param nid
+     * @param merchantCode
      * @return
      */
-    ResponseEntity getDecisionDetail(String nid);
+    ResponseEntity getDecisionDetail(String nid, String merchantCode);
 
     /**
      * 通过sql跑重跑决策

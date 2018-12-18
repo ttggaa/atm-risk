@@ -12,12 +12,14 @@ public interface ModelDataService {
 
     /**
      * 通过sql保存订单基础信息
+     *
      * @param sql
      */
     void saveDataBySql(String sql);
 
     /**
      * 保存订单基础信息
+     *
      * @param request
      * @throws Exception
      */
@@ -49,11 +51,22 @@ public interface ModelDataService {
 
     /**
      * 获取运营商报告
+     *
      * @param request
      * @return
      */
     JSONObject getOperatorReport(DecisionHandleRequest request);
 
+    /**
+     * 活跃度数据库生成
+     *
+     * @param nid
+     */
     void genActiveDegree(String nid);
 
+    /**
+     * 手机号基本信息生成
+     * @param nid
+     */
+    void genCellPhone(String nid);
 }

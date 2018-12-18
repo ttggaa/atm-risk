@@ -107,6 +107,7 @@ public class VerifyServiceNewTest {
     public void verifydevCallRecord() {
         DecisionHandleRequest request = new DecisionHandleRequest();
         request.setNid("218090716122631329");
+        request.setMerchantCode("ZX00001");
         request.setUserId(125L);
         AdmissionRuleDTO rule = new AdmissionRuleDTO();
         HashMap<String, String> map = new HashMap<>();

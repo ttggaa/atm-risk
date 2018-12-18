@@ -5,7 +5,6 @@ import com.risk.controller.service.common.constans.ERROR;
 import com.risk.controller.service.common.utils.ResponseEntity;
 import com.risk.controller.service.dao.*;
 import com.risk.controller.service.dto.AdmissionResultDTO;
-import com.risk.controller.service.dto.AdmissionRuleDTO;
 import com.risk.controller.service.entity.*;
 import com.risk.controller.service.request.DecisionHandleRequest;
 import com.risk.controller.service.service.*;
@@ -13,11 +12,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -57,41 +54,34 @@ public class RiskControlServiceServiceImpl implements RiskControlServiceService 
 
     @Override
     public void reRunDecision() {
-        List<String> result = admissionResultDao.queryNeedReRun();
-        if (null != result && result.size() > 0) {
-            for (String nid : result) {
-                if (StringUtils.isBlank(nid)) {
-                    return;
-                }
+        List<DecisionReqLog> list = decisionReqLogDao.queryNeedReRun();
+        if (!CollectionUtils.isEmpty(list)) {
+            for (DecisionReqLog reqLog : list) {
                 try {
-                    DecisionReqLog log = decisionReqLogDao.getbyNid(nid);
-                    if (null == log) {
-                        return;
-                    }
-                    DecisionHandleRequest request = JSONObject.parseObject(log.getReqData(), DecisionHandleRequest.class);
+                    DecisionHandleRequest request = JSONObject.parseObject(reqLog.getReqData(), DecisionHandleRequest.class);
                     if (null != request) {
                         this.decisionHandle(request);
                     }
                 } catch (Exception e) {
-                    log.error("风控重跑异常：订单号：{}，e", nid, e);
+                    log.error("风控重跑异常：商户号：{}，订单号：{}，e", reqLog.getMerchantCode(), reqLog.getNid(), e);
                 }
             }
         }
     }
 
     @Override
-    public ResponseEntity getDecisionDetail(String nid) {
+    public ResponseEntity getDecisionDetail(String nid, String merchantCode) {
         if (StringUtils.isBlank(nid)) {
             return new ResponseEntity(ResponseEntity.STATUS_FAIL, "订单号不能为空");
         }
-        List<Map<String, Object>> list = admissionResultDetailDao.getDecisionDetail(nid);
+        List<Map<String, Object>> list = admissionResultDetailDao.getDecisionDetail(nid, merchantCode);
         return new ResponseEntity(ResponseEntity.STATUS_OK, list);
     }
 
     @Override
     public ResponseEntity decisionHandle(DecisionHandleRequest request) {
 
-        request.setDefaultValue(request);
+        request.setDefaultValue();
         String enabled = merchantInfoService.getBymerchantCode(request.getMerchantCode());
         if (!"1".equals(enabled)) {
             log.error("商户号不存在,请求参数：{}", JSONObject.toJSONString(request));
@@ -100,7 +90,7 @@ public class RiskControlServiceServiceImpl implements RiskControlServiceService 
 
         this.saveDecisionRequest(request);
 
-        int count = this.decisionWhiteListDao.getByPhone(request.getUserName());
+        int count = this.decisionWhiteListDao.getByPhone(request.getMerchantCode(), request.getUserName());
         if (count > 0) {
             asyncTaskService.noticeBorrowResultHandle(request);
             log.warn("白名单跳过风控，【{}:{}】。请求参数：{}", request.getName(), request.getUserName(), JSONObject.toJSONString(request));
@@ -130,10 +120,12 @@ public class RiskControlServiceServiceImpl implements RiskControlServiceService 
      */
     private void saveDecisionRequest(DecisionHandleRequest request) {
         try {
-            JSONObject js = JSONObject.parseObject(JSONObject.toJSONString(request));
-            js.remove("robotRequestDTO");
-            DecisionReqLog log = new DecisionReqLog(request.getNid(), request.getMerchantCode(), JSONObject.toJSONString(js));
-            decisionReqLogDao.saveOrUpdate(log);
+            if (1 == request.getSource()) {
+                JSONObject js = JSONObject.parseObject(JSONObject.toJSONString(request));
+                js.remove("robotRequestDTO");
+                DecisionReqLog log = new DecisionReqLog(request.getNid(), request.getMerchantCode(), JSONObject.toJSONString(js));
+                decisionReqLogDao.saveOrUpdate(log);
+            }
         } catch (Exception e) {
             log.error("保存请求数据异常，request：{}", JSONObject.toJSONString(request), e);
         }
@@ -186,9 +178,11 @@ public class RiskControlServiceServiceImpl implements RiskControlServiceService 
         if (!CollectionUtils.isEmpty(list)) {
             for (Map<String, Object> map : list) {
                 Object nidObject = map.get("nid");
-                if (null != nidObject) {
+                Object codeObject = map.get("merchantCode");
+                if (null != nidObject && null != codeObject) {
                     String nid = (String) nidObject;
-                    DecisionReqLog reqLog = decisionReqLogDao.getbyNid(nid);
+                    String merchantCode = (String) codeObject;
+                    DecisionReqLog reqLog = decisionReqLogDao.getByNidAndMerchantCode(nid, merchantCode);
                     if (null != reqLog) {
                         DecisionHandleRequest request = JSONObject.parseObject(reqLog.getReqData(), DecisionHandleRequest.class);
                         request.setFailFast(0);

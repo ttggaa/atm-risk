@@ -10,6 +10,9 @@
     <select id="queryLastOneByNid" parameterType="com.risk.controller.service.entity.DataOrderMapping" resultMap="getMap">
         select * from data_order_mapping where  nid=#{nid} order by id desc limit 1
     </select>
+    <select id="getByMerchantCodeAndNid" resultMap="getMap">
+        select * from data_order_mapping where nid=#{0} and merchant_code=#{1} order by id desc limit 1
+    </select>
 
     <select id="getAllByNid" parameterType="string" resultType="map">
         select nid,operator_num operatorNum,client_num clientNum from data_order_mapping

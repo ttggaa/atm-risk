@@ -183,17 +183,6 @@
         where id = #{id,jdbcType=BIGINT}
     </update>
 
-
-    <select id="queryNeedReRun" resultType="string">
-        SELECT nid
-        FROM risk_decision_result
-        WHERE result in (0,3,99)
-        AND add_time <![CDATA[ <= ]]> UNIX_TIMESTAMP()*1000-300000
-        AND add_time >= UNIX_TIMESTAMP()*1000-172800000
-        order by id asc
-        limit 30
-    </select>
-
     <select id="getAllByCondition" resultType="string" parameterType="com.risk.controller.service.entity.AdmissionResult">
         SELECT nid FROM risk_decision_result
         <where>

@@ -67,7 +67,15 @@ public class PaixuController {
     public ResponseEntity getContactTime(DecisionHandleRequest req, String nids) throws Exception {
         return paixuServiceImpl.getContactTime(nids);
     }
-    
+
+	/**
+	 * 临时拉报表
+	 * @param req
+	 * @param nids
+	 * @param response
+	 * @param request
+	 * @throws Exception
+	 */
     @RequestMapping(value = "/getExcel")
 	public void getExcel(DecisionHandleRequest req, String nids, HttpServletResponse response, HttpServletRequest request) throws Exception {
     	
@@ -436,6 +444,14 @@ public class PaixuController {
 
     }
 
+	/**
+	 * 临时拉一个报表
+	 * @param req
+	 * @param nids
+	 * @param response
+	 * @param request
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/getUserUergent")
 	public void getUserUergent(DecisionHandleRequest req, String nids, HttpServletResponse response, HttpServletRequest request) throws Exception {
 
@@ -490,7 +506,7 @@ public class PaixuController {
 
 	}
     
-    @RequestMapping(value = "/test")
+    @RequestMapping(value = "/sendPaixu")
     @ResponseBody
     public ResponseEntity sendPaixu(DecisionHandleRequest req, String nids) throws Exception {
         return paixuServiceImpl.sendPaixu(req, nids);

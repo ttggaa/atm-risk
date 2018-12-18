@@ -1,6 +1,5 @@
 package com.risk.controller.service.scheduled;
 
-import com.risk.controller.service.common.utils.ResponseEntity;
 import com.risk.controller.service.enums.CacheCfgType;
 import com.risk.controller.service.service.DecisionService;
 import com.risk.controller.service.service.RiskControlServiceService;

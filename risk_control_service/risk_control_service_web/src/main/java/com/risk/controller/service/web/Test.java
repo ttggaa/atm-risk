@@ -36,7 +36,8 @@ public class Test {
     @RequestMapping(value = "/test")
     @ResponseBody
     public ResponseEntity getRadarApply(XinyanRadarParamDTO param, String nid) throws Exception {
-        modelDataService.genActiveDegree(nid);
+//        modelDataService.genActiveDegree(nid);
+        modelDataService.genCellPhone(nid);
 
 //        DecisionHandleRequest request = new DecisionHandleRequest();
 //        request.setUserName("17317600807");

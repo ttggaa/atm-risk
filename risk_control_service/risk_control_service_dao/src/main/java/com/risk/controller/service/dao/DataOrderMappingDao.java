@@ -13,4 +13,6 @@ public interface DataOrderMappingDao {
     DataOrderMapping queryLastOneByNid(String nid);
 
     List<Map<String,String>> getAllByNid(@Param("nid") String nid);
+
+    DataOrderMapping getByMerchantCodeAndNid(String nid, String merchantCode);
 }

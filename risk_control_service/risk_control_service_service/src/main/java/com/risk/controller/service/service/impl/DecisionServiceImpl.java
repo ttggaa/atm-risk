@@ -115,23 +115,6 @@ public class DecisionServiceImpl implements DecisionService {
     }
 
     /**
-     * 查询最大拒绝天数
-     *
-     * @param rejectReason 拒绝原因列表
-     * @return
-     */
-    private Integer getMaxCloseDays(Set<String> rejectReason) {
-        try {
-            if (null != rejectReason && rejectReason.size() > 0) {
-                return rejectReasonDao.getMaxCloseDays(rejectReason);
-            }
-        } catch (Exception e) {
-            log.error("通过拒绝原因查询管制天数失败rejectReason：{},error", rejectReason, e);
-        }
-        return null;
-    }
-
-    /**
      * 通知业务系统风控结果
      *
      * @param nid
