@@ -20,12 +20,12 @@ public class MqTest {
 
     @Test
     public void event() {
-        rocketMqService.zxmodel("defaultdefaultdefault", "18888888888");
+        rocketMqService.zxmodel("app181203141643105230", "18888888888");
     }
 
     @Test
     public void event2() {
-        rocketMqService.decisionEngine("defaultdefaultdefault", "18888888888");
+        rocketMqService.decisionEngine("app181203141643105230", "18888888888");
     }
 
 }
