@@ -192,7 +192,8 @@ public class DecisionServiceImpl implements DecisionService {
 
     /**
      * 发送决策mq
-     *  @param nid
+     *
+     * @param nid
      * @param status 1:表示通过，2表示拒绝，5表示挂起
      */
     private void sendDecisionMq(String nid, Integer status) {
