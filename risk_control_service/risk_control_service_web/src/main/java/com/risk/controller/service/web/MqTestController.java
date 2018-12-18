@@ -22,7 +22,7 @@ public class MqTestController {
     @Resource
     private RocketMqService rocketMqService;
 
-    @RequestMapping(value = "send", method = RequestMethod.POST)
+    @RequestMapping(value = "send", method = RequestMethod.GET)
     @ResponseBody
     public String event(String type, String appId, String phone) {
         type = StringUtils.isBlank(type) ? "1" : type;
