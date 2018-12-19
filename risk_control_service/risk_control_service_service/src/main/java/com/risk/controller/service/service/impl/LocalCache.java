@@ -81,7 +81,7 @@ public class LocalCache implements InitializingBean {
             }
             List<RiskMerchantUrl> listMerchantUrl = riskMerchantUrlDao.getEnableAll();
             if (!CollectionUtils.isEmpty(listMerchantUrl)) {
-                listMerchantUrl.forEach(url -> merchantInfo.put(url.getMerchantCode() + url.getKey(), url.getUrl()));
+                listMerchantUrl.forEach(url -> merchantInfo.put(url.getMerchantCode() + "." + url.getKey(), url.getUrl()));
                 cfg.put(CacheCfgType.MERCHANT_INFO.name(), merchantInfo);
             }
         }

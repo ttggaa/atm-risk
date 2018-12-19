@@ -39,7 +39,7 @@ public class VerifyServiceNewTest {
         DecisionHandleRequest request = new DecisionHandleRequest();
         request.setUserId(22242L);
         request.setMerchantCode("ZX00001");
-        request.setDeviceUsedNum(10);
+//        request.setDeviceUsedNum(10);
         AdmissionRuleDTO rule = new AdmissionRuleDTO();
         HashMap<String, String> map = new HashMap<>();
         map.put("maxCount", "2");

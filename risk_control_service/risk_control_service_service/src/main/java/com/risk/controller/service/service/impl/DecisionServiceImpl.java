@@ -11,6 +11,7 @@ import com.risk.controller.service.dto.AdmissionResultDTO;
 import com.risk.controller.service.entity.DecisionReqLog;
 import com.risk.controller.service.entity.DecisionResultNotice;
 import com.risk.controller.service.enums.LabelGroupId;
+import com.risk.controller.service.enums.MerchantCodeUrl;
 import com.risk.controller.service.request.DecisionHandleRequest;
 import com.risk.controller.service.service.DecisionService;
 import com.risk.controller.service.service.MerchantInfoService;
@@ -60,7 +61,7 @@ public class DecisionServiceImpl implements DecisionService {
             return new ResponseEntity(ResponseEntity.STATUS_FAIL, null, null, "商户号不存在");
         }
 
-        String url = merchantInfoService.getMerchantUrl(merchantCode, "call_back_url");
+        String url = merchantInfoService.getMerchantUrl(merchantCode, MerchantCodeUrl.CALL_BACK.value());
 
         Map<String, Object> params = new HashMap<>();
         params.put("nid", nid);

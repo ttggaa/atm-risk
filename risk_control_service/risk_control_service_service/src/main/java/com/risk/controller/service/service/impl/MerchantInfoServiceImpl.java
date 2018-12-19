@@ -26,6 +26,6 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
 
     @Override
     public String getMerchantUrl(String merchantCode, String urlKey) {
-        return localCache.getLocalCache(CacheCfgType.MERCHANT_INFO, merchantCode + urlKey);
+        return localCache.getLocalCache(CacheCfgType.MERCHANT_INFO, merchantCode + "." + urlKey);
     }
 }

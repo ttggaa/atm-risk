@@ -2,6 +2,7 @@ package com.risk.controller.service.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.risk.controller.service.common.httpclient.HttpClientUtils;
+import com.risk.controller.service.enums.MerchantCodeUrl;
 import com.risk.controller.service.service.MerchantInfoService;
 import com.risk.controller.service.service.ThirdService;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +34,7 @@ public class ThirdServiceImpl implements ThirdService {
     @Override
     public JSONObject getDeviceUsedCount(String merchantCode,Long userId) {
         if (null != userId && 0L != userId) {
-            String url = merchantInfoService.getMerchantUrl(merchantCode, "device_used_num_url");
+            String url = merchantInfoService.getMerchantUrl(merchantCode, MerchantCodeUrl.USED_NUM.value());
             Map<String, String> params = new HashMap<>();
             params.put("userId", String.valueOf(userId));
             try {
@@ -50,7 +51,7 @@ public class ThirdServiceImpl implements ThirdService {
     @Override
     public JSONObject getRegisterCount(String merchantCode, Set<String> set) {
         if (null == set || set.size() > 0) {
-            String url = merchantInfoService.getMerchantUrl(merchantCode, "register_num_url");
+            String url = merchantInfoService.getMerchantUrl(merchantCode, MerchantCodeUrl.REGISTER_NUM.value());
             try {
                 String resultStr = HttpClientUtils.doPost(url, JSONObject.toJSONString(set), "application/json");
                 JSONObject json = JSONObject.parseObject(resultStr);
@@ -71,7 +72,7 @@ public class ThirdServiceImpl implements ThirdService {
     @Override
     public JSONObject getDeviceCount(String merchantCode,Long userId) {
         if (null != userId && 0L != userId) {
-            String url = merchantInfoService.getMerchantUrl(merchantCode, "user_device_num_url");
+            String url = merchantInfoService.getMerchantUrl(merchantCode, MerchantCodeUrl.DEVICE_NUM.value());
             Map<String, String> params = new HashMap<>();
             params.put("userId", String.valueOf(userId));
             try {
@@ -88,7 +89,7 @@ public class ThirdServiceImpl implements ThirdService {
     @Override
     public JSONObject getUserInfo(String merchantCode, Long userId) {
         if (null != userId && 0L != userId) {
-            String url = merchantInfoService.getMerchantUrl(merchantCode, "user_info_url");
+            String url = merchantInfoService.getMerchantUrl(merchantCode, MerchantCodeUrl.USER_INFO.value());
             Map<String, String> params = new HashMap<>();
             params.put("userId", String.valueOf(userId));
             try {
@@ -111,7 +112,7 @@ public class ThirdServiceImpl implements ThirdService {
     @Override
     public JSONObject queryCntOptPhoneOverdueNum(String merchantCode,Set<String> phones, Integer overdueDay) {
         if (null == phones || phones.size() > 0) {
-            String url = merchantInfoService.getMerchantUrl(merchantCode, "overdue_num_url");
+            String url = merchantInfoService.getMerchantUrl(merchantCode, MerchantCodeUrl.OVERDUE_NUM.value());
 
             Map<String,Object> param = new HashMap<>();
             param.put("phones",phones);
