@@ -54,7 +54,7 @@ public class RocketMqServiceImpl implements RocketMqService{
         }
         String switchOn = localCache.getLocalCache(CacheCfgType.SYSTEMCFG, "risk.decision.bill.mq.switch");
         if ("1".equals(switchOn)) {
-            log.info("发送模型计费MQ:appid:{},phone:{}", appId, phone);
+            log.info("发送决策计费MQ:appid:{},phone:{}", appId, phone);
             callEventPublisher.publishRiskEvent(appId, "DECISIONENGINE", "决策引擎", phone);
         } else {
             log.warn("决策计费MQ关闭，值：" + switchOn);
