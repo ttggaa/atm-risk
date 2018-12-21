@@ -1,0 +1,2 @@
+# 编译命令
+mvn clean -U install -pl risk_control_service_common,risk_control_service_dao,risk_control_service_entity,risk_control_service_mongo,risk_control_service_service,risk_control_service_web -Dmaven.test.skip
