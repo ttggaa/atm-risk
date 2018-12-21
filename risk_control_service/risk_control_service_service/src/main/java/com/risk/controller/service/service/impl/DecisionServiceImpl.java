@@ -106,6 +106,7 @@ public class DecisionServiceImpl implements DecisionService {
      */
     private void saveResult(String nid, AdmissionResultDTO admResult, String resultStr, String msg, String merchantCode) {
         try {
+            msg = StringUtils.isNotBlank(resultStr) ? resultStr : msg;
             if (StringUtils.isNotBlank(msg) && msg.length() >= 4000) {
                 msg = msg.substring(0, 3999);
             }
@@ -113,7 +114,6 @@ public class DecisionServiceImpl implements DecisionService {
             if (null != result && result.containsKey("code") && "0".equals(result.getString("code"))) {
                 saveErrorNoticeSaas(merchantCode, nid, msg, admResult, 1);
             } else {
-                msg = StringUtils.isNotBlank(resultStr) ? resultStr : msg;
                 saveErrorNoticeSaas(merchantCode, nid, msg, admResult, 2);
             }
         } catch (Exception e) {
