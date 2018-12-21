@@ -113,6 +113,7 @@ public class DecisionServiceImpl implements DecisionService {
             if (null != result && result.containsKey("code") && "0".equals(result.getString("code"))) {
                 saveErrorNoticeSaas(merchantCode, nid, msg, admResult, 1);
             } else {
+                msg = StringUtils.isNotBlank(resultStr) ? resultStr : msg;
                 saveErrorNoticeSaas(merchantCode, nid, msg, admResult, 2);
             }
         } catch (Exception e) {
