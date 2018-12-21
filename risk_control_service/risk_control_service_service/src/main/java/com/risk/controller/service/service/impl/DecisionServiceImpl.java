@@ -81,7 +81,9 @@ public class DecisionServiceImpl implements DecisionService {
         String msg = null;
         try {
             resultStr = HttpClientUtils.doPost(url, JSONObject.toJSONString(params), "application/json");
+            log.info("推送结果，订单号：{}，同步结果结果：{}", nid, resultStr);
         } catch (Throwable e) {
+            log.error("推送结果异常，订单号：{}，同步结果结果：{}", nid, resultStr);
             if (null != e) {
                 msg = e.getMessage();
             }
@@ -101,6 +103,7 @@ public class DecisionServiceImpl implements DecisionService {
      */
     private void saveResult(String nid, AdmissionResultDTO admResult, String resultStr, String msg, String merchantCode) {
         try {
+            msg = StringUtils.isNotBlank(resultStr) ? resultStr : msg;
             if (StringUtils.isNotBlank(msg) && msg.length() >= 4000) {
                 msg = msg.substring(0, 3999);
             }
@@ -141,6 +144,7 @@ public class DecisionServiceImpl implements DecisionService {
                     }
                     noticeBorrowResultHandle(notice.getNid(), notice.getMerchantCode(), admResult);
                 } catch (Exception e) {
+                    log.error("定时任务重新推送通知异常，nid:{},e:{}", nid, e);
                     continue;
                 }
             }
