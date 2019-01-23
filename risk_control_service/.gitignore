@@ -1,4 +1,7 @@
-# Created by .ignore support plugin (hsz.mobi)
+#Git添加.gitignore文件后不生效解决办法
+#git rm -r --cached .
+#git add .
+#git commit -m 'update .gitignore'
 /.idea/
 *.iml
 */target/
